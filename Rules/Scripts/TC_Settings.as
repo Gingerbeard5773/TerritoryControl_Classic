@@ -5,7 +5,7 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v56";
-	const string remaster_version = "v2";
+	const string remaster_version = "v3";
 	
 	sv_mapcycle_shuffle = true;
 	
@@ -35,3 +35,20 @@ void onInit(CRules@ this)
 	print("Vamist      |  Hoster", print_col);
 	print("");
 }
+
+//Changelog v3 Sept 21, 2024
+//
+// Fixed rockets not exploding when colliding with tiles.
+// Fixed grinder not appearing.
+// Armored bomber takes half as much explosion damage.
+// Armory picks up ammunition.
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
