@@ -64,17 +64,15 @@ void onTick(CBlob@ this)
 	if (this.getInventory().isFull()) return;
 
 	CBlob@[] blobs;
-	if (getMap().getBlobsInBox(this.getPosition() + Vec2f(128, 96), this.getPosition() + Vec2f(-128, -96), @blobs))
+	getMap().getBlobsInBox(this.getPosition() + Vec2f(128, 96), this.getPosition() + Vec2f(-128, -96), @blobs);
+
+	for (uint i = 0; i < blobs.length; i++)
 	{
-		for (uint i = 0; i < blobs.length; i++)
+		CBlob@ blob = blobs[i];
+		if ((blob.hasTag("gun") || blob.hasTag("ammo")) && !blob.isAttached())
 		{
-			CBlob@ blob = blobs[i];
-			
-			if (blob.hasTag("gun") && !blob.isAttached())
-			{
-				if (isClient() && this.getInventory().canPutItem(blob)) blob.getSprite().PlaySound("/PutInInventory.ogg");
-				if (isServer()) this.server_PutInInventory(blob);
-			}
+			if (isClient() && this.getInventory().canPutItem(blob)) blob.getSprite().PlaySound("/PutInInventory.ogg");
+			if (isServer()) this.server_PutInInventory(blob);
 		}
 	}
 }
@@ -82,7 +80,7 @@ void onTick(CBlob@ this)
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 {
 	CBlob@ carried = forBlob.getCarriedBlob();
-	return forBlob.isOverlapping(this) && (carried is null ? true : carried.hasTag("gun"));
+	return forBlob.isOverlapping(this) && (carried is null ? true : carried.hasTag("gun") || carried.hasTag("ammo"));
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
@@ -98,7 +96,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 }
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("shop made item client") && isClient())
 	{
