@@ -17,6 +17,9 @@ const string[] wordreplace =
 	"strong", "vo_strong.ogg",
 	"build", "vo_build.ogg",
 	
+	"lalala", "vo_lalala_2.ogg",
+	"la la la", "vo_lalala.ogg",
+	
 	"idiot", "vo_idiot.ogg",
 	"jerk", "vo_jerk.ogg",
 	"bad", "vo_bad.ogg",
