@@ -275,7 +275,7 @@ void server_ShootBlob(CBlob@ this, CBlob@ holder, GunInfo@ gun, Vec2f position, 
 	CBlob@ blob = server_CreateBlob(gun.projectile, holder.getTeamNum(), startPos);
 	blob.setVelocity(dir * gun.projectile_speed);
 	blob.setAngleDegrees(aim_angle + 90 + (facing ? 180 : 0));
-	blob.SetDamageOwnerPlayer(holder.getPlayer());
+	blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
