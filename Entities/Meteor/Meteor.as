@@ -60,6 +60,7 @@ void onTick(CBlob@ this)
 
 	if (!this.hasTag("explosive"))
 	{
+		this.getSprite().SetEmitSoundPaused(true);
 		if (heat > 0)
 		{
 			AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
