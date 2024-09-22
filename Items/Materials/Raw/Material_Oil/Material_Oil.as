@@ -1,5 +1,6 @@
 #include "Hitters.as";
 #include "Explosion.as";
+#include "ExplosionDelay.as";
 
 void onInit(CBlob@ this)
 {
@@ -8,17 +9,21 @@ void onInit(CBlob@ this)
 	this.maxQuantity = 50;
 }
 
+void onDie(CBlob@ this)
+{
+	if (this.hasTag("doExplode"))
+	{
+		DoExplosion(this);
+	}
+}
+
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
-	const f32 quantity = this.getQuantity();
-	
 	Explode(this, 16.0f, 2.0f);
 
 	if (isServer())
 	{
+		const f32 quantity = this.getQuantity();
 		for (int i = 0; i < (quantity / 10) + XORRandom(quantity / 10) ; i++)
 		{
 			CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
@@ -26,16 +31,17 @@ void DoExplosion(CBlob@ this)
 			blob.server_SetTimeToDie(4 + XORRandom(6));
 		}
 	}
-	
-	this.server_Die();
+
 	this.getSprite().Gib();
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::fire || customData == Hitters::burn)
+	if (customData == Hitters::fire || customData == Hitters::burn || isExplosionHitter(customData))
 	{
-		DoExplosion(this);
+		server_SetBombToExplode(this);
+		this.Tag("doExplode");
+		return 0.0f;
 	}
 
 	return damage;
@@ -49,6 +55,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	const f32 vellen = this.getOldVelocity().Length();
 	if (vellen > 5.0f)
 	{
-		DoExplosion(this);
+		server_SetBombToExplode(this);
+		this.Tag("doExplode");
 	}
 }

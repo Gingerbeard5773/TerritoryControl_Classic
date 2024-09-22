@@ -29,7 +29,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead"))
+	if (damage >= this.getHealth())
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");
@@ -80,7 +80,7 @@ void DoExplosion(CBlob@ this)
 	if (isClient())
 	{
 		Vec2f pos = this.getPosition();
-		for (int i = 0; i < 35; i++)
+		for (u8 i = 0; i < 35; i++)
 		{
 			MakeParticle(this, Vec2f(XORRandom(32) - 16, XORRandom(80) - 60), getRandomVelocity(-angle, XORRandom(500) * 0.01f, 25), particles[XORRandom(particles.length)]);
 		}

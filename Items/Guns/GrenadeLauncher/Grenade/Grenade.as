@@ -67,12 +67,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
-	f32 random = XORRandom(16);
-	f32 modifier = 1 + Maths::Log(this.getQuantity());
-	f32 angle = -this.getOldVelocity().Angle();
+	Random rand(this.getNetworkID());
+	const f32 random = rand.NextRanged(16);
+	const f32 modifier = 1 + Maths::Log(this.getQuantity());
+	const f32 angle = -this.getOldVelocity().Angle();
 
 	this.set_f32("map_damage_radius", (24.0f + random) * modifier);
 	this.set_f32("map_damage_ratio", 0.25f);

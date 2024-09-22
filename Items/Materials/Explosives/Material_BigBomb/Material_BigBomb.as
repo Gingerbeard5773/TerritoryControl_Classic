@@ -21,7 +21,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead"))
+	if (damage >= this.getHealth())
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");
@@ -56,7 +56,7 @@ void DoExplosion(CBlob@ this)
 	Explode(this, 64.0f, 30.0f);
 	
 	Random rand(this.getNetworkID());
-	for (int i = 0; i < 8; i++)
+	for (u8 i = 0; i < 8; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 4.0f, -1 + i / 4.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);

@@ -79,15 +79,12 @@ void onDie(CBlob@ this)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-	
 	this.set_Vec2f("explosion_offset", Vec2f(0, -16).RotateBy(this.getAngleDegrees()));
 	
 	Random rand(this.getNetworkID());
 	
 	Explode(this, 32.0f, 3.0f);
-	for (int i = 0; i < 4; i++)
+	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 2.0f, -1 + i / 2.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);

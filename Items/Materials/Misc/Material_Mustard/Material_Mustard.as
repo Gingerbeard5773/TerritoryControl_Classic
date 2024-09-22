@@ -1,19 +1,27 @@
 #include "Hitters.as";
+#include "ExplosionDelay.as";
 
 void onInit(CBlob@ this)
 {
+	this.Tag("explosive");
 	this.maxQuantity = 50;
+}
+
+void onDie(CBlob@ this)
+{
+	if (this.hasTag("doExplode"))
+	{
+		DoExplosion(this);
+	}
 }
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-
 	this.getSprite().PlaySound("gas_leak.ogg");
 	
-	const f32 quantity = this.getQuantity();
 	if (isServer())
 	{
+		const f32 quantity = this.getQuantity();
 		for (int i = 0; i < (quantity / 5) + XORRandom(quantity / 5) ; i++)
 		{
 			CBlob@ blob = server_CreateBlob("mustard", -1, this.getPosition());
@@ -21,22 +29,30 @@ void DoExplosion(CBlob@ this)
 		}
 	}
 	
-	this.Tag("dead");
 	this.getSprite().Gib();
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (damage >= this.getHealth())
+	{
+		server_SetBombToExplode(this, 2);
+		this.Tag("doExplode");
+		return 0.0f;
+	}
+
+	return damage;
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob !is null ? !blob.isCollidable() : !solid) return;
 
+	if (solid) this.Untag("no pickup");
 	const f32 vellen = this.getOldVelocity().Length();
-	if (vellen > 4.0f && isServer())
+	if (vellen > 4.0f)
 	{
-		this.server_Die();
+		server_SetBombToExplode(this, 2);
+		this.Tag("doExplode");
 	}
-}
-
-void onDie(CBlob@ this)
-{
-	DoExplosion(this);
 }

@@ -29,7 +29,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead"))
+	if (damage >= this.getHealth() && !this.hasTag("doExplode"))
 	{
 		this.Tag("doExplode");
 		this.server_Die();
@@ -50,7 +50,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 	if (solid) this.Untag("no pickup");
 	const f32 vellen = this.getOldVelocity().Length();
-	if (vellen >= 6.0f) 
+	if (vellen >= 6.0f && !this.hasTag("doExplode")) 
 	{
 		this.Tag("doExplode");
 		this.server_Die();

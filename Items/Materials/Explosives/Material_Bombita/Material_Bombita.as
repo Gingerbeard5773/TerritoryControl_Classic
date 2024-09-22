@@ -28,7 +28,7 @@ void DoExplosion(CBlob@ this)
 	
 	this.set_f32("map_damage_radius", 20.0f * this.get_u8("boom_count"));
 	
-	for (int i = 0; i < 4; i++)
+	for (u8 i = 0; i < 4; i++)
 	{
 		Explode(this, 128.0f * modifier, 8.0f);
 	}

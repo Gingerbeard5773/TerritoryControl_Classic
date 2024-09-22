@@ -192,7 +192,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	}
 
 	this.server_Hit(this, point1, normal, this.getAttachments().getAttachmentPointByName("FLYER") is null ? power * 0.6f : power * 0.25f, 0, true);
-
 }
 
 void onDie(CBlob@ this)
@@ -211,8 +210,6 @@ void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
 	//explode all bombs we dropped from inventory cuz of death
 	if (this.getHealth() <= 0.0f && blob.hasTag("explosive"))
 	{
-		blob.Tag("doExplode");
-		//server_hit instead of server_die to be compatible with the bombita
 		blob.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), blob.getInitialHealth() + 1.0f, Hitters::explosion, true);
 	}
 }
@@ -224,7 +221,7 @@ void DoExplosion(CBlob@ this)
 	
 	Explode(this, 32.0f, 3.0f);
 	Random rand(this.getNetworkID());
-	for (int i = 0; i < 16; i++)
+	for (u8 i = 0; i < 16; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 2.0f, -1 + i / 2.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f,(int(rand.NextRanged(200)) - 100) / 200.0f);

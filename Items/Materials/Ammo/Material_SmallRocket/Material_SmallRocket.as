@@ -18,7 +18,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead") && customData != Hitters::sword)
+	if (damage >= this.getHealth() && customData != Hitters::sword)
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");

@@ -18,7 +18,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead") && customData != Hitters::sword)
+	if (damage >= this.getHealth() && customData != Hitters::sword)
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");
@@ -49,7 +49,7 @@ void DoExplosion(CBlob@ this)
 	Vec2f velocity = this.getOldVelocity();
 
 	Explode(this, 64.0f, 4.0f);
-	for (int i = 0; i < 4; i++)
+	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
 		LinearExplosion(this, Vec2f(velocity.x * jitter.x, velocity.y * jitter.y), 24.0f + rand.NextRanged(32), 24.0f, 4, 10.0f, Hitters::explosion);

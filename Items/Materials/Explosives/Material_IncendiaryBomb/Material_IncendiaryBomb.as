@@ -23,7 +23,7 @@ void onDie(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (damage >= this.getHealth() && !this.hasTag("dead"))
+	if (damage >= this.getHealth())
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");
@@ -81,14 +81,14 @@ void DoExplosion(CBlob@ this)
 		}
 	}
 	
-	for (int i = 0; i < 64; i++)
+	for (u8 i = 0; i < 64; i++)
 	{
 		map.server_setFireWorldspace(pos + Vec2f(8 - XORRandom(16), 8 - XORRandom(16)) * 8, true);
 		ParticleAnimated("Entities/Effects/Sprites/FireFlash.png", this.getPosition() + Vec2f(0, -4), Vec2f(0, 0.5f), 0.0f, 1.0f, 2, 0.0f, true);
 	}
 	Random rand(this.getNetworkID());
 	Explode(this, 64.0f, 10.0f);
-	for (int i = 0; i < 4; i++)
+	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 2.0f, -1 + i / 2.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
