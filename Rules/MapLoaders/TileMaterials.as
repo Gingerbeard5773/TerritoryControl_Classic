@@ -16,7 +16,7 @@ void MaterialsFromTile(CBlob@ this, const u16 &in type, const f32 &in damage, Ve
 		{
 			Material::createFor(this, "mat_stone", (10 + XORRandom(5)));
 			
-			if (depth < 0.90f && XORRandom(100) < 70) Material::createFor(this, "mat_copper", (1 + XORRandom(10 * (1 - depth))));
+			if (depth < 0.90f && XORRandom(100) < 70) Material::createFor(this, "mat_copper", (1 + XORRandom(6 * (1 - depth))));
 			if (depth < 0.60f && XORRandom(100) < 60) Material::createFor(this, "mat_iron", (5 + XORRandom(8)));
 			if (depth < 0.10f && XORRandom(100) < 10) Material::createFor(this, "mat_mithril", (2 + XORRandom(6)));
 		} 
