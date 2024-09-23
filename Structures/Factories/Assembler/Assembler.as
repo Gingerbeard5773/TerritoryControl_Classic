@@ -190,6 +190,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore extractor");
 
 	this.addCommandID("server set crafting");
+	this.addCommandID("sv_store");
 
 	this.set_u8("crafting", 0);
 	
@@ -201,7 +202,34 @@ void onInit(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
+	if (!isInventoryAccessible(this, caller)) return;
+
 	CButton@ button = caller.CreateGenericButton(15, Vec2f(0,-8), this, Menu, "Set Item");
+	
+	CInventory@ inv = caller.getInventory();
+	if (inv is null) return;
+	
+	const u8 crafting = this.get_u8("crafting");
+	AssemblerItem[] items = getItems(this);
+	if (crafting >= items.length) return;
+	
+	AssemblerItem item = items[crafting];
+	
+	CBitStream bs = item.reqs;
+	bs.ResetBitIndex();
+	string name;
+
+	while (!bs.isBufferEnd())
+	{
+		string unused = "";
+		ReadRequirement(bs, unused, name, unused, 0);
+
+		if (inv.getItem(name) !is null)
+		{
+			CButton@ store = caller.CreateGenericButton(28, Vec2f(0, 6), this, this.getCommandID("sv_store"), "Store");
+			break;
+		}
+	}
 }
 
 void Menu(CBlob@ this, CBlob@ caller)
@@ -209,26 +237,25 @@ void Menu(CBlob@ this, CBlob@ caller)
 	if (!caller.isMyPlayer()) return;
 
 	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos() + Vec2f(0.0f, 0.0f), this, Vec2f(4, 4), "Set Assembly");
-	if (menu !is null)
+	if (menu is null) return;
+
+	AssemblerItem[] items = getItems(this);
+	for (uint i = 0; i < items.length; i += 1)
 	{
-		AssemblerItem[] items = getItems(this);
-		for (uint i = 0; i < items.length; i += 1)
-		{
-			AssemblerItem item = items[i];
+		AssemblerItem item = items[i];
 
-			CBitStream pack;
-			pack.write_u8(i);
-			
-			const bool assembling = this.get_u8("crafting") == i;
+		CBitStream pack;
+		pack.write_u8(i);
+		
+		const bool assembling = this.get_u8("crafting") == i;
 
-			string text = "Set to Assemble: " + item.title;
-			if (assembling)
-				text = "Already Assembling: " + item.title;
+		string text = "Set to Assemble: " + item.title;
+		if (assembling)
+			text = "Already Assembling: " + item.title;
 
-			CGridButton@ butt = menu.AddButton("$assembler_icon" + i + "$", text, this.getCommandID("server set crafting"), pack);
-			butt.hoverText = item.title + "\n" + getButtonRequirementsText(item.reqs, false);
-			butt.SetEnabled(!assembling);
-		}
+		CGridButton@ butt = menu.AddButton("$assembler_icon" + i + "$", text, this.getCommandID("server set crafting"), pack);
+		butt.hoverText = item.title + "\n" + getButtonRequirementsText(item.reqs, false);
+		butt.SetEnabled(!assembling);
 	}
 }
 
@@ -238,6 +265,51 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	{
 		this.set_u8("crafting", params.read_u8());
 		this.Sync("crafting", true);
+	}
+	else if (cmd == this.getCommandID("sv_store") && isServer())
+	{
+		CPlayer@ player = getNet().getActiveCommandPlayer();
+		if (player is null) return;
+
+		CBlob@ caller = player.getBlob();
+		if (caller is null) return;
+
+		CBlob@ carried = caller.getCarriedBlob();
+		if (carried !is null && carried.hasTag("temp blob"))
+		{
+			carried.server_Die();
+		}
+
+		CInventory@ inv = caller.getInventory();
+		if (inv is null) return;
+
+		const u8 crafting = this.get_u8("crafting");
+		AssemblerItem[] items = getItems(this);
+		if (crafting >= items.length) return;
+
+		AssemblerItem item = items[crafting];
+		for (int i = 0; i < inv.getItemsCount(); i++)
+		{
+			CBlob@ blob = inv.getItem(i);
+
+			CBitStream bs = item.reqs;
+			bs.ResetBitIndex();
+			string name;
+
+			while (!bs.isBufferEnd())
+			{
+				string unused = "";
+				ReadRequirement(bs, unused, name, unused, 0);
+
+				if (blob.getName() == name)
+				{
+					caller.server_PutOutInventory(blob);
+					this.server_PutInInventory(blob);
+					i--;
+					break;
+				}
+			}
+		}
 	}
 }
 
