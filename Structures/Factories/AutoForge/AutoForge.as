@@ -76,7 +76,7 @@ void server_MakeIngot(CBlob@ this, const string&in ingot_name)
 	CBlob@ mat = server_CreateBlobNoInit(ingot_name);
 	mat.setPosition(this.getPosition());
 	mat.Tag("custom quantity");
-	mat.set_u32("autopick time", getGameTime() +  getTicksASecond() * 10);
+	mat.set_u32("autopick time", getGameTime() + getTicksASecond() * 10);
 	mat.server_SetQuantity(1);
 	mat.Init();
 	this.IgnoreCollisionWhileOverlapped(mat);

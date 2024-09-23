@@ -1,6 +1,6 @@
 #define SERVER_ONLY
 
-#include "CratePickupCommon.as"
+//#include "CratePickupCommon.as"
 
 void onInit(CBlob@ this)
 {
@@ -29,25 +29,14 @@ const string[] pickup_list =
 
 void Take(CBlob@ this, CBlob@ blob)
 {
-	if (isPickupBlob(blob))
-	{
-		if ((blob.getDamageOwnerPlayer() !is this.getPlayer()) || getGameTime() > blob.get_u32("autopick time"))
-		{
-			if (this.server_PutInInventory(blob))
-			{
-				return;
-			}
-		}
-	}
+	if (!isPickupBlob(blob)) return;
+	
+	CPlayer@ ownerPlayer = blob.getDamageOwnerPlayer();
+	const bool isOwner = ownerPlayer is null || ownerPlayer is this.getPlayer();
 
-	/*CBlob@ carryblob = this.getCarriedBlob();
-	if (carryblob !is null && carryblob.getName() == "crate")
-	{
-		if (crateTake(carryblob, blob))
-		{
-			return;
-		}
-	}*/
+	if (getGameTime() < blob.get_u32("autopick time") && isOwner) return;
+
+	if (this.server_PutInInventory(blob)) return;
 }
 
 bool isPickupBlob(CBlob@ blob)

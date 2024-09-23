@@ -3,7 +3,6 @@ void onInit(CSprite@ this)
 {
 	this.RemoveSpriteLayer("gear");
 	CSpriteLayer@ gear = this.addSpriteLayer("gear", "Extractor.png" , 16, 16, this.getBlob().getTeamNum(), this.getBlob().getSkinNum());
-
 	if (gear !is null)
 	{
 		Animation@ anim = gear.addAnimation("default", 0, false);
@@ -16,9 +15,10 @@ void onInit(CSprite@ this)
 
 void onTick(CSprite@ this)
 {
-	if (this.getSpriteLayer("gear") !is null)
+	CSpriteLayer@ gear = this.getSpriteLayer("gear");
+	if (gear !is null)
 	{
-		this.getSpriteLayer("gear").RotateBy(5, Vec2f(0.5f,-0.5f));
+		gear.RotateBy(5, Vec2f(0.5f, -0.5f));
 	}
 }
 
@@ -49,7 +49,8 @@ void onTick(CBlob@ this)
 			CBlob@ item = inv.getItem(0);
 			b.server_PutOutInventory(item);
 			item.setPosition(this.getPosition());
-			item.IgnoreCollisionWhileOverlapped(this, 1);
+			item.IgnoreCollisionWhileOverlapped(this, 1); //somehow fixes a bug with mats falling through grinders
+			item.set_u32("autopick time", getGameTime() + getTicksASecond() * 10);
 		}
 	}
 }
