@@ -60,7 +60,13 @@ void onSetStatic(CBlob@ this, const bool isStatic)
 
 	this.getSprite().PlaySound("/build_door.ogg");
 	
-	int touchingBlobs = this.getTouchingCount();
+	CMap@ map = getMap();
+	Vec2f offset = Vec2f(map.tilesize, map.tilesize) * 0.5f;
+	Vec2f topLeft = this.getPosition() - offset;
+	Vec2f bottomRight = this.getPosition() + offset;
+	map.server_AddSector(topLeft, bottomRight, "no explode", "", this.getNetworkID());
+	
+	const int touchingBlobs = this.getTouchingCount();
 	for (int a = 0; a < touchingBlobs; a++)
 	{
 		CBlob@ blob = this.getTouchingByIndex(a);

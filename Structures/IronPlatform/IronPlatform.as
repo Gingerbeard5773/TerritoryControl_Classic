@@ -23,6 +23,12 @@ void onInit(CBlob@ this)
 void onSetStatic(CBlob@ this, const bool isStatic)
 {
 	if (!isStatic) return;
+	
+	CMap@ map = getMap();
+	Vec2f offset = Vec2f(map.tilesize, map.tilesize) * 0.5f;
+	Vec2f topLeft = this.getPosition() - offset;
+	Vec2f bottomRight = this.getPosition() + offset;
+	map.server_AddSector(topLeft, bottomRight, "no explode", "", this.getNetworkID());
 
 	//this.getSprite().PlaySound("/build_wall.ogg");
 }
