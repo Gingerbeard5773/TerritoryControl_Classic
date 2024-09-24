@@ -9,8 +9,7 @@ const string[] resources =
 	"mat_iron",
 	"mat_copper",
 	"mat_stone",
-	"mat_gold",
-	"mat_coal"
+	"mat_gold"
 };
 
 const u8[] resourceYields = 
@@ -18,8 +17,7 @@ const u8[] resourceYields =
 	2,
 	2,
 	4,
-	2,
-	1
+	2
 };
 
 void onInit(CBlob@ this)
@@ -53,10 +51,10 @@ void onTick(CBlob@ this)
 		
 		if (tile.type == CMap::tile_bedrock)
 		{
-			const u8 index = XORRandom(resources.length - 1);
+			const u8 index = XORRandom(resources.length);
 			Material::createFor(this, resources[index], XORRandom(resourceYields[index]));
 
-			this.server_Hit(this, this.getPosition(), Vec2f(0, 0), 0.02f, Hitters::drill, true); //slightly damage our drill
+			//this.server_Hit(this, this.getPosition(), Vec2f(0, 0), 0.02f, Hitters::drill, true); //slightly damage our drill
 			
 			// print("ore: " + resources[XORRandom(index)] + " yield: " + XORRandom(resourceYields[index]));
 		}
