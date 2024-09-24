@@ -100,15 +100,14 @@ void GatherTeamMaterials(CBlob@ blob)
 	Vec2f position = blob.getPosition();
 
 	CBlob@[] storages;
-	getBlobsByTag("faction_base", @storages);
-	getBlobsByName("storage", @storages);
+	getBlobsByTag("remote storage", @storages);
 	
 	for (int i = 0; i < storages.length; i++) 
 	{
 		CBlob@ storage = storages[i];
 		if (storage.getTeamNum() != playerTeam) continue;
 		
-		if ((storage.getPosition() - position).Length() < 250.0f && storage.hasTag("faction_base"))
+		if ((storage.getPosition() - position).Length() < 250.0f && storage.hasTag("remote access"))
 			canAccessRemoteStorage = true;
 
 		CInventory@ inv = storage.getInventory();

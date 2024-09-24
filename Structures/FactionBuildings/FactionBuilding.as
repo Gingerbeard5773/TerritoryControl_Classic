@@ -1,8 +1,12 @@
+#include "RemoteAccess.as";
+
 const string raid_tag = "under raid";
 
 void onInit(CBlob@ this)
 {
 	this.Tag("faction_base");
+	this.Tag("remote access");
+	this.Tag("remote storage");
 	this.Tag("ignore raid");
 	this.Tag("teamlocked tunnel");
 	
@@ -10,6 +14,14 @@ void onInit(CBlob@ this)
 	this.addCommandID("faction_destroyed");
 	this.addCommandID("server_join_faction");
 	this.addCommandID("client_join_faction");
+}
+
+void onSetStatic(CBlob@ this, const bool isStatic)
+{
+	if (isStatic)
+	{
+		server_ResetStorageRemoteAccess(this);
+	}
 }
 
 void onTick(CBlob@ this)
@@ -37,48 +49,49 @@ void SetMinimap(CBlob@ this)
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
 {
-	if (isServer())
+	if (!isServer()) return;
+
+	server_ResetStorageRemoteAccess(this);
+
+	CBlob@[] forts;
+	getBlobsByTag("faction_base", @forts);
+
+	const int newTeam = this.getTeamNum();
+	const int totalFortCount = forts.length;
+	int oldTeamForts = 0;
+	int newTeamForts = 0;
+	
+	SetNearbyBlobsToTeam(this, oldTeam, newTeam);
+	
+	for (uint i = 0; i < totalFortCount; i++)
 	{
-		CBlob@[] forts;
-		getBlobsByTag("faction_base", @forts);
+		const int fortTeamNum = forts[i].getTeamNum();
+		if (fortTeamNum == newTeam)        newTeamForts++;
+		else if (fortTeamNum == oldTeam)   oldTeamForts++;
+	}
+	
+	if (oldTeamForts <= 0)
+	{
+		CBitStream stream;
+		stream.write_s32(newTeam);
+		stream.write_s32(oldTeam);
+		stream.write_bool(oldTeamForts == 0);
 
-		const int newTeam = this.getTeamNum();
-		const int totalFortCount = forts.length;
-		int oldTeamForts = 0;
-		int newTeamForts = 0;
-		
-		SetNearbyBlobsToTeam(this, oldTeam, newTeam);
-		
-		for (uint i = 0; i < totalFortCount; i++)
-		{
-			const int fortTeamNum = forts[i].getTeamNum();
-			if (fortTeamNum == newTeam)        newTeamForts++;
-			else if (fortTeamNum == oldTeam)   oldTeamForts++;
-		}
-		
-		if (oldTeamForts <= 0)
-		{
-			CBitStream bt;
-			bt.write_s32(newTeam);
-			bt.write_s32(oldTeam);
-			bt.write_bool(oldTeamForts == 0);
+		this.SendCommand(this.getCommandID("faction_captured"), stream);
 
-			this.SendCommand(this.getCommandID("faction_captured"), bt);
-
-			// for (u8 i = 0; i < getPlayerCount(); i++)
+		// for (u8 i = 0; i < getPlayerCount(); i++)
+		// {
+			// CPlayer@ p = getPlayer(i);
+			// if (p !is null && p.getTeamNum() == oldTeam)
 			// {
-				// CPlayer@ p = getPlayer(i);
-				// if (p !is null && p.getTeamNum() == oldTeam)
+				// p.server_setTeamNum(XORRandom(100)+100);
+				// CBlob@ b = p.getBlob();
+				// if (b !is null)
 				// {
-					// p.server_setTeamNum(XORRandom(100)+100);
-					// CBlob@ b = p.getBlob();
-					// if (b !is null)
-					// {
-						// b.server_Die();
-					// }
+					// b.server_Die();
 				// }
 			// }
-		}
+		// }
 	}
 }
 
@@ -97,9 +110,32 @@ void SetNearbyBlobsToTeam(CBlob@ this, const int oldTeam, const int newTeam)
 	}
 }
 
+void server_ResetStorageRemoteAccess(CBlob@ this)
+{
+	if (!isServer()) return;
+
+	CBlob@[] blobs;
+	getMap().getBlobsInRadius(this.getPosition(), remote_access_range, @blobs);
+	
+	for (u16 i = 0; i < blobs.length; i++)
+	{
+		CBlob@ blob = blobs[i];
+		if (blob.hasTag("potential remote access"))
+		{
+			server_SetStorageRemoteAccess(blob);
+		}
+	}
+}
+
 void onDie(CBlob@ this)
 {
+	if (!isServer()) return;
+
 	if (this.hasTag("upgrading")) return;
+	
+	this.Tag("dead");
+
+	server_ResetStorageRemoteAccess(this);
 
 	CBlob@[] forts;
 	getBlobsByTag("faction_base", @forts);
@@ -118,13 +154,10 @@ void onDie(CBlob@ this)
 	
 	if (teamForts <= 0)
 	{
-		if (isServer())
-		{
-			CBitStream bt;
-			bt.write_s32(team);
+		CBitStream stream;
+		stream.write_s32(team);
 		
-			this.SendCommand(this.getCommandID("faction_destroyed"), bt);
-		}
+		this.SendCommand(this.getCommandID("faction_destroyed"), stream);
 	}
 }
 

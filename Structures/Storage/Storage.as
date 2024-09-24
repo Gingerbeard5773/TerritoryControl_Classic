@@ -1,6 +1,7 @@
 ﻿// Storage.as
 
-#include "GenericButtonCommon.as"
+#include "GenericButtonCommon.as";
+#include "RemoteAccess.as";
 
 void onInit(CSprite@ this)
 {
@@ -91,12 +92,16 @@ void onInit(CSprite@ this)
 void onInit(CBlob@ this)
 {
 	this.Tag("ignore extractor");
+	this.Tag("potential remote access");
+	this.Tag("remote storage");
 
 	this.set_TileType("background tile", CMap::tile_castle_back);
 
 	AddIconToken("$store_inventory$", "InteractionIcons.png", Vec2f(32, 32), 28);
 	this.inventoryButtonPos = Vec2f(12, 0);
 	this.addCommandID("store inventory");
+	
+	server_SetStorageRemoteAccess(this);
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)

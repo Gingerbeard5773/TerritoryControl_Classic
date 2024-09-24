@@ -306,8 +306,7 @@ CBlob@[] getAvailableRemoteStorages(CBlob@ playerBlob)
 	const int playerTeam = playerBlob.getTeamNum();
 	if (playerTeam >= getRules().getTeamsCount()) return remoteStorages;
 
-	getBlobsByName("storage", @remoteStorages);
-	getBlobsByTag("faction_base", @remoteStorages);
+	getBlobsByTag("remote storage", @remoteStorages);
 
 	Vec2f playerPosition = playerBlob.getPosition();
 	bool canAccessRemoteStorage = false;
@@ -319,7 +318,7 @@ CBlob@[] getAvailableRemoteStorages(CBlob@ playerBlob)
 			remoteStorages.erase(i);
 			i--;
 		}
-		else if ((storage.getPosition() - playerPosition).Length() < 250.0f && storage.hasTag("faction_base"))
+		else if ((storage.getPosition() - playerPosition).Length() < 250.0f && storage.hasTag("remote access"))
 		{
 			canAccessRemoteStorage = true;
 		}
