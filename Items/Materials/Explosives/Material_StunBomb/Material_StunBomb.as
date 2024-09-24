@@ -72,19 +72,19 @@ void DoExplosion(CBlob@ this)
 	
 	if (isClient())
 	{
-		for (int i = 0; i < 200 * modifier; i++) 
+		const int amount = 200 * modifier * (v_fastrender ? 0.5f : 1.0f);
+		for (int i = 0; i < amount; i++) 
 		{
 			Vec2f dir = getRandomVelocity(angle, 8.5f * (XORRandom(100) * 0.01f), 100);
 			MakeParticle(this, dir, particles[XORRandom(particles.length)]);
 		}
 	}
-	
-	const f32 mod = Maths::Clamp(1.00f - (3 / 192), 0, 1);
-	
+
 	CMap@ map = getMap();
 	CBlob@[] blobs;
 	if (map.getBlobsInRadius(pos, 192.0f, @blobs))
 	{
+		const f32 mod = Maths::Clamp(1.00f - (3 / 192), 0, 1);
 		for (int i = 0; i < blobs.length; i++)
 		{		
 			CBlob@ blob = blobs[i];

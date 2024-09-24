@@ -73,19 +73,21 @@ void DoExplosion(CBlob@ this)
 			}
 		}
 	
-		for (int i = 0; i < 10 + XORRandom(5) ; i++)
+		for (u8 i = 0; i < 10 + XORRandom(5) ; i++)
 		{
 			CBlob@ blob = server_CreateBlob("flame", -1, this.getPosition());
 			blob.setVelocity(Vec2f(XORRandom(20) - 10, -XORRandom(10)));
 			blob.server_SetTimeToDie(10 + XORRandom(10));
 		}
+		
+		for (u8 i = 0; i < 64; i++)
+		{
+			map.server_setFireWorldspace(pos + Vec2f(8 - XORRandom(16), 8 - XORRandom(16)) * 8, true);
+		}
 	}
-	
-	for (u8 i = 0; i < 64; i++)
-	{
-		map.server_setFireWorldspace(pos + Vec2f(8 - XORRandom(16), 8 - XORRandom(16)) * 8, true);
-		ParticleAnimated("Entities/Effects/Sprites/FireFlash.png", this.getPosition() + Vec2f(0, -4), Vec2f(0, 0.5f), 0.0f, 1.0f, 2, 0.0f, true);
-	}
+
+	ParticleAnimated("Entities/Effects/Sprites/FireFlash.png", this.getPosition(), Vec2f(0, 0.5f), 0.0f, 1.0f, 2, 0.0f, true);
+
 	Random rand(this.getNetworkID());
 	Explode(this, 64.0f, 10.0f);
 	for (u8 i = 0; i < 4; i++)

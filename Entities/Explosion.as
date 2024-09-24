@@ -83,7 +83,8 @@ void Explode(CBlob@ this, const f32&in radius, const f32&in damage)
 
 	if (isClient())
 	{
-		for (int i = 0; i < radius * 0.16; i++)
+		const int amount = radius * (v_fastrender ? 0.08f : 0.16f);
+		for (int i = 0; i < amount; i++)
 		{
 			Vec2f partpos = pos + Vec2f(XORRandom(r * 2) - r, XORRandom(r * 2) - r);
 			Vec2f endpos = partpos;
@@ -244,7 +245,12 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 			bool justhurt = laststep || (width_step == 0 || width_step == width_steps + 1);
 			tpos += normal;
 
-			if (isClient() && !justhurt && (((step + width_step) % 3 == 0) || XORRandom(3) == 0)) makeSmallExplosionParticle(tpos);
+			if (isClient())
+			{
+				if (v_fastrender && width_step % 2 != 0) continue;
+
+				if (!justhurt && (((step + width_step) % 3 == 0) || XORRandom(3) == 0)) makeSmallExplosionParticle(tpos);
+			}
 
 			if (isServer())
 			{

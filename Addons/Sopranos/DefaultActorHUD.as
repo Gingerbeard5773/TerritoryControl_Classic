@@ -5,7 +5,7 @@
 void onInit(CSprite@ this)
 {
 	this.getCurrentScript().runFlags |= Script::tick_myplayer;
-	this.getCurrentScript().tickFrequency = 15;
+	this.getCurrentScript().tickFrequency = v_fastrender ? 30 : 15;
 	this.getCurrentScript().removeIfTag = "dead";
 }
 
