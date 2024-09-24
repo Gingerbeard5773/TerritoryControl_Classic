@@ -5,13 +5,13 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v56";
-	const string remaster_version = "v3";
+	const string remaster_version = "v4";
 	
 	sv_mapcycle_shuffle = true;
 	
 	sv_contact_info = "discord.gg/PAERqSb"; //information to display when an error occurs
 	
-	sv_name = "[EU] Territory Control Classic: Rejuvinated badgers";
+	sv_name = "[EU] Territory Control Classic: Improved badgers";
 
 	print("");
 	print("    --- INITIALIZING TERRITORY CONTROL CLASSIC REMASTERED ---", print_col);
@@ -21,10 +21,12 @@ void onInit(CRules@ this)
 	print("Remaster Version  | "+remaster_version, print_col);
 	print("Server Name       | "+sv_name, print_col);
 	print("");
+	print("Discord: "+sv_contact_info, print_col);
+	print("Github: https://github.com/Gingerbeard5773/TerritoryControl_Classic", print_col);
+	print("");
 	print("IMPORTANT INFORMATION!", print_col);
 	print("The public is not authorized to host this variation of TC without permission!", print_col);
 	print("Permission can be granted by contacting Gingerbeard @ giggerbeard (discord username).", print_col);
-	print("Additionally, there is also an official discord server: "+sv_contact_info, print_col);
 	print("");
 	print("CREDITS TO THESE INDIVIDUALS", print_col);
 	print("TFlippy     |  Creator", print_col);
@@ -36,19 +38,24 @@ void onInit(CRules@ this)
 	print("");
 }
 
-//Changelog v3 Sept 21, 2024
+//Changelog v4 Sept 24, 2024
 //
-// Fixed rockets not exploding when colliding with tiles.
-// Fixed grinder not appearing.
-// Armored bomber takes half as much explosion damage.
-// Armory picks up ammunition.
-//
-//
-//
-//
-//
-//
-//
-//
-//
+// Removed methane dupe.
+// Extractors and autoforges apply pickup delay to materials.
+// Fixed non-explodable bombs caused by bombers dying.
+// Fixed an issue with meteors' emitsound appearing when joining the server.
+// Fixed an issue where sound from emotes wouldn't play due to ping.
+// Copper rates lowered somewhat.
+// Added 'Store' button for the assembler.
+// Fixed cards not properly colliding.
+// Bombers collide with enemy bombers.
+// Bombers can open doors.
+// Bombers' hitboxes are larger.
+// Various bombs no longer damage through walls.
+// Platforms block explosion damage from getting through.
+// Drill rig doesn't get damaged when drilling bedrock.
+// Storages give remote access if they are within range of a faction base.
+// Hoppers and chests' inventories are now added onto remote storage.
+// Captured witchshacks give regeneration to players anywhere on the map.
+// Damage tweaks to bombers, armored bombers and steamtanks.
 //
