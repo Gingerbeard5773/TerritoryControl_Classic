@@ -217,31 +217,28 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		case Hitters::stab:
 			dmg *= 0.25f;
 			break;
-
+		case Hitters::builder:
+			dmg *= 4.0f;
+			break;
+		case Hitters::drill:
+			dmg *= 2.5f;
+			break;
 		case Hitters::bomb:
 			dmg *= 4.0f;
 			break;
-
+		case Hitters::mine:
+			dmg *= 3.5f;
+			break;
 		case Hitters::keg:
 		case Hitters::explosion:
 			dmg *= 2.0f;
 			break;
-
 		case Hitters::bomb_arrow:
 			dmg *= 4.00f;
 			break;
-
-		case Hitters::cata_stones:
-			dmg *= 1.0f;
-			break;
-		case Hitters::crush:
-			dmg *= 1.0f;
-			break;
-
 		case Hitters::flying: // boat ram
 			dmg *= 0.5f;
 			break;
-			
 		case HittersTC::bullet:
 			dmg *= 0.25f;
 			break;
