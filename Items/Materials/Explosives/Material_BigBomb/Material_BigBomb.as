@@ -61,7 +61,7 @@ void DoExplosion(CBlob@ this)
 		Vec2f dir = Vec2f(1 - i / 4.0f, -1 + i / 4.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
 		
-		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y), 40.0f + rand.NextRanged(64), 60.0f, 6, 20.0f, Hitters::explosion);
+		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y), 40.0f + rand.NextRanged(64), 60.0f, 6, 20.0f, Hitters::explosion, false, true);
 	}
 	this.getSprite().Gib();
 }

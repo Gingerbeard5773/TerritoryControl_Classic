@@ -37,13 +37,31 @@ void onTick(CBlob@ this)
 	
 	if (isServer())
 	{
-		Vec2f end;
-		if (getMap().rayCastSolidNoBlobs(this.getOldPosition(), this.getPosition(), end))
+		Vec2f hitpos;
+		CMap@ map = getMap();
+		if (map.rayCastSolidNoBlobs(this.getOldPosition(), this.getPosition(), hitpos))
 		{
-			this.setPosition(end);
+			setPositionToLastOpenArea(this, hitpos, map);
 			this.server_Die();
 		}
 	}
+}
+
+void setPositionToLastOpenArea(CBlob@ this, Vec2f hitpos, CMap@ map)
+{
+	//ensure we are exploding in an open area for maximum effect
+	Vec2f original = hitpos;
+	Vec2f dir = this.getOldVelocity();
+	dir.Normalize();
+	dir *= map.tilesize;
+
+	for (u8 i = 0; i < 4; i++)
+	{
+		hitpos -= dir;
+		if (!map.isTileSolid(hitpos)) break;
+	}
+
+	this.setPosition(hitpos);
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
@@ -82,11 +100,8 @@ void onDie(CBlob@ this)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
 	Explode(this, 64.0f, 4.0f);
-	LinearExplosion(this, this.getOldVelocity(), 16.0f, 16.0f, 2, 1.5f, Hitters::bomb);
+	LinearExplosion(this, this.getOldVelocity(), 16.0f, 16.0f, 2, 1.5f, Hitters::bomb, false, true);
 
 	this.getSprite().Gib();
 }

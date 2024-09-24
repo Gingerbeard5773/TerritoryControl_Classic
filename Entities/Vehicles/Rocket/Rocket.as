@@ -77,15 +77,13 @@ void DoExplosion(CBlob@ this)
 	
 	Random rand(this.getNetworkID());
 	
-	CBlob@[] blobs;
-	
 	Explode(this, 64.0f, 10.0f);
 	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 2.0f, -1 + i / 2.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
 		
-		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y), 32.0f + rand.NextRanged(32), 25.0f, 6, 8.0f, Hitters::explosion);
+		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y), 32.0f + rand.NextRanged(32), 25.0f, 6, 8.0f, Hitters::explosion, false, true);
 	}
 	this.getSprite().Gib();
 }

@@ -34,7 +34,6 @@ void onTick(CBlob@ this)
 		Vec2f end;
 		if (getMap().rayCastSolidNoBlobs(this.getOldPosition(), this.getPosition(), end))
 		{
-			//this.setPosition(end);
 			this.server_Die();
 		}
 	}
@@ -47,8 +46,10 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	if (blob is null) return;
 
 	if (blob.isPlatform() && !solid) return;
-	
-	if (this.doesCollideWithBlob(blob))
+
+	if (blob.hasTag("no pickup") && blob.get_u8("bomber team") == this.getTeamNum()) return; //do not kill our own bomber's bombs
+
+	if (doesCollideWithBlob(this, blob))
 	{
 		this.server_Die();
 	}
@@ -56,9 +57,12 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	const bool willExplode = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true; 
+	const bool willExplode = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true;
 	if (blob.isCollidable() && willExplode)
 	{
+		CPlayer@ player = blob.getPlayer();
+		if (player !is null && player is this.getDamageOwnerPlayer()) return false;
+
 		return true;
 	}
 	return false;
@@ -71,9 +75,6 @@ void onDie(CBlob@ this)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-	
 	Vec2f velocity = this.getOldVelocity();
 
 	this.SetMinimapRenderAlways(false);

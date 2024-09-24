@@ -31,7 +31,7 @@ void DoExplosion(CBlob@ this)
 	for (u8 i = 0; i < explosion_count; i++)
 	{
 		Vec2f dir = Vec2f((100 - int(rand.NextRanged(200))) / 100.0f, (100 - int(rand.NextRanged(200))) / 100.0f);
-		LinearExplosion(this, dir, 1.1f * quantity, 0.2f * quantity, 4, 8.0f, Hitters::explosion);
+		LinearExplosion(this, dir, 1.1f * quantity, 0.2f * quantity, 4, 8.0f, Hitters::explosion, false, true);
 	}
 
 	this.getSprite().Gib();

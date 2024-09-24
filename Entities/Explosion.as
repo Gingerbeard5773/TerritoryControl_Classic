@@ -143,7 +143,7 @@ void Explode(CBlob@ this, const f32&in radius, const f32&in damage)
 						Vec2f tpos = m_pos + offset;
 						TileType tile = map.getTile(tpos).type;
 
-						canHit = this.hasTag("map_damage_dirt") ? true : canExplosionDamage(map, tpos, tile);
+						canHit = this.hasTag("map_damage_dirt") || canExplosionDamage(map, tpos, tile);
 						if (!canHit) continue;
 
 						if (map.isTileBedrock(tile)) continue;
@@ -199,9 +199,17 @@ void onHitBlob(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@
  * Perform a linear explosion (a-la bomberman if in the cardinal directions)
  */
 
+//vanilla compatibility
 void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in width,
                      const int&in max_depth, f32&in damage, const u8&in hitter, CBlob@[]@ blobs = null,
                      const bool&in should_teamkill = false)
+{
+	LinearExplosion(this, _direction, length, width, max_depth, damage, hitter, should_teamkill, false, blobs);
+}
+
+void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in width,
+                     const int&in max_depth, f32&in damage, const u8&in hitter,
+                     const bool&in should_teamkill, const bool&in bother_raycasting = false, CBlob@[]@ blobs = null)
 {
 	Vec2f pos = this.getPosition();
 	CMap@ map = getMap();
@@ -252,7 +260,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 				}
 				else if (t != CMap::tile_empty && t != CMap::tile_ground_back)
 				{
-					if (this.hasTag("map_damage_dirt") ? true : canExplosionDamage(map, tpos, t))
+					if (this.hasTag("map_damage_dirt") || canExplosionDamage(map, tpos, t))
 					{
 						if (!justhurt)
 							damaged = true;
@@ -326,7 +334,7 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 
 		if (p > 0.0f && p < length && q < halfwidth)
 		{
-			HitBlob(this, hit_blob, length, damage, hitter, false, should_teamkill);
+			HitBlob(this, hit_blob, length, damage, hitter, bother_raycasting, should_teamkill);
 		}
 	}
 }
@@ -378,6 +386,29 @@ bool HitBlob(CBlob@ this, CBlob@ hit_blob, const f32&in radius, const f32&in dam
 
 				if (hi.blob is this || hi.blob is hit_blob || !hi.blob.isCollidable())
 				{
+					continue;
+				}
+				
+				if (hi.blob.isPlatform())
+				{
+					ShapePlatformDirection@ plat = hi.blob.getShape().getPlatformDirection(0);
+					Vec2f dir = plat.direction;
+					if (!plat.ignore_rotations)
+					{
+						dir.RotateBy(hi.blob.getAngleDegrees());
+					}
+					
+					Vec2f hitvec_dir = -hitvec;
+					if (hit_blob.isPlatform() && hit_blob.getName() == "wooden_platform")
+					{
+						hitvec_dir = hitvec;
+					}
+
+					// Does the platform block damage
+					if (Maths::Abs(dir.AngleWith(hitvec_dir)) < plat.angleLimit)
+					{
+						return false;
+					}
 					continue;
 				}
 

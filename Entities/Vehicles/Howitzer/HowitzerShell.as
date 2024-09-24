@@ -10,8 +10,6 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().net_threshold_multiplier = 4.0f;
 	
 	this.Tag("projectile");
-	
-	this.set_Vec2f("initial position", this.getPosition());
 
 	this.SetMapEdgeFlags(CBlob::map_collide_left | CBlob::map_collide_right);
 	this.sendonlyvisible = false;
@@ -37,19 +35,37 @@ void onTick(CBlob@ this)
 	Vec2f velocity = this.getVelocity();
 	const f32 angle = velocity.Angle();
 	this.setAngleDegrees(-angle);
-	
+
 	const f32 modifier = Maths::Max(0, velocity.y * 0.02f);
 	this.getSprite().SetEmitSoundVolume(Maths::Max(0, modifier));
-	
+
 	if (isServer())
 	{
-		Vec2f end;
-		if (getMap().rayCastSolidNoBlobs(this.getOldPosition(), this.getPosition(), end))
+		Vec2f hitpos;
+		CMap@ map = getMap();
+		if (map.rayCastSolidNoBlobs(this.getOldPosition(), this.getPosition(), hitpos))
 		{
-			//this.setPosition(end);
+			setPositionToLastOpenArea(this, hitpos, map);
 			this.server_Die();
 		}
 	}
+}
+
+void setPositionToLastOpenArea(CBlob@ this, Vec2f hitpos, CMap@ map)
+{
+	//ensure we are exploding in an open area for maximum effect
+	Vec2f original = hitpos;
+	Vec2f dir = this.getOldVelocity();
+	dir.Normalize();
+	dir *= map.tilesize;
+
+	for (u8 i = 0; i < 4; i++)
+	{
+		hitpos -= dir;
+		if (!map.isTileSolid(hitpos)) break;
+	}
+
+	this.setPosition(hitpos);
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
@@ -88,9 +104,6 @@ void onDie(CBlob@ this)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
 	this.SetMinimapRenderAlways(false);
 	
 	Vec2f velocity = this.getOldVelocity();
@@ -100,7 +113,7 @@ void DoExplosion(CBlob@ this)
 	for (int i = 0; i < 4; i++)
 	{
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
-		LinearExplosion(this, Vec2f(velocity.x * jitter.x, velocity.y * jitter.y), 32.0f + rand.NextRanged(32), 24.0f, 4, 10.0f, Hitters::explosion);
+		LinearExplosion(this, Vec2f(velocity.x * jitter.x, velocity.y * jitter.y), 32.0f + rand.NextRanged(32), 24.0f, 4, 10.0f, Hitters::explosion, false, true);
 	}
 
 	this.getSprite().Gib();

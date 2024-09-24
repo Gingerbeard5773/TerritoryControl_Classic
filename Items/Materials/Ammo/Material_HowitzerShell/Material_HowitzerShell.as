@@ -42,9 +42,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
 	Random rand(this.getNetworkID());
 	Vec2f velocity = this.getOldVelocity();
 
@@ -52,7 +49,7 @@ void DoExplosion(CBlob@ this)
 	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);
-		LinearExplosion(this, Vec2f(velocity.x * jitter.x, velocity.y * jitter.y), 24.0f + rand.NextRanged(32), 24.0f, 4, 10.0f, Hitters::explosion);
+		LinearExplosion(this, Vec2f(velocity.x * jitter.x, velocity.y * jitter.y), 24.0f + rand.NextRanged(32), 24.0f, 4, 10.0f, Hitters::explosion, false, true);
 	}
 	this.getSprite().Gib();
 }

@@ -43,15 +43,12 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
 	this.Tag("map_damage_dirt");
 	
 	const f32 quantity = this.getQuantity();
 
 	Explode(this, 48.0f, 5.0f);
-	LinearExplosion(this, this.getOldVelocity(), 48.0f * quantity, 16.0f * quantity / 2.0f, 4, 8.0f, Hitters::bomb);
+	LinearExplosion(this, this.getOldVelocity(), 48.0f * quantity, 16.0f * quantity / 2.0f, 4, 8.0f, Hitters::bomb, false, true);
 
 	this.getSprite().Gib();
 }

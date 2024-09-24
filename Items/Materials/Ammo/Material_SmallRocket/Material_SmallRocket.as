@@ -43,9 +43,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
-
 	const f32 quantity = this.getQuantity();
 
 	Explode(this, 16.0f, 2.0f);

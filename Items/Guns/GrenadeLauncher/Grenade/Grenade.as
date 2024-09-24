@@ -83,7 +83,7 @@ void DoExplosion(CBlob@ this)
 		dir.x *= 2;
 		dir.Normalize();
 
-		LinearExplosion(this, dir, 8.0f + XORRandom(8) + (modifier * 8), 8 + XORRandom(24), 2, 0.125f, Hitters::explosion);
+		LinearExplosion(this, dir, 8.0f + XORRandom(8) + (modifier * 8), 8 + XORRandom(24), 2, 0.125f, Hitters::explosion, false, true);
 	}
 
 	if (isClient())
