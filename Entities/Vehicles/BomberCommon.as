@@ -233,7 +233,18 @@ void DoExplosion(CBlob@ this)
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
-	return Vehicle_doesCollideWithBlob_ground(this, blob);
+	if (!blob.isCollidable() || blob.isAttached()) return false;
+
+	if (blob.getShape().isStatic()) return true;
+	
+	if (blob.getTeamNum() != this.getTeamNum())
+	{
+		if (blob.hasTag("player") && this.getShape().vellen > 1.0f) return true;
+
+		if (blob.hasTag("aerial") || blob.hasTag("projectile")) return true;
+	}
+
+	return false;
 }
 
 void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
