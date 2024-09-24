@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 
 	Vehicle_SetupAirship(this, v, -350.0f);
 	
-	this.getShape().SetOffset(Vec2f(0, 10));
+	this.getShape().SetOffset(Vec2f(0, 2));
 	this.getShape().SetRotationsAllowed(false);
 }
 
