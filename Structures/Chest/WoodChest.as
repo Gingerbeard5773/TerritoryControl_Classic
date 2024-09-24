@@ -3,6 +3,7 @@
 void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
+	this.Tag("remote storage");
 	
 	this.addCommandID("sv_store");
 }

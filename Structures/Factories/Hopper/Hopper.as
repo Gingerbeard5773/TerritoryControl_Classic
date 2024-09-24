@@ -1,11 +1,12 @@
 ﻿
-void onInit(CBlob @ this)
+void onInit(CBlob@ this)
 {
 	this.getShape().SetRotationsAllowed(false);
 	this.Tag("place norotate");
 
 	this.Tag("ignore extractor");
 	this.Tag("builder always hit");
+	this.Tag("remote storage");
 }
 
 
