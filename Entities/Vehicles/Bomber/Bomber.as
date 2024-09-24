@@ -115,8 +115,21 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	f32 dmg = damage;
 	switch (customData)
 	{
+		case Hitters::arrow:
+			dmg *= 0.5f;
+			break;
+		case Hitters::sword:
+		case Hitters::stab:
+			dmg *= 3.0f;
+			break;
+		case Hitters::builder:
+			dmg *= 1.5f;
+			break;
+		case Hitters::drill:
+			dmg *= 1.5f;
+			break;
 		case HittersTC::bullet:
-			dmg *= 0.3f;
+			dmg *= 0.4f;
 			break;
 	}
 	return dmg;
