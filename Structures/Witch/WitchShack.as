@@ -17,7 +17,7 @@ void onInit(CBlob@ this)
 	this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", 6, Vec2f(8, 8));
 	this.SetMinimapRenderAlways(true);
 	
-	this.getCurrentScript().tickFrequency = 30 * 1;
+	this.getCurrentScript().tickFrequency = 30 * 8;
 	
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 8));
@@ -74,7 +74,7 @@ void onTick(CBlob@ this)
 {
 	if (!isServer()) return;
 
-	const u8 myTeam = this.getTeamNum();
+	/*const u8 myTeam = this.getTeamNum();
 	CBlob@[] blobs;
 	if (getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 3.0f, @blobs))
 	{
@@ -86,9 +86,9 @@ void onTick(CBlob@ this)
 				blob.server_SetHealth(Maths::Min(blob.getHealth() + 0.125f, blob.getInitialHealth()));
 			}
 		}
-	}
+	}*/
 	
-	/*CBlob@[] blobs;
+	CBlob@[] blobs;
 	getBlobsByTag("player", @blobs);
 	const u8 myTeam = this.getTeamNum();
 	for (uint i = 0; i < blobs.length; i++)
@@ -97,7 +97,7 @@ void onTick(CBlob@ this)
 		if (blob.getTeamNum() != myTeam) continue;
 
 		blob.server_SetHealth(Maths::Min(blob.getHealth() + 0.125f, blob.getInitialHealth()));
-	}*/
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
