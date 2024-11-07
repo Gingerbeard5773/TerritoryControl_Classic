@@ -130,16 +130,16 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		AddRequirement(b.reqs, "blob", "mat_dirt", "Dirt", 15);
 		blocks[0].push_back(b);
 	}
-	// {
-		// BuildBlock b(CMap::tile_brick_v0, "brick_block", "$brick_block$", "Bricks\nA cheap but durable wall.");
-		// // AddRequirement(b.reqs, "blob", "mat_plasteel", "Plasteel Sheet", 4);
-		// blocks[0].push_back(b);
-	// }
-	// {
-		// BuildBlock b(CMap::tile_glass, "glass_block", "$glass_block$", "Glass\nFancy and fragile.");
-		// // AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 2);
-		// blocks[0].push_back(b);
-	// }
+	{
+		BuildBlock b(CMap::tile_glass, "glass_block", "$glass_block$", "Glass\nFancy and fragile.");
+		AddRequirement(b.reqs, "coin", "", "Coin", 10);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(CMap::tile_glass_back, "glass_block_back", "$glass_block_back$", "Glass Wall\nFancy and fragile.");
+		AddRequirement(b.reqs, "coin", "", "Coin", 5);
+		blocks[0].push_back(b);
+	}
 	
 	
 	BuildBlock[] page_1;

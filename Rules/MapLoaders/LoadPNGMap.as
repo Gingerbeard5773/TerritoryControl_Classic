@@ -16,13 +16,13 @@ namespace TC_color
 		scoutchicken = 0xffb96437,
 		barbedwire = 0xff5f6473,
 		ivy = 0xff49ac00,
-		
+
 		iron = 0xff5f5f5f,
-		iron_bg = 0xff454545,
+		iron_back = 0xff454545,
 		plasteel = 0xffd1c59f,
-		plasteel_bg = 0xff6e6753,
+		plasteel_back = 0xff6e6753,
 		glass = 0xff6d95a1,
-		glass_bg = 0xff5a7a83,
+		glass_back = 0xff5a7a83,
 		matter = 0xff50deb1
 	};
 }
@@ -55,13 +55,13 @@ class TCPNGLoader : PNGLoader
 				break;
 			}
 			
-			case TC_color::iron:         map.SetTile(offset, CMap::tile_iron);                   break;
-			//case TC_color::iron_bg:      map.SetTile(offset, CMap::tile_biron);                  break;
-			case TC_color::plasteel:     map.SetTile(offset, CMap::tile_plasteel);               break;
-			//case TC_color::plasteel_bg:  map.SetTile(offset, CMap::tile_bplasteel);              break;
-			case TC_color::glass:        map.SetTile(offset, CMap::tile_glass);                  break;
-			//case TC_color::glass_bg:     map.SetTile(offset, CMap::tile_bglass);                 break;
-			case TC_color::matter:       map.SetTile(offset, CMap::tile_matter);                 break;
+			case TC_color::iron:           map.SetTile(offset, CMap::tile_iron);                   break;
+			//case TC_color::iron_back:      map.SetTile(offset, CMap::tile_iron_back);              break;
+			case TC_color::plasteel:       map.SetTile(offset, CMap::tile_plasteel);               break;
+			//case TC_color::plasteel_back:  map.SetTile(offset, CMap::tile_plasteel_back);          break;
+			case TC_color::glass:          map.SetTile(offset, CMap::tile_glass);                  break;
+			case TC_color::glass_back:     map.SetTile(offset, CMap::tile_glass_back);             break;
+			case TC_color::matter:         map.SetTile(offset, CMap::tile_matter);                 break;
 		}
 	}
 }
