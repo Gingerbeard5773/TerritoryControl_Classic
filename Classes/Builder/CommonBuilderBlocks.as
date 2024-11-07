@@ -394,15 +394,14 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		b.size.Set(32, 16);
 		blocks[3].push_back(b);
 	}
-	//newer gen tc import. thats why its disabled. may enable this if people are ok with it.
-	/*{
+	{ //newer gen tc import
 		BuildBlock b(0, "smallsign", "$icon_smallsign$", "Sign\nType '!write -text-' in chat and then use it on the sign. Writing on a paper costs 50 coins.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		
 		b.buildOnGround = true;
 		b.size.Set(16, 16);
 		blocks[3].push_back(b);
-	}*/
+	}
 }
 
 ConfigFile@ openBlockBindingsConfig()
