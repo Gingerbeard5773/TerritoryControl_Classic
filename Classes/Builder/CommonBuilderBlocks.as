@@ -315,15 +315,14 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		b.size.Set(24, 16);
 		blocks[2].push_back(b);
 	}
-	//newer gen tc import. thats why its disabled. may enable this if people are ok with it.
-	/*{
+	{ //newer gen tc import
 		BuildBlock b(0, "inserter", "$icon_inserter$", "Inserter\nTransfers items between inventories next to it.\nLarge funnel acts as input, small funnel as output.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 25);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
 		b.buildOnGround = true;
 		b.size.Set(16, 16);
 		blocks[2].push_back(b);
-	}*/
+	}
 
 	BuildBlock[] page_3;
 	blocks.push_back(page_3);
