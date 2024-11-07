@@ -242,7 +242,7 @@ void onCommand(CInventory@ this, u8 cmd, CBitStream@ params)
 			}
 			
 			blob.set_Vec2f("building space", Vec2f_zero);
-			blob.set_u8("buildblob", 0);
+			blob.set_u8("buildblob", 255);
 
 			if (block.tile == 0)
 			{
@@ -275,7 +275,7 @@ void onCommand(CInventory@ this, u8 cmd, CBitStream@ params)
 		
 		if (buildonground)
 		{
-			if (buildblob > 0)
+			if (buildblob != 255)
 			{
 				blob.getSprite().PlaySound("/Construct");
 			}
