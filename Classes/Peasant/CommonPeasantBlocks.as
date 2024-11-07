@@ -66,6 +66,21 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
+		BuildBlock b(CMap::tile_castle, "stone_block", "$stone_block$", "Stone Block\nBasic building block");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 5);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(CMap::tile_castle_back, "back_stone_block", "$back_stone_block$", "Back Stone Wall\nExtra support");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 2);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "stone_triangle", "$stone_triangle$", "Stone Triangle");
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 5);
+		blocks[0].push_back(b);
+	}
+	{
 		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls. Can be opened by anyone.");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
 		blocks[0].push_back(b);

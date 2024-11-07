@@ -31,7 +31,7 @@ const u8 GRID_SIZE = 48;
 const u8 GRID_PADDING = 12;
 
 const Vec2f MENU_SIZE(4, 5);
-const Vec2f MENU_SIZE_PEASANT(3, 5);
+const Vec2f MENU_SIZE_PEASANT(3, 6);
 const u32 SHOW_NO_BUILD_TIME = 90;
 
 void onInit(CInventory@ this)
