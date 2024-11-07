@@ -129,29 +129,37 @@ void Blend(CBlob@ this, CBlob@ blob)
 	
 	if (name == "log")
 	{
-		Material::createFor(this, "mat_wood", 60 + XORRandom(40));
+		if (isServer())
+		{
+			Material::createFor(this, "mat_wood", 60 + XORRandom(40));
+		}
 		this.getSprite().PlaySound("SawLog.ogg", 0.8f, 0.9f);
 		kill = true;
 	}
 	else if (name == "steak" || name == "chicken")
 	{
-		Material::createFor(this, "mat_meat", 20 + XORRandom(10));
+		if (isServer())
+		{
+			Material::createFor(this, "mat_meat", 20 + XORRandom(10));
+		}
 		this.getSprite().PlaySound("SawLog.ogg", 0.8f, 1.0f);
 		kill = true;
 	}
 	else if (name == "mat_stone")
 	{
-		const u32 quantity = blob.getQuantity();
-
-		blob.server_SetQuantity(quantity * 0.50f + XORRandom(quantity * 0.25f));
-		Material::createFor(this, "mat_iron",    XORRandom(quantity * 0.20f));
-		Material::createFor(this, "mat_sulphur", XORRandom(quantity * 0.08f));
-		Material::createFor(this, "mat_copper",  XORRandom(quantity * 0.12f));
-		Material::createFor(this, "mat_mithril", XORRandom(quantity * 0.05f));
-
-		if (!blob.hasTag("no stone gold"))
+		if (isServer())
 		{
-			Material::createFor(this, "mat_gold", XORRandom(quantity * 0.08f));
+			const u32 quantity = blob.getQuantity();
+			blob.server_SetQuantity(quantity * 0.50f + XORRandom(quantity * 0.25f));
+			Material::createFor(this, "mat_iron",    XORRandom(quantity * 0.20f));
+			Material::createFor(this, "mat_sulphur", XORRandom(quantity * 0.08f));
+			Material::createFor(this, "mat_copper",  XORRandom(quantity * 0.12f));
+			Material::createFor(this, "mat_mithril", XORRandom(quantity * 0.05f));
+
+			if (!blob.hasTag("no stone gold"))
+			{
+				Material::createFor(this, "mat_gold", XORRandom(quantity * 0.08f));
+			}
 		}
 
 		this.getSprite().PlaySound("rocks_explode" + (1 + XORRandom(2)) + ".ogg", 1.5f, 1.0f);
@@ -166,20 +174,29 @@ void Blend(CBlob@ this, CBlob@ blob)
 	}
 	else if (blob.hasTag("flesh"))
 	{
-		f32 amount = ((blob.getRadius() + XORRandom(blob.getMass() / 3.0f)) / blob.getInitialHealth()) * 0.35f;
-		amount += XORRandom(amount) * 0.50f;
-		Material::createFor(this, "mat_meat", amount);
+		if (isServer())
+		{
+			f32 amount = ((blob.getRadius() + XORRandom(blob.getMass() / 3.0f)) / blob.getInitialHealth()) * 0.35f;
+			amount += XORRandom(amount) * 0.50f;
+			Material::createFor(this, "mat_meat", amount);
+		}
 	}
 	else if (blob.hasTag("gun"))
 	{
-		Material::createFor(this, "mat_iron", 20 + XORRandom(60));
-		Material::createFor(this, "mat_wood", 10 + XORRandom(40));
+		if (isServer())
+		{
+			Material::createFor(this, "mat_iron", 20 + XORRandom(60));
+			Material::createFor(this, "mat_wood", 10 + XORRandom(40));
+		}
 		kill = true;
 	}
 	else if (name == "scythergib")
 	{
-		Material::createFor(this, "mat_plasteel", 5 + XORRandom(20));
-		Material::createFor(this, "mat_steelingot", 1 + XORRandom(3));
+		if (isServer())
+		{
+			Material::createFor(this, "mat_plasteel", 5 + XORRandom(20));
+			Material::createFor(this, "mat_steelingot", 1 + XORRandom(3));
+		}
 		kill = true;
 	}
 	else
