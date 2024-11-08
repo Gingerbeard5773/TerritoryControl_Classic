@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	this.Tag("builder always hit");
 	
 	this.set_Vec2f("shop offset", Vec2f(0,0));
-	this.set_Vec2f("shop menu size", Vec2f(4, 2));
+	this.set_Vec2f("shop menu size", Vec2f(3, 3));
 	this.set_string("shop description", "Builder's Workshop");
 	this.set_u8("shop icon", 15);
 	
@@ -38,6 +38,14 @@ void onInit(CBlob@ this)
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Crate", "$crate$", "crate", "A wooden crate used for storage.\nBreaks upon impact.", true);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Chair", "$chair$", "chair", "Quite comfortable.", true);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
+	}
+	{
+		ShopItem@ s = addShopItem(this, "Table", "$table$", "table", "A portable surface with 4 legs.", true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 }
