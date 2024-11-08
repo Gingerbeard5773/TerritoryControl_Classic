@@ -102,7 +102,7 @@ CBlob@ FindStorage(u8 team)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", this.isOverlapping(caller));
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 void onAddToInventory(CBlob@ this, CBlob@ blob) //i'll keep it just to be sure

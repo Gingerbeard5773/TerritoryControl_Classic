@@ -161,7 +161,7 @@ void onInit(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", this.isOverlapping(caller));
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 /*void onShopMadeItem(CBitStream@ params)

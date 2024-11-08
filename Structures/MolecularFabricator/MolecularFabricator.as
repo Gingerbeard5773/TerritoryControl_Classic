@@ -139,7 +139,7 @@ void onInit(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", (caller.getPosition() - this.getPosition()).Length() < 64.0f);
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)

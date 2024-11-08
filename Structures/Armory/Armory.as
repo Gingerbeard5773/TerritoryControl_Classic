@@ -85,7 +85,7 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", this.isOverlapping(caller));
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 	if (isInventoryAccessible(this, caller))
 	{
 		this.set_Vec2f("shop offset", Vec2f(8, 0));

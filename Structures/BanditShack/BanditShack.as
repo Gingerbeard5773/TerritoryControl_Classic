@@ -88,7 +88,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		this.set_Vec2f("shop offset", Vec2f_zero);
 	}
 	
-	this.set_bool("shop available", this.isOverlapping(caller));
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 void onShopMadeItem(CBitStream@ params)
