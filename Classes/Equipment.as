@@ -1,12 +1,11 @@
 //Gingerbeard @ August 9, 2024
-//Equipment system rewrite originally made for Zombies Reborn
 
 #include "EquipmentCommon.as"
 
 const string[] equipment =
 {
-	"head"
-	//"torso",
+	"head",
+	"torso"
 	//"feet"
 };
 
@@ -17,23 +16,23 @@ void onInit(CBlob@ this)
 	
 	for (u8 i = 0; i < equipment.length; i++)
 	{
-		AddIconToken("$"+equipment[i]+"_empty$", "Equipment.png", Vec2f(24, 24), i);
+		AddIconToken("$"+equipment[i]+"_empty$", "Equipment.png", Vec2f(24, 24), i, 0);
 	}
 	
-	u32[] ids(equipment.length);
+	u16[] ids(equipment.length);
 	this.set("equipment_ids", ids);
 }
 
 void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
 {
 	Vec2f MENU_POS = gridmenu.getUpperLeftPosition() + Vec2f(-25, 48);
-	CGridMenu@ equipment_menu = CreateGridMenu(MENU_POS, this, Vec2f(1, equipment.length), "equipment");
+	CGridMenu@ equipment_menu = CreateGridMenu(MENU_POS, this, Vec2f(1, equipment.length), "equipment_menu");
 	if (equipment_menu is null) return;
 
 	equipment_menu.SetCaptionEnabled(false);
 	equipment_menu.deleteAfterClick = false;
 
-	u32[] ids;
+	u16[] ids;
 	if (!this.get("equipment_ids", ids)) return;
 
 	CBlob@ carried = this.getCarriedBlob();
@@ -45,13 +44,13 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
 		
 		if (carried !is null && canEquip(carried, i))
 		{
-			hover = "Equip "+carried.getInventoryName();
+			hover = "Equip {ITEM}".replace("{ITEM}", carried.getInventoryName());
 		}
 		CBlob@ equipped = getBlobByNetworkID(ids[i]);
 		if (equipped !is null)
 		{
-			icon = "$"+equipped.getName()+"$";
-			hover = "Unequip "+equipped.getInventoryName();
+			icon = equipped.exists("equipment_icon") ? equipped.get_string("equipment_icon") : "$"+equipped.getName()+"$";
+			hover = "Unequip {ITEM}".replace("{ITEM}", equipped.getInventoryName());
 		}
 
 		CBitStream params;
@@ -59,7 +58,9 @@ void onCreateInventoryMenu(CBlob@ this, CBlob@ forBlob, CGridMenu@ gridmenu)
 		params.write_u8(i);
 		CGridButton@ button = equipment_menu.AddButton(icon, "", "Equipment.as", "Callback_Equip", Vec2f(1, 1), params);
 		if (button !is null)
+		{
 			button.SetHoverText(hover);
+		}
 	}
 }
 
@@ -70,12 +71,16 @@ bool canEquip(CBlob@ blob, const u8&in slot)
 
 void Callback_Equip(CBitStream@ params)
 {
-	CBlob@ this = getBlobByNetworkID(params.read_netid());
+	u16 netid;
+	if (!params.saferead_netid(netid)) return;
+
+	CBlob@ this = getBlobByNetworkID(netid);
 	if (this is null) return;
 	
 	getHUD().ClearMenus();
 	
-	const u8 index = params.read_u8();
+	u8 index;
+	if (!params.saferead_u8(index)) return;
 	
 	CBitStream stream;
 	stream.write_u8(index);
@@ -86,30 +91,32 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("server_equip") && isServer())
 	{
-		u32[] ids;
+		u16[] ids;
 		this.get("equipment_ids", ids);
-		u32 equipped = 0;
-		u32 unequipped = 0;
-		const u8 slot = params.read_u8();
+		u16 equipped = 0;
+		u16 unequipped = 0;
+
+		u8 index;
+		if (!params.saferead_u8(index)) { error("Failed to access equipment index : "+this.getNetworkID()); return; }
 		
 		//unequip
-		CBlob@ equippedblob = getBlobByNetworkID(ids[slot]);
+		CBlob@ equippedblob = getBlobByNetworkID(ids[index]);
 		if (equippedblob !is null)
 		{
-			unequipped = ids[slot];
-			ids[slot] = 0;
+			unequipped = ids[index];
+			ids[index] = 0;
 			UnequipBlob(this, equippedblob);
 		}
 
 		//equip
 		CBlob@ carried = this.getCarriedBlob();
-		if (carried !is null && canEquip(carried, slot))
+		if (carried !is null && canEquip(carried, index))
 		{
 			const bool isSameEquipment = equippedblob !is null && equippedblob.getName() == carried.getName();
 			if (!isSameEquipment)
 			{
 				equipped = carried.getNetworkID();
-				ids[slot] = equipped;
+				ids[index] = equipped;
 				EquipBlob(this, carried);
 			}
 		}
@@ -126,66 +133,65 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 	else if (cmd == this.getCommandID("client_equip") && isClient())
 	{
-		CBlob@ unequippedblob = getBlobByNetworkID(params.read_netid());
+		u16 unequipped_netid, equipped_netid;
+		if (!params.saferead_netid(unequipped_netid)) { error("Failed to access unequipped! : "+this.getNetworkID()); return; }
+		if (!params.saferead_netid(equipped_netid))   { error("Failed to access equipped! : "+this.getNetworkID());   return; } 
+
+		CBlob@ unequippedblob = getBlobByNetworkID(unequipped_netid);
 		if (unequippedblob !is null)
 			UnequipBlob(this, unequippedblob);
-		CBlob@ equippedblob = getBlobByNetworkID(params.read_netid());
+		CBlob@ equippedblob = getBlobByNetworkID(equipped_netid);
 		if (equippedblob !is null)
 			EquipBlob(this, equippedblob);
 
-		UnserializeEquipment(this, params);
+		if (!UnserializeEquipment(this, params)) { error("Failed to access equipment [3] : "+this.getName()+" : "+this.getNetworkID()); return; }
 	}
 }
 
-void EquipBlob(CBlob@ this, CBlob@ equipment)
+void EquipBlob(CBlob@ this, CBlob@ equippedblob)
 {
-	equipment.server_RemoveFromInventories();
-	equipment.server_DetachFromAll();
-	equipment.setPosition(Vec2f(0,0));
-	equipment.setVelocity(Vec2f(0,0));
-	equipment.setAngularVelocity(0.0f);
-	equipment.SetVisible(false);
+	//equippedblob.server_RemoveFromInventories();
+	equippedblob.server_DetachFromAll();
+	equippedblob.setPosition(Vec2f(0,0));
+	equippedblob.setVelocity(Vec2f(0,0));
+	equippedblob.setAngularVelocity(0.0f);
+	equippedblob.SetVisible(false);
 
-	CShape@ shape = equipment.getShape();
-	if (shape !is null)
-	{
-		shape.server_SetActive(false);
-		shape.doTickScripts = false;
-		ShapeConsts@ consts = shape.getConsts();
-		consts.collidable = false;
-		consts.mapCollisions = false;
-	}
-	
+	SetBlobActive(equippedblob, false);
+
 	onEquipHandle@ onEquip;
-	if (equipment.get("onEquip handle", @onEquip)) 
-		onEquip(equipment, this);
+	if (equippedblob.get("onEquip handle", @onEquip)) 
+		onEquip(equippedblob, this);
 }
 
-void UnequipBlob(CBlob@ this, CBlob@ equipment)
+void UnequipBlob(CBlob@ this, CBlob@ equippedblob, const bool&in put_in_inventory = true)
 {
-	equipment.SetVisible(true);
-	equipment.setPosition(this.getPosition());
-	this.server_PutInInventory(equipment);
+	equippedblob.SetVisible(true);
+	equippedblob.setPosition(this.getPosition());
+	if (put_in_inventory)
+		this.server_PutInInventory(equippedblob);
 
-	CShape@ shape = equipment.getShape();
-	if (shape !is null)
-	{
-		shape.server_SetActive(true);
-		shape.doTickScripts = true;
-		shape.SetGravityScale(1.0f);
-		ShapeConsts@ consts = shape.getConsts();
-		consts.collidable = true;
-		consts.mapCollisions = true;
-	}
+	SetBlobActive(equippedblob, true);
 
 	onUnequipHandle@ onUnequip;
-	if (equipment.get("onUnequip handle", @onUnequip)) 
-		onUnequip(equipment, this);
+	if (equippedblob.get("onUnequip handle", @onUnequip)) 
+		onUnequip(equippedblob, this);
+}
+
+void SetBlobActive(CBlob@ equippedblob, const bool&in active)
+{
+	CShape@ shape = equippedblob.getShape();
+	shape.server_SetActive(active);
+	shape.doTickScripts = active;
+	shape.SetGravityScale(active ? 1.0f : 0.0f);
+	ShapeConsts@ consts = shape.getConsts();
+	consts.collidable = active;
+	consts.mapCollisions = active;
 }
 
 void onTick(CBlob@ this)
 {
-	u32[] ids;
+	u16[] ids;
 	if (!this.get("equipment_ids", ids)) return;
 	for (u8 i = 0; i < ids.length; i++)
 	{
@@ -198,9 +204,25 @@ void onTick(CBlob@ this)
 	}
 }
 
+void onTick(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	u16[] ids;
+	if (!blob.get("equipment_ids", ids)) return;
+	for (u8 i = 0; i < ids.length; i++)
+	{
+		CBlob@ equippedblob = getBlobByNetworkID(ids[i]);
+		if (equippedblob is null) continue;
+
+		onTickSpriteHandle@ onTickSpriteEquipped;
+		if (equippedblob.get("onTickSpriteEquipped handle", @onTickSpriteEquipped)) 
+			onTickSpriteEquipped(equippedblob, this);
+	}
+}
+
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	u32[] ids;
+	u16[] ids;
 	if (!this.get("equipment_ids", ids)) return damage;
 	for (u8 i = 0; i < ids.length; i++)
 	{
@@ -209,59 +231,118 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 
 		onHitHandle@ onHitOwner;
 		if (equippedblob.get("onHitOwner handle", @onHitOwner))
+		{
 			damage = onHitOwner(equippedblob, this, worldPoint, velocity, damage, hitterBlob, customData);
+		}
 	}
 	return damage;
 }
 
 void onDie(CBlob@ this)
 {
-	u32[] ids;
+	u16[] ids;
 	if (!this.get("equipment_ids", ids)) return;
 	for (u8 i = 0; i < ids.length; i++)
 	{
 		CBlob@ equippedblob = getBlobByNetworkID(ids[i]);
-		if (equippedblob !is null)
-			UnequipBlob(this, equippedblob);
+		if (equippedblob is null) continue;
+
+		UnequipBlob(this, equippedblob, false);
+	}
+
+	u16[] clear_ids(equipment.length);
+	this.set("equipment_ids", clear_ids);
+
+	EquipToNewPlayerBlob(this, ids);
+}
+
+void EquipToNewPlayerBlob(CBlob@ this, u16[]@ ids)
+{
+	CPlayer@ owner = this.getDamageOwnerPlayer();
+	if (owner is null) return;
+	
+	CBlob@ newPlayerBlob = owner.getBlob();
+	if (newPlayerBlob is null) return;
+	
+	if (newPlayerBlob is this || newPlayerBlob.hasTag("dead")) return;
+	
+	u16[]@ new_ids;
+	if (!newPlayerBlob.get("equipment_ids", @new_ids)) return;
+
+	for (u8 i = 0; i < ids.length; i++)
+	{
+		CBlob@ equipment = getBlobByNetworkID(ids[i]);
+		if (equipment is null) continue;
+		
+		new_ids[i] = ids[i];
+
+		EquipBlob(newPlayerBlob, equipment);
 	}
 }
 
 ///NETWORK
 
-void SerializeEquipment(u32[] ids, CBitStream@ params)
+void SerializeEquipment(const u16[]&in ids, CBitStream@ stream)
 {
-	params.write_u8(ids.length);
+	stream.write_u8(ids.length);
 	for (u8 i = 0; i < ids.length; i++)
 	{
-		params.write_netid(ids[i]);
+		stream.write_netid(ids[i]);
 	}
 }
 
-bool UnserializeEquipment(CBlob@ this, CBitStream@ params)
+bool UnserializeEquipment(CBlob@ this, CBitStream@ stream)
 {
 	u8 ids_length;
-	if (!params.saferead_u8(ids_length)) return false;
+	if (!stream.saferead_u8(ids_length)) return false;
 	
-	u32[] ids(ids_length);
+	u16[] ids(ids_length);
 	for (u8 i = 0; i < ids_length; i++)
 	{
-		u32 id;
-		if (!params.saferead_netid(id)) return false;
-		ids[i] = id; //copy over netids
+		if (!stream.saferead_netid(ids[i])) return false;
 	}
 
 	this.set("equipment_ids", ids);
 	return true;
 }
 
-void onSendCreateData(CBlob@ this, CBitStream@ params)
+void onSendCreateData(CBlob@ this, CBitStream@ stream)
 {
-	u32[] ids;
+	stream.write_u32(this.getTickSinceCreated());
+	u16[] ids;
 	if (this.get("equipment_ids", ids))
-		SerializeEquipment(ids, params);
+		SerializeEquipment(ids, stream);
 }
 
-bool onReceiveCreateData(CBlob@ this, CBitStream@ params)
+bool onReceiveCreateData(CBlob@ this, CBitStream@ stream)
 {
-	return UnserializeEquipment(this, params);
+	u32 ticks_alive;
+	if (!stream.saferead_u32(ticks_alive))
+	{
+		error("Failed to access equipment [0] : "+this.getName()+" : "+this.getNetworkID());
+		return false;
+	}
+
+	if (!UnserializeEquipment(this, stream))
+	{
+		error("Failed to access equipment [1] : "+this.getName()+" : "+this.getNetworkID());
+		return false;
+	}
+
+	if (ticks_alive > 0)
+	{
+		u16[] ids;
+		this.get("equipment_ids", ids);
+		for (u8 i = 0; i < ids.length; i++)
+		{
+			CBlob@ equippedblob = getBlobByNetworkID(ids[i]);
+			if (equippedblob is null) continue;
+
+			onClientJoinHandle@ onClientJoin;
+			if (equippedblob.get("onClientJoin handle", @onClientJoin)) 
+				onClientJoin(equippedblob, this);
+		}
+	}
+
+	return true;
 }
