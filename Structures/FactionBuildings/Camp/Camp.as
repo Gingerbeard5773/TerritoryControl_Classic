@@ -21,7 +21,7 @@ void onInit(CBlob@ this)
 	InitClasses(this);
 
 	// Inventory
-	this.Tag("change class store inventory");
+	//this.Tag("change class store inventory");
 	this.inventoryButtonPos = Vec2f(28, -5);
 
 	server_SetFloor(this, CMap::tile_wood);
