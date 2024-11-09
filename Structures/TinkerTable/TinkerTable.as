@@ -83,12 +83,12 @@ void onInit(CBlob@ this)
 		s.buttonheight = 1;
 		s.spawnNothing = true;
 	}
-	/*{
+	{
 		ShopItem@ s = addShopItem(this, name(Translate::MustardGas), "$icon_mustard$", "mat_mustard-50", desc(Translate::MustardGas));
 		AddRequirement(s.requirements, "blob", "mat_sulphur", Translate::Sulphur, 50);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
-	}*/
+	}
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::Backpack), "$icon_backpack$", "backpack", desc(Translate::Backpack));
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
