@@ -83,6 +83,7 @@ void onInit(CRules@ this)
 	AddIconToken("$icon_automat$", "Automat.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_gasextractor$", "GasExtractor.png", Vec2f(24, 16), 0);
 	AddIconToken("$icon_mustard$", "Material_Mustard.png", Vec2f(8, 16), 0);
+	AddIconToken("$icon_parachutepack$", "Parachutepack.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_scubagear$", "Scubagear.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_jetpack$", "Jetpack.png", Vec2f(16, 16), 0);
 	
