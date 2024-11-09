@@ -7,7 +7,7 @@ void onInit(CBlob@ this)
 	this.setInventoryName(name(Translate::BanditPistol));
 	GunInfo gun;
 
-	gun.ammo_name = "mat_pistolammo"; //gun.ammo_name = "mat_banditammo";
+	gun.ammo_name = "mat_banditammo";
 	gun.ammo_max = 1;
 	
 	gun.automatic = false;

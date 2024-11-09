@@ -134,8 +134,11 @@ void onInit(CRules@ this)
 	AddIconToken("$ratfood$", "Rat.png", Vec2f(16, 16), 0);
 	AddIconToken("$faultymine$", "FaultyMine.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_banditpistol$", "BanditPistol.png", Vec2f(16, 8), 0);
+	AddIconToken("$icon_banditrifle$", "BanditRifle.png", Vec2f(24, 16), 0);
 	AddIconToken("$icon_foodcan$", "FoodCan.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_bigfoodcan$", "BigFoodCan.png", Vec2f(16, 24), 0);
+	AddIconToken("$icon_banditammo$", "Material_BanditAmmo.png", Vec2f(16, 16), 2);
+	
 	
 	//merchant
 	AddIconToken("$icon_musicdisc$", "MusicDisc.png", Vec2f(8, 8), 0);

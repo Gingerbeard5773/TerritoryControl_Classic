@@ -54,7 +54,7 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "coin", "", "Coins", 147);
 		s.spawnNothing = true;
 	}
-	/*{
+	{
 		ShopItem@ s = addShopItem(this, name(Translate::BanditRifle), "$icon_banditrifle$", "banditrifle", desc(Translate::BanditRifle));
 		AddRequirement(s.requirements, "coin", "", "Coins", 190);
 		s.spawnNothing = true;
@@ -62,11 +62,6 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::BanditAmmo)+" (5)", "$icon_banditammo$", "mat_banditammo-5", desc(Translate::BanditAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 21);
-		s.spawnNothing = true;
-	}*/
-	{
-		ShopItem@ s = addShopItem(this, "Lite Pistal Bullets (5)", "$icon_pistolammo$", "mat_pistolammo-5", "My grandpa made these bullets.");
-		AddRequirement(s.requirements, "coin", "", "Coins", 38);
 		s.spawnNothing = true;
 	}
 	{
