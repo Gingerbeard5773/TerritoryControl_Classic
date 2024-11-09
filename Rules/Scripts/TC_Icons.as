@@ -112,6 +112,7 @@ void onInit(CRules@ this)
 	AddIconToken("$icon_howitzershell$", "Material_HowitzerShell.png", Vec2f(12, 8), 0);
 	AddIconToken("$icon_smallbomb$", "Material_SmallBomb.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_incendiarybomb$", "Material_IncendiaryBomb.png", Vec2f(16, 16), 0);
+	AddIconToken("$icon_stunbomb$", "Material_StunBomb.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_bigbomb$", "Material_BigBomb.png", Vec2f(16, 32), 0);
 	AddIconToken("$icon_fragmine$", "FragMine.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_rocket$", "Rocket.png", Vec2f(24, 40), 0);

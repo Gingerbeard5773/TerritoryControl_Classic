@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 	this.Tag("has window");
 	
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
-	this.set_Vec2f("shop menu size", Vec2f(4, 5));
+	this.set_Vec2f("shop menu size", Vec2f(4, 6));
 	this.set_string("shop description", name(Translate::Bombshop));
 	this.set_u8("shop icon", 15);
 	
@@ -88,12 +88,12 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_sulphur", Translate::Sulphur, 25);
 		s.spawnNothing = true;
 	}*/
-	/*{
-		ShopItem@ s = addShopItem(this, name(Translate::StunBomb)+" (2)", "$icon_stunbomb$", "mat_stunbomb-1", desc(Translate::StunBomb));
+	{
+		ShopItem@ s = addShopItem(this, name(Translate::StunBomb)+" (2)", "$icon_stunbomb$", "mat_stunbomb-2", desc(Translate::StunBomb));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		AddRequirement(s.requirements, "blob", "mat_methane", Translate::Methane, 25);
 		s.spawnNothing = true;
-	}*/
+	}
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::Nuke), "$icon_nuke$", "nuke", desc(Translate::Nuke));
 		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 40);
