@@ -1,7 +1,9 @@
 #include "EquipmentCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::ScubaGear));
 	this.set_string("equipment_slot", "head");
 
 	addOnEquip(this, @OnEquip);
