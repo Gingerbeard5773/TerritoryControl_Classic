@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 const string[] resources = 
 {
@@ -47,36 +48,36 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 8));
 	this.set_Vec2f("shop menu size", Vec2f(3, 2));
-	this.set_string("shop description", "Coalville Mining Company");
+	this.set_string("shop description", Translate::CoalMine);
 	this.set_u8("shop icon", 25);
 		
 	{
-		ShopItem@ s = addShopItem(this, "Buy Dirt (100)", "$icon_dirt$", "mat_dirt-100", "Buy 100 Dirt for 100 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::Dirt, "100"), "$icon_dirt$", "mat_dirt-100", buy(Translate::Dirt, "100", "100"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Stone (250)", "$mat_stone$", "mat_stone-250", "Buy 250 Stone for 125 coins.");
+		ShopItem@ s = addShopItem(this, buy("Stone", "250"), "$mat_stone$", "mat_stone-250", buy("Stone", "250", "125"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Coal (10)", "$icon_coal$", "mat_coal-10", "Buy 10 Coal for 150 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::Coal, "10"), "$icon_coal$", "mat_coal-10", buy(Translate::Coal, "10", "150"));
 		AddRequirement(s.requirements,"coin", "", "Coins", 150); //made it cost a lot, so it's better to just conquer the building
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Copper Ore (100)", "$icon_copper$", "mat_copper-100", "Buy 100 copper for 120 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::CopperOre, "100"), "$icon_copper$", "mat_copper-100", buy(Translate::CopperOre, "100", "120"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 120);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Iron Ore (100)", "$icon_iron$", "mat_iron-100", "Buy 100 Iron Ore for 100 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::IronOre, "100"), "$icon_iron$", "mat_iron-100", buy(Translate::IronOre, "100", "100"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Sulphur (50)", "$icon_sulphur$", "mat_sulphur-50", "Buy 50 Sulphur for 150 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::Sulphur, "50"), "$icon_sulphur$", "mat_sulphur-50", buy(Translate::Sulphur, "50", "150"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.spawnNothing = true;
 	}

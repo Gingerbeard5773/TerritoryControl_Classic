@@ -1,5 +1,8 @@
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::ClaymoreRemote));
 	this.addCommandID("server detonate");
 	this.addCommandID("client detonate");
 }

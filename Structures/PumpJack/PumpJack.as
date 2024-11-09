@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -22,11 +23,11 @@ void onInit(CBlob@ this)
 	
 	//SHOP
 	this.set_Vec2f("shop offset", Vec2f(12, -10));
-	this.set_Vec2f("shop menu size",Vec2f(1, 1));
-	this.set_string("shop description", "Buy Oil");
+	this.set_Vec2f("shop menu size", Vec2f(1, 1));
+	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
 	{
-		ShopItem@ s = addShopItem(this, "Buy 1 Oil Drum (50 l)", "$mat_oil$", "mat_oil-50", "Buy 50 litres of oil for 400 coins.");
+		ShopItem@ s = addShopItem(this, buy(Translate::Oil, "50"), "$mat_oil$", "mat_oil-50", buy(Translate::Oil, "50", "400"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 400);
 		s.spawnNothing = true;
 	}

@@ -4,6 +4,7 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "GunCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBrain@ this)
 {
@@ -32,12 +33,12 @@ void onInit(CBlob@ this)
 
 	if (isClient())
 	{
-		client_AddToChat("A Scyther has arrived!", SColor(255, 255, 0, 0));
+		client_AddToChat(Translate::ScytherEvent, SColor(255, 255, 0, 0));
 	}
 
 	if (isServer())
 	{
-		for (int i = 0; i < 2; i++)
+		for (u8 i = 0; i < 2; i++)
 		{
 			CBlob@ ammo = server_CreateBlob("mat_lancerod", this.getTeamNum(), this.getPosition());
 			this.server_PutInInventory(ammo);
@@ -150,7 +151,7 @@ void onDie(CBlob@ this)
 	
 	if (isServer())
 	{
-		for (int i = 0; i < 4; i++)
+		for (u8 i = 0; i < 4; i++)
 		{
 			CBlob@ gib = server_CreateBlob("scythergib", this.getTeamNum(), this.getPosition());
 			gib.setVelocity(Vec2f((800 - XORRandom(1600)) / 100.0f, -XORRandom(800) / 100.0f) * 2.0f);
@@ -158,14 +159,14 @@ void onDie(CBlob@ this)
 			gib.set_u8("frame", i);
 		}
 		
-		for (int i = 0; i < 10; i++)
+		for (u8 i = 0; i < 10; i++)
 		{
 			CBlob@ flame = server_CreateBlob("flame", this.getTeamNum(), this.getPosition());
 			flame.setVelocity(Vec2f((800 - XORRandom(1600)) / 100.0f, -XORRandom(800) / 100.0f) * 2.0f);
 			flame.server_SetTimeToDie(3 + XORRandom(10));
 		}
 		
-		for (int i = 0; i < 8; i++)
+		for (u8 i = 0; i < 8; i++)
 		{
 			CBlob@ plasteel = server_CreateBlob("mat_plasteel", this.getTeamNum(), this.getPosition());
 			plasteel.server_SetQuantity(2 + XORRandom(10));
@@ -185,21 +186,20 @@ void DoExplosion(CBlob@ this)
 	if (isServer())
 	{
 		CBlob@[] blobs;
-		if (map.getBlobsInRadius(pos, 128.0f, @blobs))
-		{
-			for (int i = 0; i < blobs.length; i++)
-			{		
-				CBlob@ blob = blobs[i];
-				if (blob !is null && (blob.hasTag("flesh") || blob.hasTag("plant"))) 
-				{
-					map.server_setFireWorldspace(blob.getPosition(), true);
-					blob.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), 0.5f, Hitters::fire);
-				}
+		map.getBlobsInRadius(pos, 128.0f, @blobs);
+
+		for (u16 i = 0; i < blobs.length; i++)
+		{		
+			CBlob@ blob = blobs[i];
+			if (blob !is null && (blob.hasTag("flesh") || blob.hasTag("scenary"))) 
+			{
+				map.server_setFireWorldspace(blob.getPosition(), true);
+				blob.server_Hit(blob, blob.getPosition(), Vec2f(0, 0), 0.5f, Hitters::fire);
 			}
 		}
 	}
 	
-	for (int i = 0; i < 64; i++)
+	for (u8 i = 0; i < 64; i++)
 	{
 		if (isServer()) map.server_setFireWorldspace(pos + Vec2f(8 - XORRandom(16), 8 - XORRandom(16)) * 8, true);
 		ParticleAnimated("Entities/Effects/Sprites/FireFlash.png", this.getPosition() + Vec2f(0, -4), Vec2f(0, 0.5f), 0.0f, 1.0f, 2, 0.0f, true);
@@ -209,7 +209,7 @@ void DoExplosion(CBlob@ this)
 	
 	Random rand(this.getNetworkID());
 	
-	for (int i = 0; i < 4; i++)
+	for (u8 i = 0; i < 4; i++)
 	{
 		Vec2f dir = Vec2f(1 - i / 2.0f, -1 + i / 2.0f);
 		Vec2f jitter = Vec2f((int(rand.NextRanged(200)) - 100) / 200.0f, (int(rand.NextRanged(200)) - 100) / 200.0f);

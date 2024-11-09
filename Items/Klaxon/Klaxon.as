@@ -1,6 +1,8 @@
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Klaxon));
 	this.Tag("ignore fall");
 	this.set_u32("next attack", 0);
 

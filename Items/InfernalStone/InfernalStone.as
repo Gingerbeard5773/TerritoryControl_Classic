@@ -2,12 +2,14 @@
 #include "FireParticle.as"
 #include "FireCommon.as";
 #include "Hitters.as";
+#include "TC_Translation.as";
 
 const SColor lightColor = SColor(255, 255, 150, 50);
 const float tickRate = 5;
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::InfernalStone);
 	this.SetLight(true);
 	this.SetLightRadius(32.0f);
 	this.SetLightColor(lightColor);

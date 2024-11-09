@@ -1,7 +1,9 @@
 #include "Hitters.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::MithrilOre);
 	this.SetLight(true);
 	this.SetLightRadius(24.0f);
 	this.SetLightColor(SColor(255, 25, 255, 100));

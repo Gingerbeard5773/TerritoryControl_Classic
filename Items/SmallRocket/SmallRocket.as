@@ -1,10 +1,12 @@
 #include "Hitters.as";
 #include "Explosion.as";
+#include "TC_Translation.as";
 
 const u32 fuel_timer_max = 30 * 0.50f;
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::SmallRocket));
 	this.set_f32("map_damage_ratio", 0.5f);
 	this.set_f32("map_damage_radius", 32.0f);
 	this.set_string("custom_explosion_sound", "Keg.ogg");

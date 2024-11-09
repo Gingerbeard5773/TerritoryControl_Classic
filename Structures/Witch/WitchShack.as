@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 Random traderRandom(Time());
 
@@ -22,28 +23,28 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 8));
 	this.set_Vec2f("shop menu size", Vec2f(2, 2));
-	this.set_string("shop description", "Witch's Dilapidated Shack");
+	this.set_string("shop description", Translate::WitchShack);
 	this.set_u8("shop icon", 25);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Process Mithril (1)", "$icon_mithrilingot$", "mat_mithrilingot-1", "I shall remove the deadly curse from this mythical metal.");
-		AddRequirement(s.requirements, "blob", "mat_mithril", "Mithril Ore", 10);
+		ShopItem@ s = addShopItem(this, name(Translate::ProcessMithril)+" (1)", "$icon_mithrilingot$", "mat_mithrilingot-1", desc(Translate::ProcessMithril));
+		AddRequirement(s.requirements, "blob", "mat_mithril", Translate::MithrilOre, 10);
 		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Process Mithril (4)", "$icon_mithrilingot$", "mat_mithrilingot-4", "I shall remove the deadly curse from this mythical metal.");
-		AddRequirement(s.requirements, "blob", "mat_mithril", "Mithril Ore", 40);
+		ShopItem@ s = addShopItem(this, name(Translate::ProcessMithril)+" (4)", "$icon_mithrilingot$", "mat_mithrilingot-4", desc(Translate::ProcessMithril));
+		AddRequirement(s.requirements, "blob", "mat_mithril", Translate::MithrilOre, 40);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Funny Magical Card Booster Pack", "$card_pack$", "card_pack", "A full pack of fun!");
+		ShopItem@ s = addShopItem(this, name(Translate::CardPack), "$card_pack$", "card_pack", desc(Translate::CardPack));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Mystery Box", "$icon_mysterybox$", "mysterybox", "What's inside?\nInconceivable wealth, eternal suffering, upset badgers? Who knows! Only for 75 coins!");
+		ShopItem@ s = addShopItem(this, name(Translate::MysteryBox), "$icon_mysterybox$", "mysterybox", desc(Translate::MysteryBox));
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
 		s.spawnNothing = true;
 	}

@@ -1,4 +1,5 @@
 ﻿#include "Requirements.as";
+#include "TC_Translation.as";
 
 void onInit(CSprite@ this)
 {
@@ -80,104 +81,104 @@ void onInit(CBlob@ this)
 {
 	AssemblerItem[] items;
 	{
-		AssemblerItem i("mat_pistolammo", 50, "Low Caliber Bullets (50)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
-		AddRequirement(i.reqs, "blob", "mat_copperingot", "Copper Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 50);
+		AssemblerItem i("mat_pistolammo", 50, name(Translate::LowCalAmmo)+" (50)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
+		AddRequirement(i.reqs, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 50);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_rifleammo", 15, "High Caliber Bullets (15)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_copperingot", "Copper Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 15);
+		AssemblerItem i("mat_rifleammo", 15, name(Translate::HighCalAmmo)+" (15)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 15);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_gatlingammo", 50, "Machine Gun Ammo (50)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_copperingot", "Copper Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 50);
+		AssemblerItem i("mat_gatlingammo", 50, name(Translate::MachinegunAmmo)+" (50)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 50);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_shotgunammo", 10, "Shotgun Shells (10)");
-		AddRequirement(i.reqs, "blob", "mat_copperingot", "Copper Ingot", 1);
+		AssemblerItem i("mat_shotgunammo", 10, name(Translate::ShotgunAmmo)+" (10)");
+		AddRequirement(i.reqs, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
 		AddRequirement(i.reqs, "blob", "mat_wood", "Wood", 10);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 10);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 10);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_tankshell", 4, "Artillery Shells (4)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 20);
+		AssemblerItem i("mat_tankshell", 4, name(Translate::TankShell)+" (4)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 20);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_howitzershell", 2, "Howitzer Shells (2)");
-		AddRequirement(i.reqs, "blob", "mat_copperingot", "Copper Ingot", 2);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 30);
+		AssemblerItem i("mat_howitzershell", 2, name(Translate::HowitzerShell)+" (2)");
+		AddRequirement(i.reqs, "blob", "mat_copperingot", name(Translate::CopperIngot), 2);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 30);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_smallbomb", 4, "Small Bombs (4)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 20);
+		AssemblerItem i("mat_smallbomb", 4, name(Translate::SmallBomb)+" (4)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 20);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_incendiarybomb", 4, "Incendiary Bombs (4)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
-		AddRequirement(i.reqs, "blob", "mat_oil", "Oil", 20);
+		AssemblerItem i("mat_incendiarybomb", 4, name(Translate::IncendiaryBomb)+" (4)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
+		AddRequirement(i.reqs, "blob", "mat_oil", Translate::Oil, 20);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("revolver", 1, "Revolver (1)");
+		AssemblerItem i("revolver", 1, name(Translate::Revolver)+" (1)");
 		AddRequirement(i.reqs, "blob", "mat_wood", "Wood", 40);
-		AddRequirement(i.reqs, "blob", "mat_steelingot", "Steel Ingot", 1);
+		AddRequirement(i.reqs, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("rifle", 1, "Rifle (1)");
+		AssemblerItem i("rifle", 1, name(Translate::Rifle)+" (1)");
 		AddRequirement(i.reqs, "blob", "mat_wood", "Wood", 60);
-		AddRequirement(i.reqs, "blob", "mat_steelingot", "Steel Ingot", 1);
+		AddRequirement(i.reqs, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mat_smallrocket", 4, "Small Rocket (4)");
+		AssemblerItem i("mat_smallrocket", 4, name(Translate::SmallRocket)+" (4)");
 		AddRequirement(i.reqs, "blob", "mat_wood", "Wood", 40);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 40);
-		AddRequirement(i.reqs, "blob", "mat_coal", "Coal", 4);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 40);
+		AddRequirement(i.reqs, "blob", "mat_coal", Translate::Coal, 4);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("rocket", 1, "Rocket of Doom (1)");
+		AssemblerItem i("rocket", 1, name(Translate::Rocket)+" (1)");
 		AddRequirement(i.reqs, "blob", "mat_wood", "Wood", 100);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 50);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 50);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("foodcan", 2, "Scrub's Chow (2)");
-		AddRequirement(i.reqs, "blob", "mat_meat", "Mystery Meat", 40);
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
+		AssemblerItem i("foodcan", 2, name(Translate::ScrubChow)+" (2)");
+		AddRequirement(i.reqs, "blob", "mat_meat", Translate::Meat, 40);
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
 		items.push_back(i);
 	}	
 	{
-		AssemblerItem i("bigfoodcan", 1, "Scrub's Chow XL (1)");
-		AddRequirement(i.reqs, "blob", "mat_meat", "Mystery Meat", 80);
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 5);
+		AssemblerItem i("bigfoodcan", 1, name(Translate::ScrubChowXL)+" (1)");
+		AddRequirement(i.reqs, "blob", "mat_meat", Translate::Meat, 80);
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("mine", 2, "Mine (2)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 20);
+		AssemblerItem i("mine", 2, getTranslatedString("Mine")+" (2)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 20);
 		items.push_back(i);
 	}
 	{
-		AssemblerItem i("fragmine", 1, "Fragmentation Mine (1)");
-		AddRequirement(i.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
-		AddRequirement(i.reqs, "blob", "mat_sulphur", "Sulphur", 20);
+		AssemblerItem i("fragmine", 1, name(Translate::Fragmine)+" (1)");
+		AddRequirement(i.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
+		AddRequirement(i.reqs, "blob", "mat_sulphur", Translate::Sulphur, 20);
 		items.push_back(i);
 	}
 	this.set("items", items);
@@ -204,7 +205,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!isInventoryAccessible(this, caller)) return;
 
-	CButton@ button = caller.CreateGenericButton(15, Vec2f(0,-8), this, Menu, "Set Item");
+	CButton@ button = caller.CreateGenericButton(15, Vec2f(0,-8), this, Menu, Translate::SetAssembler);
 	
 	CInventory@ inv = caller.getInventory();
 	if (inv is null) return;
@@ -236,7 +237,7 @@ void Menu(CBlob@ this, CBlob@ caller)
 {
 	if (!caller.isMyPlayer()) return;
 
-	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos() + Vec2f(0.0f, 0.0f), this, Vec2f(4, 4), "Set Assembly");
+	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos() + Vec2f(0.0f, 0.0f), this, Vec2f(4, 4), Translate::SetAssembler);
 	if (menu is null) return;
 
 	AssemblerItem[] items = getItems(this);
@@ -249,9 +250,9 @@ void Menu(CBlob@ this, CBlob@ caller)
 		
 		const bool assembling = this.get_u8("crafting") == i;
 
-		string text = "Set to Assemble: " + item.title;
+		string text = Translate::SetAssembler+": " + item.title;
 		if (assembling)
-			text = "Already Assembling: " + item.title;
+			text = Translate::AlreadySet+": " + item.title;
 
 		CGridButton@ butt = menu.AddButton("$assembler_icon" + i + "$", text, this.getCommandID("server set crafting"), pack);
 		butt.hoverText = item.title + "\n" + getButtonRequirementsText(item.reqs, false);

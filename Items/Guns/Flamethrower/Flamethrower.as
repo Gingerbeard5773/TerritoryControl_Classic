@@ -1,8 +1,10 @@
 #include "Hitters.as";
 #include "GunCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Scorcher));
 	GunInfo gun;
 
 	gun.ammo_name = "mat_oil";

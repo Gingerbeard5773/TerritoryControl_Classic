@@ -3,6 +3,7 @@
 #include "TileMaterials.as";
 #include "Hitters.as";
 #include "CustomTiles.as";
+#include "TC_Translation.as";
 
 const string[] resources = 
 {
@@ -101,5 +102,5 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!this.isOverlapping(caller)) return;
 	
-	caller.CreateGenericButton(11, Vec2f(0, -8), this, this.getCommandID("sv_toggle"), (this.get_bool("isActive") ? "Turn Off" : "Turn On"));
+	caller.CreateGenericButton(11, Vec2f(0, -8), this, this.getCommandID("sv_toggle"), (this.get_bool("isActive") ? Translate::TurnOff : Translate::TurnOn));
 }

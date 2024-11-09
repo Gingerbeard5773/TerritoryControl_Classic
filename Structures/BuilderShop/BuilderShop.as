@@ -5,6 +5,7 @@
 #include "Descriptions.as"
 #include "GenericButtonCommon.as"
 #include "TeamIconToken.as"
+#include "TC_Translation.as"
 
 void onInit(CBlob@ this)
 {
@@ -37,15 +38,15 @@ void onInit(CBlob@ this)
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Crate", "$crate$", "crate", "A wooden crate used for storage.\nBreaks upon impact.", true);
+		ShopItem@ s = addShopItem(this, "Crate", "$crate$", "crate", Descriptions::crate, true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Chair", "$chair$", "chair", "Quite comfortable.", true);
+		ShopItem@ s = addShopItem(this, name(Translate::Chair), "$chair$", "chair", desc(Translate::Chair), true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Table", "$table$", "table", "A portable surface with 4 legs.", true);
+		ShopItem@ s = addShopItem(this, name(Translate::Table), "$table$", "table", desc(Translate::Table), true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 }
@@ -53,7 +54,7 @@ void onInit(CBlob@ this)
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
-	this.set_bool("shop available", this.isOverlapping(caller));
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)

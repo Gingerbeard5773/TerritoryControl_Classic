@@ -1,9 +1,11 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::SmallBomb));
 	this.getShape().SetRotationsAllowed(true);
 	this.maxQuantity = 8;
 	

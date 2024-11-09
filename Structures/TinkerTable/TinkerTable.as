@@ -4,6 +4,7 @@
 #include "ShopCommon.as";
 #include "Descriptions.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -18,63 +19,63 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 150;
 	
 	this.set_Vec2f("shop offset", Vec2f(0,0));
-	this.set_Vec2f("shop menu size", Vec2f(5, 3));
-	this.set_string("shop description", "Mechanist's Workshop");
+	this.set_Vec2f("shop menu size", Vec2f(5, 4));
+	this.set_string("shop description", name(Translate::Mechanist));
 	this.set_u8("shop icon", 15);
 	
 	{
 		ShopItem@ s = addShopItem(this, "Drill", "$drill$", "drill", Descriptions::drill, false);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 2);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Gramophone", "$gramophone$", "gramophone", "A device used to play music from Gramophone Records purchased at the Merchant.");
+		ShopItem@ s = addShopItem(this, name(Translate::Gramophone), "$gramophone$", "gramophone", desc(Translate::Gramophone));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 80);
-		AddRequirement(s.requirements, "blob", "mat_goldingot", "Gold Ingot", 1);
+		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 1);
 		s.spawnNothing = true;
 	}
 	{
 		ShopItem@ s = addShopItem(this, "Saw", "$saw$", "saw", Descriptions::saw, false);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 2);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Giga Drill Breaker", "$powerdrill$", "powerdrill", "A huge overpowered drill with a durable mithril head.");
+		ShopItem@ s = addShopItem(this, name(Translate::PowerDrill), "$powerdrill$", "powerdrill", desc(Translate::PowerDrill));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 2);
-		AddRequirement(s.requirements, "blob", "mat_copperwire", "Copper Wire", 2);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 2);
+		AddRequirement(s.requirements, "blob", "mat_copperwire", name(Translate::CopperWire), 2);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Contrabass", "$contrabass$", "contrabass", "A musical instrument for the finest bards.");
+		ShopItem@ s = addShopItem(this, name(Translate::Contrabass), "$contrabass$", "contrabass", desc(Translate::Contrabass));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 60);
-		AddRequirement(s.requirements, "blob", "mat_copperwire", "Copper Wire", 1);
+		AddRequirement(s.requirements, "blob", "mat_copperwire", name(Translate::CopperWire), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Copper Wire (2)", "$mat_copperwire$", "mat_copperwire-2", "A copper wire. Kids' favourite toy.");
-		AddRequirement(s.requirements, "blob", "mat_copperingot", "Copper Ingot", 1);
+		ShopItem@ s = addShopItem(this, name(Translate::CopperWire)+" (2)", "$mat_copperwire$", "mat_copperwire-2", desc(Translate::CopperWire));
+		AddRequirement(s.requirements, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
 		s.spawnNothing = true;
 	}	
 	{
-		ShopItem@ s = addShopItem(this, "Clown's Funny Klaxon", "$icon_klaxon$", "klaxon", "An infernal device housing thousands of lamenting souls.");
-		AddRequirement(s.requirements, "blob", "mat_goldingot", "Gold Ingot", 2);
+		ShopItem@ s = addShopItem(this, name(Translate::Klaxon), "$icon_klaxon$", "klaxon", desc(Translate::Klaxon));
+		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 666);
 		s.spawnNothing = true;
 	}	
 	{
-		ShopItem@ s = addShopItem(this, "Autonomous Activator", "$icon_automat$", "automat", "A fish-operated contraption that uses anything in its tiny hands. May be only carried around when not holding anything.");
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::Automat), "$icon_automat$", "automat", desc(Translate::Automat));
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 4);
 		AddRequirement(s.requirements, "blob", "fishy", "Fishy", 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 750);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Zapthrottle Gas Extractor", "$icon_gasextractor$", "gasextractor", "A handheld air pump commonly used for cleaning, martial arts and gas cloud extraction.\n\nLeft mouse: Pull\nRight mouse: Push");
-		AddRequirement(s.requirements, "blob", "mat_goldingot", "Gold Ingot", 2);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 1);
+		ShopItem@ s = addShopItem(this, name(Translate::GasExtractor), "$icon_gasextractor$", "gasextractor", desc(Translate::GasExtractor));
+		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 2);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 80);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.customButton = true;
@@ -83,8 +84,8 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	/*{
-		ShopItem@ s = addShopItem(this, "Mustard Gas", "$icon_mustard$", "mat_mustard-50", "A bottle of a highly poisonous gas. Causes blisters, blindness and lung damage.");
-		AddRequirement(s.requirements, "blob", "mat_sulphur", "Sulphur", 50);
+		ShopItem@ s = addShopItem(this, name(Translate::MustardGas), "$icon_mustard$", "mat_mustard-50", desc(Translate::MustardGas));
+		AddRequirement(s.requirements, "blob", "mat_sulphur", Translate::Sulphur, 50);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}*/

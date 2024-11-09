@@ -1,7 +1,9 @@
 #include "Hitters.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Nightstick));
 	this.Tag("ignore fall");
 	this.set_u32("next attack", 0);
 

@@ -1,6 +1,7 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "Knocked.as";
+#include "TC_Translation.as";
 
 string[] particles = 
 {
@@ -11,6 +12,7 @@ string[] particles =
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::StunBomb));
 	this.getShape().SetRotationsAllowed(true);
 	this.maxQuantity = 4;
 	

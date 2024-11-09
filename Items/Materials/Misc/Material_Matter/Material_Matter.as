@@ -1,8 +1,10 @@
 #include "Hitters.as";
 #include "CustomTiles.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::Matter);
 	this.maxQuantity = 250;
 }
 

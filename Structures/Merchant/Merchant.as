@@ -6,6 +6,7 @@
 #include "MakeSeed.as";
 #include "MakeCrate.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 Random traderRandom(Time());
 
@@ -25,62 +26,61 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 8));
 	this.set_Vec2f("shop menu size", Vec2f(3,4));
-	this.set_string("shop description", "Merchant");
+	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Buy Gold Ingot (1)", "$icon_goldingot$", "mat_goldingot-1", "Buy 1 Gold Ingot for 100 coins.");
+		ShopItem@ s = addShopItem(this, buy(name(Translate::GoldIngot), "1"), "$icon_goldingot$", "mat_goldingot-1", buy(name(Translate::GoldIngot), "1", "100"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Stone (250)", "$mat_stone$", "mat_stone-250", "Buy 250 stone for 125 coins.");
+		ShopItem@ s = addShopItem(this, buy("Stone", "250"), "$mat_stone$", "mat_stone-250", buy("Stone", "250", "125"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Buy Wood (250)", "$mat_wood$", "mat_wood-250", "Buy 250 wood for 90 coins.");
+		ShopItem@ s = addShopItem(this, buy("Wood", "250"), "$mat_wood$", "mat_wood-250", buy("Wood", "250", "90"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 90);
 		s.spawnNothing = true;
 	}
-	
 	{
-		ShopItem@ s = addShopItem(this, "Sell Gold Ingot (1)", "$COIN$", "coin-100", "Sell 1 Gold Ingot for 100 coins.");
-		AddRequirement(s.requirements, "blob", "mat_goldingot", "Gold Ingot", 1);
+		ShopItem@ s = addShopItem(this, sell(name(Translate::GoldIngot), "1"), "$COIN$", "coin-100", sell(name(Translate::GoldIngot), "1", "100"));
+		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sell Stone (250)", "$COIN$", "coin-100", "Sell 250 stone for 100 coins.");
+		ShopItem@ s = addShopItem(this, sell("Stone", "250"), "$COIN$", "coin-100", sell("Stone", "250", "100"));
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sell Wood (250)", "$COIN$", "coin-75", "Sell 250 wood for 75 coins.");
+		ShopItem@ s = addShopItem(this, sell("Wood", "250"), "$COIN$", "coin-75", sell("Wood", "250", "75"));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Gramophone Record", "$icon_musicdisc$", "musicdisc", "A random gramophone record.");
+		ShopItem@ s = addShopItem(this, name(Translate::MusicDisc), "$icon_musicdisc$", "musicdisc", desc(Translate::MusicDisc));
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sell Oil Drum (50 l)", "$COIN$", "coin-300", "Sell 50 litres of oil for 300 coins.");
-		AddRequirement(s.requirements, "blob", "mat_oil", "Oil Drum (50 l)", 50);
+		ShopItem@ s = addShopItem(this, sell(Translate::Oil, "50"), "$COIN$", "coin-300", sell(Translate::Oil, "50", "400"));
+		AddRequirement(s.requirements, "blob", "mat_oil", Translate::Oil, 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Tree Seed", "$icon_seed$", "seed", "A tree seed. Trees don't have seeds, though.");
+		ShopItem@ s = addShopItem(this, name(Translate::Tree), "$icon_seed$", "seed", desc(Translate::Tree));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Cinnamon Bun", "$icon_cake$", "cake", "A pastry made with love.");
+		ShopItem@ s = addShopItem(this, name(Translate::Cake), "$icon_cake$", "cake", desc(Translate::Cake));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Mototorized Horse", "$icon_car$", "car", "Makes you extremely cool.", false, true);
+		ShopItem@ s = addShopItem(this, name(Translate::Car), "$icon_car$", "car", desc(Translate::Car), false, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 1000);
 		s.crate_icon = 0;
 		s.spawnNothing = true;

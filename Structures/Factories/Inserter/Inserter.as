@@ -1,4 +1,5 @@
-﻿
+﻿#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
 	// this.set_TileType("background tile", CMap::tile_castle_back);
@@ -16,7 +17,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (caller.getDistanceTo(this) > this.getRadius() * 2) return;
 
 	const int icon = !this.isFacingLeft() ? 18 : 17;
-	CButton@ button = caller.CreateGenericButton(icon, Vec2f(0, 0), this, this.getCommandID("server_use"), "Flip direction");
+	CButton@ button = caller.CreateGenericButton(icon, Vec2f(0, 0), this, this.getCommandID("server_use"), Translate::Flip);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)

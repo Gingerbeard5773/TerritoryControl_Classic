@@ -4,6 +4,7 @@
 #include "ShopCommon.as";
 #include "Descriptions.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -20,40 +21,40 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(0,0));
 	this.set_Vec2f("shop menu size", Vec2f(3, 2));
-	this.set_string("shop description", "Armory ");
+	this.set_string("shop description", name(Translate::Armory)+" ");
 	this.set_u8("shop icon", 15);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Royal Guard Armor", "$icon_royalarmor$", "royalarmor", "A heavy armor for that offers high damage resistance at cost of low mobility.");
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 8);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 2);
+		ShopItem@ s = addShopItem(this, name(Translate::RoyalArmor), "$icon_royalarmor$", "royalarmor", desc(Translate::RoyalArmor));
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 8);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Truncheon", "$nightstick$", "nightstick", "A traditional tool used by seal clubbing clubs.");
+		ShopItem@ s = addShopItem(this, name(Translate::Nightstick), "$nightstick$", "nightstick", desc(Translate::Nightstick));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Slavemaster's Kit", "$icon_shackles$", "shackles", "A kit containing shackles, shiny iron ball, elegant striped pants, noisy chains and a slice of cheese.");
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::Shackles), "$icon_shackles$", "shackles", desc(Translate::Shackles));
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 4);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Water Bomb (1)", "$waterbomb$", "mat_waterbombs-1", Descriptions::waterbomb, true);
+		ShopItem@ s = addShopItem(this, "Water Bombs", "$waterbomb$", "mat_waterbombs-1", Descriptions::waterbomb, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		s.spawnNothing = true;
 	}	
 	{
-		ShopItem@ s = addShopItem(this, "Water Arrow (2)", "$mat_waterarrows$", "mat_waterarrows-2", Descriptions::waterarrows, true);
+		ShopItem@ s = addShopItem(this, "Water Arrows", "$mat_waterarrows$", "mat_waterarrows-2", Descriptions::waterarrows, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Fire Arrow (2)", "$mat_firearrows$", "mat_firearrows-2", Descriptions::firearrows, true);
+		ShopItem@ s = addShopItem(this, "Fire Arrows", "$mat_firearrows$", "mat_firearrows-2", Descriptions::firearrows, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
 		s.spawnNothing = true;
 	}

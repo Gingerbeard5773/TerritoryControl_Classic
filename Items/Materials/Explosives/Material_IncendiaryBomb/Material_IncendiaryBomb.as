@@ -3,9 +3,11 @@
 #include "FireParticle.as"
 #include "FireCommon.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::IncendiaryBomb));
 	this.getShape().SetRotationsAllowed(true);
 	this.maxQuantity = 2;
 	this.set_string("custom_explosion_sound", "KegExplosion");

@@ -1,5 +1,8 @@
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Shackles));
 	this.Tag("ignore fall");
 	this.set_u32("next attack", getGameTime());
 

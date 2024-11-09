@@ -1,6 +1,8 @@
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::CardPack));
 	this.addCommandID("server useitem");
 }
 

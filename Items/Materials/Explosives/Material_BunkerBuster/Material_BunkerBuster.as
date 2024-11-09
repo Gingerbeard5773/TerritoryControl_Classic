@@ -1,6 +1,7 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 string[] particles = 
 {
@@ -10,6 +11,7 @@ string[] particles =
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::BunkerBuster));
 	this.getShape().SetRotationsAllowed(true);
 	this.maxQuantity = 1;
 	

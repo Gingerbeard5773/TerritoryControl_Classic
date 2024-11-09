@@ -2,6 +2,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "FactionBuildingCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -29,14 +30,14 @@ void onInit(CBlob@ this)
 	// Upgrading stuff
 	this.set_Vec2f("shop offset", Vec2f(-24, 10));
 	this.set_Vec2f("shop menu size", Vec2f(2, 2));
-	this.set_string("shop description", "Upgrades & Repairs");
+	this.set_string("shop description", Translate::Upgrades);
 	this.set_u8("shop icon", 15);
 
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 
 	{
-		ShopItem@ s = addShopItem(this, "Repair", "$icon_repair$", "repair", "Repair this damaged building.\nRestores 5% of building's integrity.");	
+		ShopItem@ s = addShopItem(this, name(Translate::Repair), "$icon_repair$", "repair", desc(Translate::Repair));	
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 200);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 		s.customButton = true;

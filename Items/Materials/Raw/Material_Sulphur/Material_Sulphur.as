@@ -1,9 +1,11 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::Sulphur);
 	if (isServer())
 	{
 		this.set_u8("decay step", 3);

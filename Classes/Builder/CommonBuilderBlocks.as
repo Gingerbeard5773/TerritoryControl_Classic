@@ -32,6 +32,7 @@
 #include "Requirements.as";
 #include "Descriptions.as";
 #include "CustomTiles.as";
+#include "TC_Translation.as";
 
 const string blocks_property = "blocks";
 const string inventory_offset = "inventory offset";
@@ -91,52 +92,52 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "iron_door", "$iron_door$", "Iron Door\nDoesn't have to be placed next to walls!");
+		BuildBlock b(0, "iron_door", "$iron_door$", Translate::IronDoor);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 4);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "wood_triangle", "$wood_triangle$", "Wooden Triangle");
+		BuildBlock b(0, "wood_triangle", "$wood_triangle$", Translate::WoodTriangle);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "stone_triangle", "$stone_triangle$", "Stone Triangle");
+		BuildBlock b(0, "stone_triangle", "$stone_triangle$", Translate::StoneTriangle);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 5);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_iron, "iron_block", "$iron_block$", "Iron Plating\nA durable metal block. Indestructible by peasants.");
+		BuildBlock b(CMap::tile_iron, "iron_block", "$iron_block$", Translate::IronBlock);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 2);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "stone_halfblock", "$stone_halfblock$", "Stone Half Block");
+		BuildBlock b(0, "stone_halfblock", "$stone_halfblock$", Translate::HalfBlock);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 5);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_plasteel, "plasteel_block", "$plasteel_block$", "Plasteel Panel\nA highly advanced composite material. Nearly indestructible.");
+		BuildBlock b(CMap::tile_plasteel, "plasteel_block", "$plasteel_block$", Translate::PlasteelBlock);
 		AddRequirement(b.reqs, "blob", "mat_plasteel", "Plasteel Sheet", 4);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "iron_platform", "$iron_platform$", "Iron Platform\nReinforced one-way platform. Indestructible by peasants.");
+		BuildBlock b(0, "iron_platform", "$iron_platform$", Translate::IronPlatform);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 3);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_ground, "ground_block", "$ground_block$", "Dirt\nFairly resistant to explosions.\nMay be only placed on dirt backgrounds or damaged dirt.");
+		BuildBlock b(CMap::tile_ground, "ground_block", "$ground_block$", Translate::DirtBlock);
 		AddRequirement(b.reqs, "blob", "mat_dirt", "Dirt", 15);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_glass, "glass_block", "$glass_block$", "Glass\nFancy and fragile.");
+		BuildBlock b(CMap::tile_glass, "glass_block", "$glass_block$", Translate::Glass);
 		AddRequirement(b.reqs, "coin", "", "Coin", 10);
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_glass_back, "glass_block_back", "$glass_block_back$", "Glass Wall\nFancy and fragile.");
+		BuildBlock b(CMap::tile_glass_back, "glass_block_back", "$glass_block_back$", Translate::GlassBack);
 		AddRequirement(b.reqs, "coin", "", "Coin", 5);
 		blocks[0].push_back(b);
 	}
@@ -145,21 +146,21 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	BuildBlock[] page_1;
 	blocks.push_back(page_1);
 	{
-		BuildBlock b(0, "quarters", "$icon_quarters$", "Quarters\n" + Descriptions::quarters);
+		BuildBlock b(0, "quarters", "$icon_quarters$", getTranslatedString("Quarters") +"\n"+ Descriptions::quarters);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
 		b.size.Set(40, 24);
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "buildershop", "$icon_buildershop$", "Builder Workshop\n" + Descriptions::buildershop);
+		BuildBlock b(0, "buildershop", "$icon_buildershop$", getTranslatedString("Builder Shop") +"\n"+ Descriptions::buildershop);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
 		b.size.Set(40, 24);
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "tinkertable", "$icon_tinkertable$", "Mechanist's Workshop\nA place where you can construct various trinkets and advanced machinery. Repairs adjacent vehicles.");
+		BuildBlock b(0, "tinkertable", "$icon_tinkertable$", Translate::Mechanist);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 70);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
 		b.buildOnGround = true;
@@ -167,7 +168,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "armory", "$icon_armory$", "Armory\nA workshop where you can craft cheap equipment. Automatically stores nearby dropped weapons and ammunition.");
+		BuildBlock b(0, "armory", "$icon_armory$", Translate::Armory);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 100);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 200);
 		b.buildOnGround = true;
@@ -175,7 +176,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "gunsmith", "$icon_gunsmith$", "Gunsmith's Workshop\nA workshop for those who enjoy making holes. Slowly produces bullets.");
+		BuildBlock b(0, "gunsmith", "$icon_gunsmith$", Translate::Gunsmith);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 150);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
 		b.buildOnGround = true;
@@ -183,7 +184,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "bombshop", "$icon_bombshop$", "Demolitionist's Workshop\nFor those with an explosive personality.");
+		BuildBlock b(0, "bombshop", "$icon_bombshop$", Translate::Bombshop);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 100);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 250);
 		b.buildOnGround = true;
@@ -191,7 +192,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "forge", "$icon_forge$", "Forge\nEnables you to process raw metals into pure ingots and alloys.");
+		BuildBlock b(0, "forge", "$icon_forge$", Translate::Forge);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 150);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 70);
 		b.buildOnGround = true;
@@ -199,7 +200,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "construction_yard", "$icon_constructionyard$", "Construction Yard\nUsed to construct various vehicles.");
+		BuildBlock b(0, "construction_yard", "$icon_constructionyard$", Translate::Yard);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 75);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 200);
 		b.buildOnGround = true;
@@ -208,7 +209,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 
 	}
 	{
-		BuildBlock b(0, "storage", "$icon_storage$", "Storage\nA storage than can hold materials and items.\nCan be only accessed by the owner team.");
+		BuildBlock b(0, "storage", "$icon_storage$", getTranslatedString("Storage Cache")+"\n"+Descriptions::storagecache);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 250);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
@@ -216,7 +217,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[1].push_back(b);
 	}
 	{
-		BuildBlock b(0, "camp", "$icon_camp$", "Camp\nA basic faction base. Can be upgraded to gain\nspecial functions and more durability.");
+		BuildBlock b(0, "camp", "$icon_camp$", Translate::Camp);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 350);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 150);
 		AddRequirement(b.reqs, "coin", "", "Coins", 100);
@@ -230,31 +231,31 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	BuildBlock[] page_2;
 	blocks.push_back(page_2);
 	{
-		BuildBlock b(0, "conveyor", "$icon_conveyor$", "Conveyor Belt\nUsed to transport items.");
+		BuildBlock b(0, "conveyor", "$icon_conveyor$", Translate::Conveyor);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 4);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 6);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "seperator", "$icon_separator$", "Separator\nItems matching the filter will be launched away.");
+		BuildBlock b(0, "seperator", "$icon_separator$", Translate::Seperator);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "launcher", "$icon_launcher$", "Launcher\nLaunches items to the eternity and beyond.");
+		BuildBlock b(0, "launcher", "$icon_launcher$", Translate::Launcher);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "filter", "$icon_filter$", "Filter\nItems matching the filter won't collide with this.");
+		BuildBlock b(0, "filter", "$icon_filter$", Translate::Filter);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 75);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 25);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "autoforge", "$icon_autoforge$", "Auto-Forge\nProcesses raw materials and alloys just for you.");
+		BuildBlock b(0, "autoforge", "$icon_autoforge$", Translate::AutoForge);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 200);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
@@ -262,7 +263,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "assembler", "$icon_assembler$", "Assembler\nAn elaborate piece of machinery that manufactures items.");
+		BuildBlock b(0, "assembler", "$icon_assembler$", Translate::Assembler);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 200);
 		b.buildOnGround = true;
@@ -270,7 +271,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "drillrig", "$icon_drillrig$", "Driller Mole\nAn automatic drilling machine that mines resources underneath.");
+		BuildBlock b(0, "drillrig", "$icon_drillrig$", Translate::DrillRig);
 		AddRequirement(b.reqs, "blob", "drill", "Drill", 1);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
@@ -279,13 +280,13 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "hopper", "$icon_hopper$", "Hopper\nPicks up items lying on the ground.");
+		BuildBlock b(0, "hopper", "$icon_hopper$", Translate::Hopper);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 20);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "extractor", "$icon_extractor$", "Extractor\nGrabs items from nearby inventories.");
+		BuildBlock b(0, "extractor", "$icon_extractor$", Translate::Extractor);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 10);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
 		b.buildOnGround = true;
@@ -293,13 +294,13 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "industriallamp", "$icon_industriallamp$", "Industrial Lamp\nA sturdy lamp to ligthen up the mood in your factory.\nActs as a support block.");
+		BuildBlock b(0, "industriallamp", "$icon_industriallamp$", Translate::Lamp);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Wood", 30);
 		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "grinder", "$icon_grinder$", "Grinder\nA dangerous machine capable of destroying almost everything.");
+		BuildBlock b(0, "grinder", "$icon_grinder$", Translate::Grinder);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 250);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 5);
@@ -308,7 +309,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{
-		BuildBlock b(0, "packer", "$icon_packer$", "Packer\nA safe machine capable of packing almost everything.");
+		BuildBlock b(0, "packer", "$icon_packer$", Translate::Packer);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
 		b.buildOnGround = true;
@@ -316,7 +317,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[2].push_back(b);
 	}
 	{ //newer gen tc import
-		BuildBlock b(0, "inserter", "$icon_inserter$", "Inserter\nTransfers items between inventories next to it.\nLarge funnel acts as input, small funnel as output.");
+		BuildBlock b(0, "inserter", "$icon_inserter$", Translate::Inserter);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 25);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 30);
 		b.buildOnGround = true;
@@ -327,14 +328,14 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	BuildBlock[] page_3;
 	blocks.push_back(page_3);
 	{
-		BuildBlock b(0, "woodchest", "$icon_chest$", "Wooden Chest\nA regular wooden chest used for storage.\nCan be accessed by anyone.");
+		BuildBlock b(0, "woodchest", "$icon_chest$", Translate::WoodChest);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		b.buildOnGround = true;
 		b.size.Set(16, 16);
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "ironlocker", "$icon_ironlocker$", "Personal Locker\nA more secure way to store your items.\nCan be only accessed by the first person to claim it.");
+		BuildBlock b(0, "ironlocker", "$icon_ironlocker$", Translate::Locker);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 5);
 		// AddRequirement(b.reqs, "blob", "mat_steelingot", "Steel Ingot", 1);
 		b.buildOnGround = true;
@@ -342,7 +343,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "siren", "$icon_siren$", "Air Raid Siren\nWarns of incoming enemy aerial vehicles within 75 block radius.");
+		BuildBlock b(0, "siren", "$icon_siren$", Translate::Siren);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
 		AddRequirement(b.reqs, "blob", "mat_goldingot", "Gold Ingot", 2);
@@ -351,7 +352,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "lamppost", "$icon_lamppost$", "Lamp Post\nA fancy light.");
+		BuildBlock b(0, "lamppost", "$icon_lamppost$", Translate::LampPost);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 40);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
 		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
@@ -360,18 +361,18 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "barbedwire", "$icon_barbedwire$", "Barbed Wire\nHurts anyone who passes through it. Good at preventing people from climbing over walls.");
+		BuildBlock b(0, "barbedwire", "$icon_barbedwire$", Translate::BarbedWire);
 		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "teamlamp", "$icon_teamlamp$", "Team Lamp\nGlows with your team's spirit.");
+		BuildBlock b(0, "teamlamp", "$icon_teamlamp$", Translate::TeamLamp);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
 		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "textsign", "$icon_textsign$", "Sign Board\nType '!write -text-' in chat and then use it on the sign. Writing on a paper costs 50 coins.");
+		BuildBlock b(0, "textsign", "$icon_textsign$", Translate::SignBoard);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
 		
 		b.buildOnGround = true;
@@ -379,7 +380,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "stonepile", "$icon_stonepile$", "Stone Silo\nAutomatically collects ores from all of your team's mines.");
+		BuildBlock b(0, "stonepile", "$icon_stonepile$", Translate::StoneSilo);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 300);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 75);
 		b.buildOnGround = true;
@@ -387,7 +388,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{
-		BuildBlock b(0, "oiltank", "$icon_oiltank$", "Oil Tank\nAutomatically collects oil from all of your team's pumpjacks.");
+		BuildBlock b(0, "oiltank", "$icon_oiltank$", Translate::OilTank);
 		AddRequirement(b.reqs, "blob", "mat_wood","Wood", 250);
 		AddRequirement(b.reqs, "blob", "mat_ironingot","Iron Ingots", 2);
 		b.buildOnGround = true;
@@ -395,7 +396,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[3].push_back(b);
 	}
 	{ //newer gen tc import
-		BuildBlock b(0, "smallsign", "$icon_smallsign$", "Sign\nType '!write -text-' in chat and then use it on the sign. Writing on a paper costs 50 coins.");
+		BuildBlock b(0, "smallsign", "$icon_smallsign$", Translate::Sign);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		
 		b.buildOnGround = true;

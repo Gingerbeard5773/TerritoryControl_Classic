@@ -6,6 +6,7 @@
 #include "ShieldCommon.as";
 #include "KnockedCommon.as";
 #include "CustomTiles.as";
+#include "TC_Translation.as";
 
 const f32 speed_thresh = 2.0f;
 const f32 speed_hard_thresh = 2.2f;
@@ -56,6 +57,7 @@ void onInit(CSprite@ this)
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::PowerDrill));
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
 	{

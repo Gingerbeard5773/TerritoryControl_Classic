@@ -2,6 +2,7 @@
 
 #include "Hitters.as";
 #include "Explosion.as";
+#include "TC_Translation.as";
 
 const u8 MINE_PRIMING_TIME = 1;
 
@@ -18,6 +19,7 @@ enum State
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Claymore));
 	this.getShape().getVars().waterDragScale = 16.0f;
 
 	this.set_f32("explosive_radius", 32.0f);

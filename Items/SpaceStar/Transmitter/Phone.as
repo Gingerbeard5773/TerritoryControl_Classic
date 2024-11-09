@@ -3,9 +3,11 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MakeCrate.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::Phone);
 	this.getCurrentScript().tickFrequency = 1;
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
@@ -13,17 +15,17 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
 	this.set_Vec2f("shop menu size", Vec2f(2, 1));
-	this.set_string("shop description", "SpaceStar Ordering!");
+	this.set_string("shop description", Translate::Phone);
 	this.set_u8("shop icon", 11);
 
 	{
-		ShopItem@ s = addShopItem(this, "Combat Chicken Assault Squad!", "$ss_raid$", "raid", "Get your own soldier... TODAY!");
+		ShopItem@ s = addShopItem(this, name(Translate::ChickenSquad), "$ss_raid$", "raid", desc(Translate::ChickenSquad));
 		AddRequirement(s.requirements, "coin", "", "Coins", 1249);
 		
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Portable Minefield!", "$ss_minefield$", "minefield", "A brave flock of landmines! No more trespassers!");
+		ShopItem@ s = addShopItem(this, name(Translate::Minefield), "$ss_minefield$", "minefield", desc(Translate::Minefield));
 		AddRequirement(s.requirements, "coin", "", "Coins", 799);
 		
 		s.spawnNothing = true;

@@ -2,8 +2,11 @@
 
 string[] instrument_names = {"harp"};
 
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Contrabass));
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");
 	if (ap !is null)
 	{

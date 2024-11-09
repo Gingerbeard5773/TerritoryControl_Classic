@@ -1,5 +1,7 @@
 // A script by TFlippy
 
+#include "TC_Translation.as";
+
 const string[] names =
 {
 	"Blank",
@@ -33,5 +35,5 @@ void onInit(CBlob@ this)
 	
 	this.set_u8("trackID", trackID);
 	this.getSprite().SetAnimation("track" + trackID);
-	this.setInventoryName("Gramophone Record (" + (trackID < names.length ? names[trackID] : "ERROR") + ")");
+	this.setInventoryName(name(Translate::MusicDisc)+" (" + (trackID < names.length ? names[trackID] : "ERROR") + ")");
 }

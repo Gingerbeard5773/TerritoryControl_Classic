@@ -1,9 +1,11 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::BigBomb));
 	this.getShape().SetRotationsAllowed(true);
 	this.set_string("custom_explosion_sound", "");
 	this.maxQuantity = 1;

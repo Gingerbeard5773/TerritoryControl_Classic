@@ -1,8 +1,10 @@
 #include "Hitters.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::MustardGas));
 	this.Tag("explosive");
 	this.maxQuantity = 50;
 }

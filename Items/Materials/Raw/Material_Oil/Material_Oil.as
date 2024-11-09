@@ -1,9 +1,11 @@
 #include "Hitters.as";
 #include "Explosion.as";
 #include "ExplosionDelay.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(Translate::Oil);
 	this.set_u8("custom_hitter", Hitters::fire);
 	this.Tag("explosive");
 	this.maxQuantity = 50;

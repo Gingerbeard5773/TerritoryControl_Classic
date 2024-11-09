@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 // Meteor by Koi_
 
@@ -18,7 +19,7 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(-6, 0));
 	this.set_Vec2f("shop menu size", Vec2f(5, 4));
-	this.set_string("shop description", "Mysterious Wreckage's Molecular Fabricator");
+	this.set_string("shop description", name(Translate::Fabricator));
 	this.set_u8("shop icon", 15);
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
@@ -92,13 +93,13 @@ void onInit(CBlob@ this)
 		Sound::Play("AncientShip_Intro.ogg");
 
 		// client_AddToChat("A strange object has fallen out of the sky in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + "!", SColor(255, 255, 0, 0));
-		client_AddToChat("A strange object has fallen out of the sky!", SColor(255, 255, 0, 0));
+		client_AddToChat(Translate::AncientShip, SColor(255, 255, 0, 0));
 	}
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", (caller.getPosition() - this.getPosition()).Length() < 64.0f);
+	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)

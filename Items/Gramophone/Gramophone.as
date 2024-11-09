@@ -1,5 +1,7 @@
 // A script by TFlippy
 
+#include "TC_Translation.as";
+
 const string[] musicNames =
 {
 	"Disc_Blank.ogg",
@@ -31,6 +33,7 @@ const int DiscNum = 20;
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::Gramophone));
 	this.set_u8("trackID", 255);
 	this.set_bool("isPlaying", false);
 	

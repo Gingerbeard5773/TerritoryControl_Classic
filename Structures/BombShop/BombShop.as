@@ -4,6 +4,7 @@
 #include "ShopCommon.as";
 #include "Descriptions.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -14,31 +15,31 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
 	this.set_Vec2f("shop menu size", Vec2f(4, 5));
-	this.set_string("shop description", "Demolitionist's Workshop");
+	this.set_string("shop description", name(Translate::Bombshop));
 	this.set_u8("shop icon", 15);
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Artillery Shell (4)", "$icon_tankshell$", "mat_tankshell-4", "A highly explosive shell used by the artillery.");
+		ShopItem@ s = addShopItem(this, name(Translate::TankShell)+" (4)", "$icon_tankshell$", "mat_tankshell-4", desc(Translate::TankShell));
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Howitzer Shell (2)", "$icon_howitzershell$", "mat_howitzershell-2", "A large howitzer shell capable of annihilating a cottage.");
+		ShopItem@ s = addShopItem(this, name(Translate::HowitzerShell)+" (2)", "$icon_howitzershell$", "mat_howitzershell-2", desc(Translate::HowitzerShell));
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Rocket of Doom", "$icon_rocket$", "rocket", "Let's fly to the Moon. (Not really)");
+		ShopItem@ s = addShopItem(this, name(Translate::Rocket), "$icon_rocket$", "rocket", desc(Translate::Rocket));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 2);
+		AddRequirement(s.requirements, "blob", "mat_coal", Translate::Coal, 2);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "S.Y.L.W. 9000 (1)", "$icon_bigbomb$", "mat_bigbomb-1", "A big bomb. Handle with care.");
+		ShopItem@ s = addShopItem(this, name(Translate::BigBomb), "$icon_bigbomb$", "mat_bigbomb-1", desc(Translate::BigBomb));
 		AddRequirement(s.requirements, "coin", "", "Coins", 250);
 		s.customButton = true;
 		s.buttonwidth = 1;
@@ -51,29 +52,29 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Fragmentation Mine", "$icon_fragmine$", "fragmine", "A fragmentation mine that fills the surroundings with shards of metal upon detonation.");
+		ShopItem@ s = addShopItem(this, name(Translate::Fragmine), "$icon_fragmine$", "fragmine", desc(Translate::Fragmine));
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bomb (1)", "$bomb$", "mat_bombs-1", Descriptions::bomb, true);
+		ShopItem@ s = addShopItem(this, "Bomb", "$bomb$", "mat_bombs-1", Descriptions::bomb, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bomb Arrow (1)", "$mat_bombarrows$", "mat_bombarrows-1", Descriptions::bombarrows, true);
+		ShopItem@ s = addShopItem(this, "Bomb Arrow", "$mat_bombarrows$", "mat_bombarrows-1", Descriptions::bombarrows, true);
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Small Bomb (4)", "$icon_smallbomb$", "mat_smallbomb-4", "A small iron bomb. Detonates when it hits surface with enough force.");
+		ShopItem@ s = addShopItem(this, name(Translate::SmallBomb)+" (4)", "$icon_smallbomb$", "mat_smallbomb-4", desc(Translate::SmallBomb));
 		AddRequirement(s.requirements, "coin", "", "Coins", 130);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Incendiary Bomb (1)", "$icon_incendiarybomb$", "mat_incendiarybomb-1", "Sets the peasants on fire.");
+		ShopItem@ s = addShopItem(this, name(Translate::IncendiaryBomb), "$icon_incendiarybomb$", "mat_incendiarybomb-1", desc(Translate::IncendiaryBomb));
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
-		AddRequirement(s.requirements, "blob", "mat_oil", "Oil", 25);
+		AddRequirement(s.requirements, "blob", "mat_oil", Translate::Oil, 25);
 		s.spawnNothing = true;
 	}
 	{
@@ -82,50 +83,45 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	/*{
-		ShopItem@ s = addShopItem(this, "Bunker Buster (1)", "$icon_bunkerbuster$", "mat_bunkerbuster-1", "Perfect for making holes in heavily fortified bases. Detonates upon strong impact.");
+		ShopItem@ s = addShopItem(this, name(Translate::BunkerBuster), "$icon_bunkerbuster$", "mat_bunkerbuster-1", desc(Translate::BunkerBuster));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		AddRequirement(s.requirements, "blob", "mat_sulphur", "Sulphur", 25);
+		AddRequirement(s.requirements, "blob", "mat_sulphur", Translate::Sulphur, 25);
 		s.spawnNothing = true;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Shockwave Bomb (2)", "$icon_stunbomb$", "mat_stunbomb-1", "Creates a shockwave with strong knockback. Detonates upon strong impact.");
+	}*/
+	/*{
+		ShopItem@ s = addShopItem(this, name(Translate::StunBomb)+" (2)", "$icon_stunbomb$", "mat_stunbomb-1", desc(Translate::StunBomb));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-		AddRequirement(s.requirements, "blob", "mat_methane", "Methane", 25);
-		s.spawnNothing = true;
-	}
-	{
-		ShopItem@ s = addShopItem(this, "Grenade (2)", "$icon_grenade$", "mat_grenade-2", "A small, timed explosive device used by grenade launchers.");
-		AddRequirement(s.requirements, "coin", "", "Coins", 75);
+		AddRequirement(s.requirements, "blob", "mat_methane", Translate::Methane, 25);
 		s.spawnNothing = true;
 	}*/
 	{
-		ShopItem@ s = addShopItem(this, "R.O.F.L. (1)", "$icon_nuke$", "nuke", "A dangerous warhead stuffed in a cart. Since it's heavy, it can be only pushed around or picked up by balloons.");
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 40);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 20);
+		ShopItem@ s = addShopItem(this, name(Translate::Nuke), "$icon_nuke$", "nuke", desc(Translate::Nuke));
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 40);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 20);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100); // Cart!
 		AddRequirement(s.requirements, "coin", "", "Coins", 2000);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Gregor (1)", "$icon_claymore$", "claymore-1", "A remotely triggered explosive device covered in some sort of slime. Sticks to surfaces.");
+		ShopItem@ s = addShopItem(this, name(Translate::Claymore), "$icon_claymore$", "claymore-1", desc(Translate::Claymore));
 		AddRequirement(s.requirements, "coin", "", "Coins", 70);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Small Rocket (1)", "$icon_smallrocket$", "mat_smallrocket-1", "Self-propelled ammunition for rocket launchers.");
+		ShopItem@ s = addShopItem(this, name(Translate::SmallRocket), "$icon_smallrocket$", "mat_smallrocket-1", desc(Translate::SmallRocket));
 		AddRequirement(s.requirements, "coin", "", "Coins", 70);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Gregor Remote Detonator", "$icon_claymoreremote$", "claymoreremote-1", "A device used to remotely detonate Gregors.");
+		ShopItem@ s = addShopItem(this, name(Translate::ClaymoreRemote), "$icon_claymoreremote$", "claymoreremote-1", desc(Translate::ClaymoreRemote));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 2);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		s.spawnNothing = true;
 	}
 	/*{
-		ShopItem@ s = addShopItem(this, "Smoke Grenade", "$icon_smokegrenade$", "mat_smokegrenade-1", "A small hand grenade used to quickly fill a room with smoke. It helps you keep out of sight.");
+		ShopItem@ s = addShopItem(this, name(Translate::SmokeGrenade), "$icon_smokegrenade$", "mat_smokegrenade-1", desc(Translate::SmokeGrenade));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-		AddRequirement(s.requirements, "blob", "mat_sulphur", "Sulphur", 25);
+		AddRequirement(s.requirements, "blob", "mat_sulphur", Translate::Sulphur, 25);
 		s.spawnNothing = true;
 	}*/
 }

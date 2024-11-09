@@ -1,5 +1,7 @@
 // TrapBlock.as
 
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
 	this.getShape().SetRotationsAllowed(false);
@@ -75,7 +77,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (caller.getCarriedBlob() !is this)
 	{
 		const int icon = this.isFacingLeft() ? 17 : 18;
-		caller.CreateGenericButton(icon, Vec2f(0, 0), this, this.getCommandID("server use"), "Use");
+		caller.CreateGenericButton(icon, Vec2f(0, 0), this, this.getCommandID("server use"), Translate::Flip);
 	}
 }
 

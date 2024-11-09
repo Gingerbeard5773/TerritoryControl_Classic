@@ -1,6 +1,7 @@
 #include "Explosion.as";
 #include "Hitters.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 const u32 max_heat = 10800;
 
@@ -39,7 +40,7 @@ void onInit(CBlob@ this)
 		sprite.SetEmitSoundVolume(2.0f);
 
 		// client_AddToChat("A bright flash has been seen in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + ".", SColor(255, 255, 0, 0));
-		client_AddToChat("A bright flash illuminates the sky.", SColor(255, 255, 0, 0));
+		client_AddToChat(Translate::MeteorEvent, SColor(255, 255, 0, 0));
 	}
 }
 

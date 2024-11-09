@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 const string[] resources = 
 {
@@ -38,33 +39,33 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(0,0));
 	this.set_Vec2f("shop menu size", Vec2f(4, 4));
-	this.set_string("shop description", "Gunsmith's Workshop ");
+	this.set_string("shop description", name(Translate::Gunsmith)+" ");
 	this.set_u8("shop icon", 15);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Low Caliber Ammunition (20)", "$icon_pistolammo$", "mat_pistolammo-20", "Bullets for pistols and SMGs.");
+		ShopItem@ s = addShopItem(this, name(Translate::LowCalAmmo)+" (20)", "$icon_pistolammo$", "mat_pistolammo-20", desc(Translate::LowCalAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "High Caliber Ammunition (5)", "$icon_rifleammo$", "mat_rifleammo-5", "Bullets for rifles. Effective against armored targets.");
+		ShopItem@ s = addShopItem(this, name(Translate::HighCalAmmo)+" (5)", "$icon_rifleammo$", "mat_rifleammo-5", desc(Translate::HighCalAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 45);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Shotgun Shells (4)", "$icon_shotgunammo$", "mat_shotgunammo-4", "Shotgun Shells for... Shotguns.");
+		ShopItem@ s = addShopItem(this, name(Translate::ShotgunAmmo)+" (4)", "$icon_shotgunammo$", "mat_shotgunammo-4", desc(Translate::ShotgunAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 80);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Machine Gun Ammunition (30)", "$icon_gatlingammo$", "mat_gatlingammo-30", "Ammunition used by the machine gun.");
+		ShopItem@ s = addShopItem(this, name(Translate::MachinegunAmmo)+" (30)", "$icon_gatlingammo$", "mat_gatlingammo-30", desc(Translate::MachinegunAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 80);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Revolver", "$icon_revolver$", "revolver", "A compact firearm for those with small pockets.\n\nUses Low Caliber Ammunition.");
+		ShopItem@ s = addShopItem(this, name(Translate::Revolver), "$icon_revolver$", "revolver", desc(Translate::Revolver));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 1);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 40);
 		s.customButton = true;
 		s.buttonwidth = 2;
@@ -72,9 +73,9 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bolt Action Rifle", "$icon_rifle$", "rifle", "A handy bolt action rifle.\n\nUses High Caliber Ammunition.");
+		ShopItem@ s = addShopItem(this, name(Translate::Rifle), "$icon_rifle$", "rifle", desc(Translate::Rifle));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 60);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 1);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
 		s.customButton = true;
 		s.buttonwidth = 2;
@@ -82,9 +83,9 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bobby Gun", "$icon_smg$", "smg", "A powerful submachine gun.\n\nUses Low Caliber Ammunition.");
+		ShopItem@ s = addShopItem(this, name(Translate::SMG), "$icon_smg$", "smg", desc(Translate::SMG));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 2);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		s.customButton = true;
 		s.buttonwidth = 2;
@@ -92,9 +93,9 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bazooka", "$icon_bazooka$", "bazooka", "A long tube capable of shooting rockets. Make sure nobody is standing behind it.\n\nUses Small Rockets.");
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 5);
-		AddRequirement(s.requirements, "blob", "mat_copperingot", "Copper Ingot", 2);
+		ShopItem@ s = addShopItem(this, name(Translate::Bazooka), "$icon_bazooka$", "bazooka", desc(Translate::Bazooka));
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
+		AddRequirement(s.requirements, "blob", "mat_copperingot", name(Translate::CopperIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.customButton = true;
 		s.buttonwidth = 2;
@@ -102,9 +103,9 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Scorcher", "$icon_flamethrower$", "flamethrower", "A tool used for incinerating plants, buildings and people.\n\nUses Oil.");
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 5);
-		AddRequirement(s.requirements, "blob", "mat_copperingot", "Copper Ingot", 1);
+		ShopItem@ s = addShopItem(this, name(Translate::Scorcher), "$icon_flamethrower$", "flamethrower", desc(Translate::Scorcher));
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
+		AddRequirement(s.requirements, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.customButton = true;
 		s.buttonwidth = 2;
@@ -112,9 +113,9 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Shotgun", "$icon_shotgun$", "shotgun", "A short-ranged weapon that deals devastating damage.\n\nUses Shotgun Shells.");
+		ShopItem@ s = addShopItem(this, name(Translate::Shotgun), "$icon_shotgun$", "shotgun", desc(Translate::Shotgun));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 70);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 3);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 3);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.customButton = true;
 		s.buttonwidth = 2;

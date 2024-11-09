@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -12,66 +13,60 @@ void onInit(CBlob@ this)
 
 	this.set_Vec2f("shop offset", Vec2f(0,1));
 	this.set_Vec2f("shop menu size", Vec2f(4, 2));
-	this.set_string("shop description", "Forge");
+	this.set_string("shop description", name(Translate::Forge));
 	this.set_u8("shop icon", 15);
 
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Copper Ingot (1)", "$icon_copperingot$", "mat_copperingot-1", "A soft conductive metal.", true);
-		AddRequirement(s.requirements, "blob", "mat_copper", "Copper Ore", 10);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 1);
+		ShopItem@ s = addShopItem(this, name(Translate::CopperIngot)+" (1)", "$icon_copperingot$", "mat_copperingot-1", desc(Translate::CopperIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_copper", Translate::CopperOre, 10);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Iron Ingot (1)", "$icon_ironingot$", "mat_ironingot-1", "A fairly strong metal used to make tools, equipment and such.", true);
-		AddRequirement(s.requirements, "blob", "mat_iron", "Iron Ore", 10);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal",1);
+		ShopItem@ s = addShopItem(this, name(Translate::IronIngot)+" (1)", "$icon_ironingot$", "mat_ironingot-1", desc(Translate::IronIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_iron", Translate::IronOre, 10);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Steel Ingot (1)", "$icon_steelingot$", "mat_steelingot-1", "Much stronger than iron, but also more expensive.", true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 4);
-		AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 1);
+		ShopItem@ s = addShopItem(this, name(Translate::SteelIngot)+" (1)", "$icon_steelingot$", "mat_steelingot-1", desc(Translate::SteelIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 4);
+		AddRequirement(s.requirements, "blob", "mat_coal", Translate::Coal, 1);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Gold Ingot (1)", "$icon_goldingot$", "mat_goldingot-1", "A fancy metal - traders' favourite.", true);
+		ShopItem@ s = addShopItem(this, name(Translate::GoldIngot)+" (1)", "$icon_goldingot$", "mat_goldingot-1", desc(Translate::GoldIngot), true);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold Ore", 25);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 1);
 		s.spawnNothing = true;
 	}
 	
 	// Large batch
 	{
-		ShopItem@ s = addShopItem(this, "Copper Ingot (4)", "$icon_copperingot$", "mat_copperingot-4", "A soft conductive metal.", true);
-		AddRequirement(s.requirements, "blob", "mat_copper", "Copper Ore", 40);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::CopperIngot)+" (4)", "$icon_copperingot$", "mat_copperingot-4", desc(Translate::CopperIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_copper", Translate::CopperOre, 40);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Iron Ingot (4)", "$icon_ironingot$", "mat_ironingot-4", "A fairly strong metal used to make tools, equipment and such.", true);
-		AddRequirement(s.requirements, "blob", "mat_iron", "Iron Ore", 40);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::IronIngot)+" (4)", "$icon_ironingot$", "mat_ironingot-4", desc(Translate::IronIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_iron", Translate::IronOre, 40);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Steel Ingot (4)", "$icon_steelingot$", "mat_steelingot-4", "Much stronger than iron, but also more expensive.", true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 16);
-		AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::SteelIngot)+" (4)", "$icon_steelingot$", "mat_steelingot-4", desc(Translate::SteelIngot), true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 16);
+		AddRequirement(s.requirements, "blob", "mat_coal", Translate::Coal, 4);
 		s.spawnNothing = true;
 	}
 	
 	{
-		ShopItem@ s = addShopItem(this, "Gold Ingot (4)", "$icon_goldingot$", "mat_goldingot-4", "A fancy metal - traders' favourite.", true);
+		ShopItem@ s = addShopItem(this, name(Translate::GoldIngot)+" (4)", "$icon_goldingot$", "mat_goldingot-4", desc(Translate::GoldIngot), true);
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold Ore", 100);
-		// AddRequirement(s.requirements, "blob", "mat_coal", "Coal", 4);
 		s.spawnNothing = true;
 	}
 }

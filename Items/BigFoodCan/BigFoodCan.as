@@ -1,7 +1,10 @@
 const u8 food_max = 20;
 
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::ScrubChowXL));
 	this.getShape().SetRotationsAllowed(false);
 	this.addCommandID("server eat");
 	this.addCommandID("client eat");

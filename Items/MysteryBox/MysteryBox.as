@@ -1,4 +1,5 @@
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 // name, amount, bonus, weight
 const string[][] items =
@@ -58,6 +59,7 @@ int sum = 0;
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::MysteryBox));
 	this.addCommandID("box_unpack");
 }
 

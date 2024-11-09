@@ -2,6 +2,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -10,131 +11,145 @@ void onInit(CBlob@ this)
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 0));
 	this.set_Vec2f("shop menu size", Vec2f(5, 4));
-	this.set_string("shop description", "Molecular Fabricator");
+	this.set_string("shop description", name(Translate::Fabricator));
 	this.set_u8("shop icon", 15);
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Deconstruct 10 Plasteel Sheets", "$icon_matter_0$", "mat_matter-10", "Deconstruct 10 Plasteel Sheets into 10 units of Amazing Technicolor Dust.");
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 10);
-		// AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 1);
+		ShopItem@ s = addShopItem(this, deconstruct("10 "+name(Translate::Plasteel)), "$icon_matter_0$", "mat_matter-10", transmute2(name(Translate::Plasteel), "10", Translate::Matter, "10"));
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 10);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Deconstruct a Busted Scyther Component", "$icon_matter_1$", "mat_matter-25", "Deconstruct 1 Busted Scyther Component into 25 units of Amazing Technicolor Dust.");
-		AddRequirement(s.requirements, "blob", "scythergib", "Busted Scyther Component", 1);
-		// AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 5);
+		ShopItem@ s = addShopItem(this, deconstruct(name(Translate::BustedScyther)), "$icon_matter_1$", "mat_matter-25", transmute2(name(Translate::BustedScyther), "1", Translate::Matter, "25"));
+		AddRequirement(s.requirements, "blob", "scythergib", name(Translate::BustedScyther), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Deconstruct a Charge Rifle", "$icon_matter_1$", "mat_matter-150", "Deconstruct 1 Charge Rifle into 150 units of Amazing Technicolor Dust.");
-		AddRequirement(s.requirements, "blob", "chargerifle", "Charge Rifle", 1);
-		// AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 20);
+		ShopItem@ s = addShopItem(this, deconstruct(name(Translate::ChargeRifle)), "$icon_matter_1$", "mat_matter-150", transmute2(name(Translate::ChargeRifle), "1", Translate::Matter, "150"));
+		AddRequirement(s.requirements, "blob", "chargerifle", name(Translate::ChargeRifle), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Deconstruct a Charge Lance", "$icon_matter_2$", "mat_matter-200", "Deconstruct 1 Charge Lance into 200 units of Amazing Technicolor Dust.");
-		AddRequirement(s.requirements, "blob", "chargelance", "Charge Lance", 1);
-		// AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 20);
+		ShopItem@ s = addShopItem(this, deconstruct(name(Translate::ChargeLance)), "$icon_matter_2$", "mat_matter-200", transmute2(name(Translate::ChargeLance), "1", Translate::Matter, "200"));
+		AddRequirement(s.requirements, "blob", "chargelance", name(Translate::ChargeLance), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Deconstruct an Exosuit", "$icon_matter_3$", "mat_matter-250", "Deconstruct 1 Exosuit into 250 units of Amazing Technicolor Dust.");
-		AddRequirement(s.requirements, "blob", "exosuititem", "Exosuit", 1);
-		// AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 25);
-		s.spawnNothing = true;
-	}
-	
-	{
-		ShopItem@ s = addShopItem(this, "Reconstruct 10 Plasteel Sheets", "$icon_plasteel$", "mat_plasteel-10", "A durable yet lightweight material.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 10);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 1);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 1);
+		ShopItem@ s = addShopItem(this, deconstruct(name(Translate::Exosuit)), "$icon_matter_3$", "mat_matter-250", transmute2(name(Translate::Exosuit), "1", Translate::Matter, "250"));
+		AddRequirement(s.requirements, "blob", "exosuititem", name(Translate::Exosuit), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct a Busted Scyther Component", "$icon_scythergib$", "scythergib", "A completely useless garbage, brand new.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 25);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 2);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 1);
+		ShopItem@ s = addShopItem(this, reconstruct("10 "+name(Translate::Plasteel)), "$icon_plasteel$", "mat_plasteel-10", desc(Translate::Plasteel));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 10);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct a Charge Rifle", "$icon_chargerifle$", "chargerifle", "A burst-fire energy weapon.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 150);
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 25);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 10);
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::BustedScyther)), "$icon_scythergib$", "scythergib", desc(Translate::BustedScyther));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 25);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 2);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct a Charge Lance", "$icon_chargelance$", "chargelance", "An extremely powerful rail-assisted handheld cannon.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 200);
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 35);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 10);
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::ChargeRifle)), "$icon_chargerifle$", "chargerifle", desc(Translate::ChargeRifle));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 150);
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 25);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 10);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct an Exosuit", "$icon_exosuit$", "exosuititem", "A standard issue Model II Exosuit.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 250);
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 50);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 20);
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::ChargeLance)), "$icon_chargelance$", "chargelance", desc(Translate::ChargeLance));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 200);
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 35);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 10);
 		s.spawnNothing = true;
 	}
-	
 	{
-		ShopItem@ s = addShopItem(this, "Transmute Stone to Iron", "$icon_iron$", "mat_iron-250", "Transmute 250 Stone into 250 Iron Ore.");
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::Exosuit)), "$icon_exosuit$", "exosuititem", desc(Translate::Exosuit));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 250);
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 50);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 20);
+		s.spawnNothing = true;
+	}
+	{
+		ShopItem@ s = addShopItem(this, transmute("Stone", Translate::IronOre), "$icon_iron$", "mat_iron-250", transmute2("Stone", "250", Translate::IronOre, "250"));
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 35);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 35);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Transmute Iron to Copper", "$icon_copper$", "mat_copper-250", "Transmute 250 Iron Ore into 250 Copper Ore.");
-		AddRequirement(s.requirements, "blob", "mat_iron", "Iron Ore", 250);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 10);
+		ShopItem@ s = addShopItem(this, transmute(Translate::IronOre, Translate::CopperOre), "$icon_copper$", "mat_copper-250", transmute2(Translate::IronOre, "250", Translate::CopperOre, "250"));
+		AddRequirement(s.requirements, "blob", "mat_iron", Translate::IronOre, 250);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 10);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Transmute Copper to Gold", "$mat_gold$", "mat_gold-250", "Transmute 250 Copper Ore into 250 Gold Ore.");
-		AddRequirement(s.requirements, "blob", "mat_copper", "Copper Ore", 250);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 135);
+		ShopItem@ s = addShopItem(this, transmute(Translate::CopperOre, "Gold Ore"), "$mat_gold$", "mat_gold-250", transmute2(Translate::CopperOre, "250", "Gold Ore", "250"));
+		AddRequirement(s.requirements, "blob", "mat_copper", Translate::CopperOre, 250);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 135);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Transmute Gold to Mithril", "$icon_mithril$", "mat_mithril-250", "Transmute 250 Gold Ore into 250 Mithril Ore.");
+		ShopItem@ s = addShopItem(this, transmute("Gold Ore", Translate::MithrilOre), "$icon_mithril$", "mat_mithril-250", transmute2("Gold Ore", "250", Translate::MithrilOre, "250"));
 		AddRequirement(s.requirements, "blob", "mat_gold", "Gold Ore", 250);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 50);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 50);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Refine Mithril", "$icon_mithrilingot$", "mat_mithrilingot-2", "Refine 10 Mithril Ore into 2 Mithril Ingots.");
-		AddRequirement(s.requirements, "blob", "mat_mithril", "Mithril Ore", 10);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 10);
+		ShopItem@ s = addShopItem(this, Translate::MithrilIngot +" (2)", "$icon_mithrilingot$", "mat_mithrilingot-2", transmute2(Translate::MithrilOre, "10", Translate::MithrilIngot, "2"));
+		AddRequirement(s.requirements, "blob", "mat_mithril", Translate::MithrilOre, 10);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 10);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct 10 Metal Rods", "$mat_lancerod$", "mat_lancerod-10", "A bundle of 10 tungsten rods.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 20);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 1);
+		ShopItem@ s = addShopItem(this, reconstruct("10 "+name(Translate::LanceRod)), "$mat_lancerod$", "mat_lancerod-10", desc(Translate::LanceRod));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 20);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct a Scyther", "$scyther$", "scyther", "A light combat mechanoid equipped with a Charge Lance.");
-		AddRequirement(s.requirements, "blob", "scythergib", "Busted Scyther Component", 5);
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 50);
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 25);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 5);
-		AddRequirement(s.requirements, "blob", "chargelance", "Charge Lance", 1);
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::Scyther)), "$scyther$", "scyther", desc(Translate::Scyther));
+		AddRequirement(s.requirements, "blob", "scythergib", name(Translate::BustedScyther), 5);
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 50);
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 25);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 5);
+		AddRequirement(s.requirements, "blob", "chargelance", name(Translate::ChargeLance), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Reconstruct a Portable Molecular Fabricator", "$icon_molecularfabricator$", "molecularfabricator", "A highly advanced machine capable of restructuring molecules and atoms.");
-		AddRequirement(s.requirements, "blob", "mat_matter", "Amazing Technicolor Dust", 25);
-		AddRequirement(s.requirements, "blob", "mat_plasteel", "Plasteel Sheet", 10);
-		AddRequirement(s.requirements, "blob", "mat_mithrilingot", "Mithril Ingot", 2);
+		ShopItem@ s = addShopItem(this, reconstruct(name(Translate::Fabricator)), "$icon_molecularfabricator$", "molecularfabricator", desc(Translate::Fabricator));
+		AddRequirement(s.requirements, "blob", "mat_matter", Translate::Matter, 25);
+		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 10);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 2);
 		s.spawnNothing = true;
 	}
+}
+
+//this shit is so ass.
+string reconstruct(const string&in item)
+{
+	return Translate::Reconstruct.replace("{ITEM}", getTranslatedString(item));
+}
+
+string deconstruct(const string&in item)
+{
+	return Translate::Deconstruct.replace("{ITEM}", getTranslatedString(item));
+}
+
+string transmute(const string&in item, const string&in result)
+{
+	return Translate::Transmute.replace("{ITEM}", getTranslatedString(item)).replace("{RESULT}", getTranslatedString(result));
+}
+
+string transmute2(const string&in item, const string&in quantity, const string&in result, const string&in recieved)
+{
+	return Translate::Transmute2.replace("{ITEM}", getTranslatedString(item)).replace("{QUANTITY}", quantity).replace("{RESULT}", getTranslatedString(result)).replace("{RECIEVED}", recieved);
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)

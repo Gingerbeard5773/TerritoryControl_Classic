@@ -1,5 +1,7 @@
 ﻿//Packer.as
 
+#include "TC_Translation.as";
+
 const u8 packer_maximum_mode = 36;
 
 void onInit(CBlob@ this)
@@ -87,7 +89,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!isInventoryAccessible(this, caller)) return;
 
-	CButton@ button = caller.CreateGenericButton(24, Vec2f(0, -8), this, Menu, "Change packing mode");
+	CButton@ button = caller.CreateGenericButton(24, Vec2f(0, -8), this, Menu, Translate::SetPacker);
 }
 
 void Menu(CBlob@ this, CBlob@ caller)
@@ -97,13 +99,13 @@ void Menu(CBlob@ this, CBlob@ caller)
 
 void PackerMenu(CBlob@ this, CBlob@ caller, const u8&in packer_mode = 255)
 {
-	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), this, Vec2f(2, 1), "Set packing threshold");
+	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), this, Vec2f(2, 1), Translate::SetPacker);
 	if (menu is null) return;
 	
 	const u8 mode = packer_mode != 255 ? packer_mode : this.get_u8("packer mode");
 	{
 		const u8 next_mode = Maths::Max(mode - 1, 1);
-		const string text = "Decrement Packing Threshold ("+mode+" stacks)";
+		const string text = Translate::Decrement.replace("{STACKS}", mode+"");
 		
 		CBitStream params;
 		params.write_netid(this.getNetworkID());
@@ -114,7 +116,7 @@ void PackerMenu(CBlob@ this, CBlob@ caller, const u8&in packer_mode = 255)
 	}
 	{
 		const u8 next_mode = Maths::Min(mode + 1, packer_maximum_mode);
-		const string text = "Increment Packing Threshold ("+mode+" stacks)";
+		const string text = Translate::Increment.replace("{STACKS}", mode+"");
 		
 		CBitStream params;
 		params.write_netid(this.getNetworkID());

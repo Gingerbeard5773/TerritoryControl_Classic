@@ -1,8 +1,10 @@
 #include "Hitters.as";
 #include "GunCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::BanditPistol));
 	GunInfo gun;
 
 	gun.ammo_name = "mat_pistolammo"; //gun.ammo_name = "mat_banditammo";

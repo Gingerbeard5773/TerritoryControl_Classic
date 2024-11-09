@@ -4,6 +4,7 @@
 #include "ShopCommon.as";
 #include "StandardRespawnCommand.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -17,19 +18,19 @@ void onInit(CBlob@ this)
 	
 	this.set_Vec2f("shop offset", Vec2f(4, 0));
 	this.set_Vec2f("shop menu size", Vec2f(4, 2));
-	this.set_string("shop description", "Rat's Den");
+	this.set_string("shop description", Translate::RatDen);
 	this.set_u8("shop icon", 25);
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 	
 	{
-		ShopItem@ s = addShopItem(this, "Tasty Rat Burger", "$ratburger$", "ratburger", "I always ate this as a kid.");
+		ShopItem@ s = addShopItem(this, name(Translate::RatBurger), "$ratburger$", "ratburger", desc(Translate::RatBurger));
 		AddRequirement(s.requirements, "coin", "", "Coins", 31);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Very Fresh Rat", "$ratfood$", "ratfood", "I caught this rat myself.");
+		ShopItem@ s = addShopItem(this, name(Translate::RatFood), "$ratfood$", "ratfood", desc(Translate::RatFood));
 		AddRequirement(s.requirements, "coin", "", "Coins", 17);
 		s.spawnNothing = true;
 	}
@@ -39,27 +40,27 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}*/
 	{
-		ShopItem@ s = addShopItem(this, "Sell Scrub's Chow (1)", "$COIN$", "coin-29", "My favourite meal. I'll give you 29 coins for this!");
-		AddRequirement(s.requirements, "blob", "foodcan", "Scrub's Chow", 1);
+		ShopItem@ s = addShopItem(this, sell(Translate::ScrubChow, "1"), "$COIN$", "coin-29", Translate::SellChow.replace("{COINS}", "29"));
+		AddRequirement(s.requirements, "blob", "foodcan", name(Translate::ScrubChow), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sell Scrub's Chow XL (1)", "$COIN$", "coin-298", "My grandma loves this traditional dish.");
-		AddRequirement(s.requirements, "blob", "bigfoodcan", "Scrub's Chow XL", 1);
+		ShopItem@ s = addShopItem(this, sell(Translate::ScrubChowXL, "1"), "$COIN$", "coin-298", Translate::SellChow2);
+		AddRequirement(s.requirements, "blob", "bigfoodcan", name(Translate::ScrubChowXL), 1);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Lite Pistal", "$icon_banditpistol$", "banditpistol", "My grandma made this pistol.");
+		ShopItem@ s = addShopItem(this, name(Translate::BanditPistol), "$icon_banditpistol$", "banditpistol", desc(Translate::BanditPistol));
 		AddRequirement(s.requirements, "coin", "", "Coins", 147);
 		s.spawnNothing = true;
 	}
 	/*{
-		ShopItem@ s = addShopItem(this, "Timbr Grindr", "$icon_banditrifle$", "banditrifle", "I jammed two pipes in this and it kills people and works it's good.");
+		ShopItem@ s = addShopItem(this, name(Translate::BanditRifle), "$icon_banditrifle$", "banditrifle", desc(Translate::BanditRifle));
 		AddRequirement(s.requirements, "coin", "", "Coins", 190);
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Kill Pebles (5)", "$icon_banditammo$", "mat_banditammo-5", "My grandpa made these.");
+		ShopItem@ s = addShopItem(this, name(Translate::BanditAmmo)+" (5)", "$icon_banditammo$", "mat_banditammo-5", desc(Translate::BanditAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 21);
 		s.spawnNothing = true;
 	}*/
@@ -69,7 +70,7 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "A Working Mine", "$faultymine$", "faultymine", "You should buy this mine.");
+		ShopItem@ s = addShopItem(this, name(Translate::Faultymine), "$faultymine$", "faultymine", desc(Translate::Faultymine));
 		AddRequirement(s.requirements, "coin", "", "Coins", 33);
 		s.spawnNothing = true;
 	}

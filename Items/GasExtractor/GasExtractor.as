@@ -1,10 +1,12 @@
 #include "Hitters.as";
 #include "MaterialCommon.as";
+#include "TC_Translation.as";
 
 f32 maxDistance = 80;
 
 void onInit(CBlob@ this)
 {
+	this.setInventoryName(name(Translate::GasExtractor));
 	this.Tag("place norotate");
 
 	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("PICKUP");

@@ -1,4 +1,5 @@
 #include "RemoteAccess.as";
+#include "TC_Translation.as";
 
 const string raid_tag = "under raid";
 
@@ -10,8 +11,7 @@ void onInit(CBlob@ this)
 	this.Tag("ignore raid");
 	this.Tag("teamlocked tunnel");
 	
-	this.addCommandID("faction_captured");
-	this.addCommandID("faction_destroyed");
+	this.addCommandID("client_faction_defeated");
 	this.addCommandID("server_join_faction");
 	this.addCommandID("client_join_faction");
 }
@@ -49,6 +49,18 @@ void SetMinimap(CBlob@ this)
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
 {
+	server_DefeatFaction(this, oldTeam);
+}
+
+void onDie(CBlob@ this)
+{
+	if (this.hasTag("upgrading")) return;
+
+	server_DefeatFaction(this, this.getTeamNum());
+}
+
+void server_DefeatFaction(CBlob@ this, const u8&in oldTeam)
+{
 	if (!isServer()) return;
 
 	server_ResetStorageRemoteAccess(this);
@@ -56,46 +68,35 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 	CBlob@[] forts;
 	getBlobsByTag("faction_base", @forts);
 
-	const int newTeam = this.getTeamNum();
-	const int totalFortCount = forts.length;
-	int oldTeamForts = 0;
-	int newTeamForts = 0;
+	const u8 newTeam = this.getTeamNum();
+	const u16 totalFortCount = forts.length;
+	u16 oldTeamForts = 0;
 	
-	SetNearbyBlobsToTeam(this, oldTeam, newTeam);
+	if (oldTeam != newTeam)
+	{
+		server_SetNearbyBlobsToTeam(this, oldTeam, newTeam);
+	}
 	
-	for (uint i = 0; i < totalFortCount; i++)
+	for (u16 i = 0; i < totalFortCount; i++)
 	{
 		const int fortTeamNum = forts[i].getTeamNum();
-		if (fortTeamNum == newTeam)        newTeamForts++;
-		else if (fortTeamNum == oldTeam)   oldTeamForts++;
+		if (fortTeamNum == oldTeam)
+		{
+			oldTeamForts++;
+		}
 	}
 	
 	if (oldTeamForts <= 0)
 	{
 		CBitStream stream;
-		stream.write_s32(newTeam);
-		stream.write_s32(oldTeam);
-		stream.write_bool(oldTeamForts == 0);
+		stream.write_u8(newTeam);
+		stream.write_u8(oldTeam);
 
-		this.SendCommand(this.getCommandID("faction_captured"), stream);
-
-		// for (u8 i = 0; i < getPlayerCount(); i++)
-		// {
-			// CPlayer@ p = getPlayer(i);
-			// if (p !is null && p.getTeamNum() == oldTeam)
-			// {
-				// p.server_setTeamNum(XORRandom(100)+100);
-				// CBlob@ b = p.getBlob();
-				// if (b !is null)
-				// {
-					// b.server_Die();
-				// }
-			// }
-		// }
+		this.SendCommand(this.getCommandID("client_faction_defeated"), stream);
 	}
 }
 
-void SetNearbyBlobsToTeam(CBlob@ this, const int oldTeam, const int newTeam)
+void server_SetNearbyBlobsToTeam(CBlob@ this, const int oldTeam, const int newTeam)
 {
 	CBlob@[] teamBlobs;
 	getMap().getBlobsInRadius(this.getPosition(), 128.0f, @teamBlobs);
@@ -127,40 +128,6 @@ void server_ResetStorageRemoteAccess(CBlob@ this)
 	}
 }
 
-void onDie(CBlob@ this)
-{
-	if (!isServer()) return;
-
-	if (this.hasTag("upgrading")) return;
-	
-	this.Tag("dead");
-
-	server_ResetStorageRemoteAccess(this);
-
-	CBlob@[] forts;
-	getBlobsByTag("faction_base", @forts);
-
-	int teamForts = 0;
-	const u8 team = this.getTeamNum();
-	
-	for (uint i = 0; i < forts.length; i++)
-	{
-		CBlob@ fort = forts[i];
-		if (fort.getTeamNum() == team && fort !is this)
-		{
-			teamForts++;
-		}
-	}
-	
-	if (teamForts <= 0)
-	{
-		CBitStream stream;
-		stream.write_s32(team);
-		
-		this.SendCommand(this.getCommandID("faction_destroyed"), stream);
-	}
-}
-
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	CRules@ rules = getRules();
@@ -168,8 +135,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	const u8 teamsCount = rules.getTeamsCount();
 	if (this.isOverlapping(caller) && caller.getTeamNum() >= teamsCount && team < teamsCount)
 	{
-		const string msg = "Join the Faction";
-		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_join_faction"), msg);
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_join_faction"), Translate::JoinFaction);
 	}
 }
 
@@ -187,66 +153,39 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const u8 teamsCount = getRules().getTeamsCount();
 		if (myTeam < teamsCount && player.getTeamNum() >= teamsCount)
 		{
-			const bool deserter = player.get_u32("teamkick_time") > getGameTime();
-			if (!deserter)
-			{
-				player.server_setTeamNum(myTeam);
-				CBlob@ newPlayer = server_CreateBlob("builder", myTeam, blob.getPosition());
-				newPlayer.server_SetPlayer(player);
-				blob.server_Die();
+			player.server_setTeamNum(myTeam);
+			CBlob@ newPlayer = server_CreateBlob("builder", myTeam, blob.getPosition());
+			newPlayer.server_SetPlayer(player);
+			blob.server_Die();
 
-				this.SendCommand(this.getCommandID("client_join_faction"));
-			}
+			this.SendCommand(this.getCommandID("client_join_faction"));
 		}
 	}
 	else if (cmd == this.getCommandID("client_join_faction") && isClient())
 	{
 		this.getSprite().PlaySound("party_join.ogg");
 	}
-	else if (cmd == this.getCommandID("faction_captured") && isClient())
+	else if (cmd == this.getCommandID("client_faction_defeated") && isClient())
 	{
-		CRules@ rules = getRules();
-	
-		const int newTeam = params.read_s32();
-		const int oldTeam = params.read_s32();
-		const bool defeat = params.read_bool();
+		const u8 newTeam = params.read_u8();
+		const u8 oldTeam = params.read_u8();
 		
-		if (oldTeam >= rules.getTeamsCount()) return;
+		CRules@ rules = getRules();
+		if (oldTeam >= rules.getTeamsCount() || newTeam >= rules.getTeamsCount()) return;
 		
 		const string oldTeamName = rules.getTeam(oldTeam).getName();
-		const string newTeamName = rules.getTeam(newTeam).getName();
-		
-		if (defeat)
+
+		string message = Translate::Defeat.replace("{LOSER}", oldTeamName);
+		if (newTeam != oldTeam)
 		{
-			client_AddToChat(oldTeamName + " has been defeated by the " + newTeamName + "!", SColor(0xff444444));
-			
-			CPlayer@ ply = getLocalPlayer();
-			if (oldTeam == ply.getTeamNum())
-			{
-				Sound::Play("FanfareLose.ogg");
-			}
-			else
-			{
-				Sound::Play("flag_score.ogg");
-			}
+			const string newTeamName = rules.getTeam(oldTeam).getName();
+			message = Translate::Defeated.replace("{LOSER}", oldTeamName).replace("{WINNER}", newTeamName);
 		}
-		else
-		{
-			client_AddToChat(oldTeamName + "'s Fortress been captured by the " + newTeamName + "!", SColor(0xff444444));
-		}
-	}
-	else if (cmd == this.getCommandID("faction_destroyed") && isClient())
-	{
-		CRules@ rules = getRules();
-	
-		const int team = params.read_s32();
-		if (team >= rules.getTeamsCount()) return;
 		
-		const string teamName = rules.getTeam(team).getName();
-		client_AddToChat(teamName + " has been defeated!", SColor(0xff444444));
-		
-		CPlayer@ ply = getLocalPlayer();
-		if (team == ply.getTeamNum())
+		client_AddToChat(message, SColor(0xff444444));
+
+		CPlayer@ localPlayer = getLocalPlayer();
+		if (localPlayer !is null && oldTeam == localPlayer.getTeamNum())
 		{
 			Sound::Play("FanfareLose.ogg");
 		}

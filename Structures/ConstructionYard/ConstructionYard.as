@@ -3,6 +3,7 @@
 #include "Requirements.as";
 #include "ShopCommon.as";
 #include "Descriptions.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -36,8 +37,8 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Steam Tank", "$icon_steamtank$", "steamtank", "$icon_steamtank$\n\n\n" + "An armored land vehicle. Comes with a powerful cannon and a durable ram.", false, true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 10);
+		ShopItem@ s = addShopItem(this, name(Translate::SteamTank), "$icon_steamtank$", "steamtank", "$icon_steamtank$\n\n\n" + desc(Translate::SteamTank), false, true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 10);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		s.crate_icon = 7;
@@ -45,7 +46,6 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
-	
 	// {
 		// ShopItem@ s = addShopItem(this, "Ballista Ammo", "$mat_bolts$", "mat_bolts", "$mat_bolts$\n\n\n" + descriptions[15], false, false);
 		// s.crate_icon = 5;
@@ -65,14 +65,6 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
-	// {
-		// ShopItem@ s = addShopItem(this, "Buoy", "$buoy_icon$", "buoy", "Useful for anchoring.");
-		// // AddRequirement(s.requirements, "blob", "mat_hemp", "Hemp", 5);
-		// AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 100);
-		// AddRequirement(s.requirements, "blob", "mat_gold", "Gold", 100);
-		// AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 100);
-		// s.spawnNothing = true;
-	// }
 	{
 		ShopItem@ s = addShopItem(this, "Longboat", "$longboat$", "longboat", "$longboat$\n\n\n" + Descriptions::longboat, false, true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
@@ -91,11 +83,9 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
-
-
 	{
-		ShopItem@ s = addShopItem(this, "Machine Gun", "$icon_gatlinggun$", "gatlinggun", "Useful for making holes.", false, true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 4);
+		ShopItem@ s = addShopItem(this, name(Translate::Machinegun), "$icon_gatlinggun$", "gatlinggun", desc(Translate::Machinegun), false, true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 4);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		s.crate_icon = 11;
@@ -103,19 +93,17 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
-	
 	{
-		ShopItem@ s = addShopItem(this, "Mortar", "$icon_mortar$", "mortar", "Mortar combat!", false, true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 6);
+		ShopItem@ s = addShopItem(this, name(Translate::Mortar), "$icon_mortar$", "mortar", desc(Translate::Mortar), false, true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 6);
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		s.crate_icon = 3;
 		s.customButton = true;
 		s.buttonwidth = 2;
 		s.buttonheight = 2;
 	}
-	
 	{
-		ShopItem@ s = addShopItem(this, "Bomber", "$icon_bomber$", "bomber", "$icon_bomber$\n\n\n\n\n\n\n\n" + "A large aerial vehicle used for safe transport and bombing the peasants below.", false, true);
+		ShopItem@ s = addShopItem(this, "Bomber", "$icon_bomber$", "bomber", "$icon_bomber$\n\n\n\n\n\n\n\n" + desc(Translate::Bomber), false, true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.crate_icon = 13;
@@ -123,23 +111,20 @@ void onInit(CBlob@ this)
 		s.buttonwidth = 4;
 		s.buttonheight = 4;
 	}
-	
-	
 	{
-		ShopItem@ s = addShopItem(this, "Armored Bomber", "$icon_armoredbomber$", "armoredbomber", "$icon_armoredbomber$\n\n\n\n\n\n\n\n" + "A fortified but slow moving balloon with an iron basket and two attachment slots. Resistant against gunfire.", false, true);
+		ShopItem@ s = addShopItem(this, name(Translate::ArmoredBomber), "$icon_armoredbomber$", "armoredbomber", "$icon_armoredbomber$\n\n\n\n\n\n\n\n" + desc(Translate::ArmoredBomber), false, true);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 200);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 5);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 2);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 200);
 		s.crate_icon = 13;
 		s.customButton = true;
 		s.buttonwidth = 4;
 		s.buttonheight = 4;
 	}
-	
 	{
-		ShopItem@ s = addShopItem(this, "Howitzer", "$icon_howitzer$", "howitzer", "Mortar's bigger brother.", false, true);
-		AddRequirement(s.requirements, "blob", "mat_steelingot", "Steel Ingot", 5);
+		ShopItem@ s = addShopItem(this, name(Translate::Howitzer), "$icon_howitzer$", "howitzer", desc(Translate::Howitzer), false, true);
+		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 5);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 		AddRequirement(s.requirements, "coin", "", "Coins", 200);
 		s.crate_icon = 12;
@@ -148,8 +133,8 @@ void onInit(CBlob@ this)
 		s.buttonheight = 2;
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Rocket Launcher", "$icon_rocketlauncher$", "rocketlauncher", "A rapid-fire rocket launcher especially useful against aerial targets.", false, true);
-		AddRequirement(s.requirements, "blob", "mat_ironingot", "Iron Ingot", 2);
+		ShopItem@ s = addShopItem(this, name(Translate::RocketLauncher), "$icon_rocketlauncher$", "rocketlauncher", desc(Translate::RocketLauncher), false, true);
+		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
 		s.crate_icon = 12;
