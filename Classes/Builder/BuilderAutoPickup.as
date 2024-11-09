@@ -1,6 +1,7 @@
 #define SERVER_ONLY
 
 //#include "CratePickupCommon.as"
+#include "GetBackpack.as";
 
 void onInit(CBlob@ this)
 {
@@ -37,6 +38,15 @@ void Take(CBlob@ this, CBlob@ blob)
 	if (getGameTime() < blob.get_u32("autopick time") && isOwner) return;
 
 	if (this.server_PutInInventory(blob)) return;
+	if (server_PutInBackpack(this, blob)) return;
+}
+
+bool server_PutInBackpack(CBlob@ this, CBlob@ blob)
+{
+	CBlob@ backpack = getBackpack(this);
+	if (backpack is null) return false;
+
+	return backpack.server_PutInInventory(blob);
 }
 
 bool isPickupBlob(CBlob@ blob)
