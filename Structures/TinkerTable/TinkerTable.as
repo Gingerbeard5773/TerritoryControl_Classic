@@ -90,6 +90,13 @@ void onInit(CBlob@ this)
 		s.spawnNothing = true;
 	}*/
 	{
+		ShopItem@ s = addShopItem(this, name(Translate::Jetpack), "$icon_jetpack$", "jetpack", desc(Translate::Jetpack));
+		AddRequirement(s.requirements, "blob", "mat_smallrocket", name(Translate::SmallRocket), 2);
+		AddRequirement(s.requirements, "blob", "mat_oil", Translate::Oil, 50);
+		AddRequirement(s.requirements, "coin", "", "Coins", 150);
+		s.spawnNothing = true;
+	}
+	{
 		ShopItem@ s = addShopItem(this, name(Translate::ScubaGear), "$icon_scubagear$", "scubagear", desc(Translate::ScubaGear));
 		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 1);
 		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
