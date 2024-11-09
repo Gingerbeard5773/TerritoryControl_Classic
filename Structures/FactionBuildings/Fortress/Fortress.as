@@ -58,7 +58,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 		if (inv.getItemsCount() > 0)
 		{
-			CButton@ buttonOwner = caller.CreateGenericButton(28, Vec2f(14, 5), this, this.getCommandID("sv_store"), "Store");
+			CButton@ buttonOwner = caller.CreateGenericButton(28, Vec2f(14, 5), this, this.getCommandID("sv_store"), getTranslatedString("Store"));
 		}
 	}
 	this.set_bool("shop available", caller.isOverlapping(this));

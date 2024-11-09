@@ -227,7 +227,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 		if (inv.getItem(name) !is null)
 		{
-			CButton@ store = caller.CreateGenericButton(28, Vec2f(0, 6), this, this.getCommandID("sv_store"), "Store");
+			CButton@ store = caller.CreateGenericButton(28, Vec2f(0, 6), this, this.getCommandID("sv_store"), getTranslatedString("Store"));
 			break;
 		}
 	}
