@@ -50,7 +50,7 @@ void onInit(CBlob@ this)
 		GunInfo@ gun;
 		if (lance.get("gunInfo", @gun))
 		{
-			gun.ammo = gun.ammo_max;
+			//gun.ammo = gun.ammo_max;
 		}
 	}
 }
