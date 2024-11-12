@@ -34,6 +34,7 @@ void onInit(CRules@ this)
 	print("Mirsario    |  Contributor", print_col);
 	print("Cesar0      |  Contributor", print_col);
 	print("Sylw        |  Contributor", print_col);
+	print("GoldenGuy   |  Contributor & Russian Translator", print_col);
 	print("Vamist      |  Hoster", print_col);
 	print("");
 }
