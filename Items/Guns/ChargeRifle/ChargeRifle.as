@@ -31,7 +31,7 @@ void onInit(CBlob@ this)
 	gun.sprite_recoil = 5.0f;
 	gun.sprite_offset = this.getSprite().getOffset();
 	gun.muzzle_offset = Vec2f(0.0f, -1.0f);
-	gun.tracer_name = "ChargeLance_Tracer.png";
+	gun.tracer_type = 1;
 	
 	gun.recoil_modifier = 0.65f;
 

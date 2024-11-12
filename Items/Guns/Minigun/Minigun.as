@@ -29,7 +29,7 @@ void onInit(CBlob@ this)
 	gun.sprite_recoil = 5.0f;
 	gun.sprite_offset = this.getSprite().getOffset();
 	gun.muzzle_offset = Vec2f(0.0f, 0.0f);
-	gun.tracer_name = "GatlingGun_Tracer.png";
+	gun.tracer_type = 0;
 
 	gun.sound_fire = SoundInfo("Minigun_Shoot", 2.0f, 1.0f, 0);
 	gun.sound_reload = SoundInfo("SMGReload", 1.0f, 0.8f, 0);

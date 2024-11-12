@@ -145,19 +145,23 @@ void HandleReloading(CBlob@ this, CBlob@ holder, GunInfo@ gun, CInventory@ inven
 	}
 }
 
-void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_time, const f32&in aim_angle, const bool&in isBot)
+void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_time, f32&in aim_angle, const bool&in isBot)
 {
 	gun.ammo -= 1;
 	gun.fire_time = game_time + gun.fire_delay;
 
 	if (gun.projectile.isEmpty())
 	{
-		//fire raycasts 
+		//fire raycast bullets 
 		Vec2f position = this.getPosition();
+		Vec2f offset = gun.muzzle_offset;
+		position += offset.RotateBy(aim_angle);
+		aim_angle += this.isFacingLeft() ? 180 : 0;
 		const int random = XORRandom(200);
+
 		if (holder.isMyPlayer())
 		{
-			ShootRaycast(this, holder, gun, position, aim_angle, random);
+			ShootBullet(this, gun, position, aim_angle, random, game_time);
 			PlayFireSound(this.getSprite(), gun);
 			DoRecoil(this, holder, gun);
 			ShakeScreen(Maths::Min(gun.bullet_damage * gun.bullet_count * 12, 150), 8, holder.getPosition());
@@ -168,6 +172,7 @@ void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_
 				stream.write_s32(random);
 				stream.write_f32(aim_angle);
 				stream.write_Vec2f(position);
+				stream.write_u32(game_time);
 				this.SendCommand(this.getCommandID("server_fire"), stream);
 			}
 		}
@@ -175,9 +180,9 @@ void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_
 		{
 			if (!isClient()) //no localhost
 			{
-				ShootRaycast(this, holder, gun, position, aim_angle, random);
+				ShootBullet(this, gun, position, aim_angle, random, game_time);
 			}
-			client_Fire(this, holder, position, aim_angle, random);
+			client_Fire(this, holder, position, aim_angle, random, game_time);
 		}
 	}
 	else
@@ -198,13 +203,8 @@ void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_
 	}
 }
 
-void ShootRaycast(CBlob@ this, CBlob@ holder, GunInfo@ gun, Vec2f position, const f32&in aim_angle, int&in random)
+void ShootBullet(CBlob@ this, GunInfo@ gun, Vec2f position, const f32&in aim_angle, int&in random, const u32&in game_time)
 {
-	CMap@ map = getMap();
-	Vec2f offset = gun.muzzle_offset;
-	position += offset.RotateBy(aim_angle);
-	const bool flip = this.isFacingLeft();
-	
 	gun.sprite_rebound = gun.sprite_recoil;
 
 	Random bullet_random(random);
@@ -215,53 +215,8 @@ void ShootRaycast(CBlob@ this, CBlob@ holder, GunInfo@ gun, Vec2f position, cons
 		bullet_random.Reset(random + 1);
 		const f32 jitter = ((100 - int(random)) / 100.0f) * gun.bullet_jitter;
 		const f32 angle = aim_angle + jitter;
-		Vec2f dir = Vec2f(flip ? -1 : 1, 0.0f).RotateBy(angle);
-		
-		f32 length = gun.bullet_range;
-		
-		HitInfo@[] hitInfos;
-		if (map.getHitInfosFromRay(position, angle + (flip ? 180.0f : 0.0f), length, this, @hitInfos)) 
-		{
-			f32 falloff = 1;
-			for (u32 i = 0; i < hitInfos.length; i++) 
-			{
-				HitInfo@ hit = hitInfos[i];
-				CBlob@ blob = hit.blob;
-				if (blob is null)
-				{
-					Tile tile = map.getTile(hit.tileOffset);
-					if ((map.isTileWood(tile.type) || gun.bullet_damage > 1.5f) && !map.isTileBedrock(tile.type))
-					{
-						map.server_DestroyTile(hit.hitpos, gun.bullet_damage * 0.25f);
-					}
 
-					length = (hit.hitpos - position).Length();
-					break;
-				}
-
-				if (blob.isPlatform() && !CollidesWithPlatform(blob, -dir)) continue;
-			
-				const bool willHit = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true; 
-				
-				if (blob.isCollidable() && willHit && !blob.hasTag("invincible") && !blob.hasTag("gun"))
-				{
-					holder.server_Hit(blob, hit.hitpos, dir, gun.bullet_damage * Maths::Max(0.1, falloff), HittersTC::bullet, true);
-					falloff *= gun.bullet_pierce_factor;
-					
-					if (blob.getShape().isStatic())
-					{
-						length = (hit.hitpos - position).Length();
-						break;
-					}
-				}
-			}
-		}
-
-		if (isClient())
-		{
-			gun.tracer_tick = 0;
-			DrawLine(this.getSprite(), gun, i, length / 32, angle);
-		}
+		CreateBullet(this, angle, position, game_time);
 	}
 }
 
@@ -294,8 +249,10 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const int random = params.read_s32();
 		const f32 aim_angle = params.read_f32();
 		Vec2f position = params.read_Vec2f();
-		ShootRaycast(this, holder, gun, position, aim_angle, random);
-		client_Fire(this, holder, position, aim_angle, random);
+		const u32 game_time = params.read_u32();
+
+		ShootBullet(this, gun, position, aim_angle, random, game_time);
+		client_Fire(this, holder, position, aim_angle, random, game_time);
 	}
 	else if (cmd == this.getCommandID("client_fire") && isClient())
 	{	
@@ -305,8 +262,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const int random = params.read_s32();
 		const f32 aim_angle = params.read_f32();
 		Vec2f position = params.read_Vec2f();
+		const u32 game_time = params.read_u32();
 
-		ShootRaycast(this, holder, gun, position, aim_angle, random);
+		ShootBullet(this, gun, position, aim_angle, random, game_time);
 		PlayFireSound(this.getSprite(), gun);
 	}
 	else if (cmd == this.getCommandID("server_fireblob") && isServer())
@@ -355,13 +313,14 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 }
 
-void client_Fire(CBlob@ this, CBlob@ holder, Vec2f position, const f32&in aim_angle, const int&in random)
+void client_Fire(CBlob@ this, CBlob@ holder, Vec2f position, const f32&in aim_angle, const int&in random, const u32&in game_time)
 {
 	CBitStream stream;
 	stream.write_netid(holder.getNetworkID());
 	stream.write_s32(random);
 	stream.write_f32(aim_angle);
 	stream.write_Vec2f(position);
+	stream.write_u32(game_time);
 	this.SendCommand(this.getCommandID("client_fire"), stream);
 }
 
@@ -428,13 +387,6 @@ u32 server_TakeAmmo(CBlob@ holder, CInventory@ inv, GunInfo@ gun, const u32&in a
 	return taken;
 }
 
-bool CollidesWithPlatform(CBlob@ blob, Vec2f velocity)
-{	
-	Vec2f direction = Vec2f(0.0f, -1.0f).RotateBy(blob.getAngleDegrees());
-	const f32 velocity_angle = direction.AngleWith(velocity);
-	return velocity_angle > -90.0f && velocity_angle < 90.0f;
-}
-
 f32 getAimAngle(CBlob@ this, CBlob@ holder)
 {
 	Vec2f aim_vec = (this.getPosition() - holder.getAimPos());
@@ -494,51 +446,6 @@ void onInit(CSprite@ this)
 		this.SetEmitSoundVolume(gun.sound_fire.volume);
 		this.SetEmitSoundPaused(true);
 	}
-
-	for (int i = 0; i < gun.bullet_count; i++)
-	{
-		CSpriteLayer@ tracer = this.addSpriteLayer("tracer" + i, gun.tracer_name, 32, 1);
-		if (tracer !is null)
-		{
-			tracer.SetRelativeZ(-1.0f);
-			tracer.setRenderStyle(RenderStyle::additive);
-			tracer.SetVisible(true);
-		}
-	}
-}
-
-void onTick(CSprite@ this)
-{
-	CBlob@ blob = this.getBlob();
-	GunInfo@ gun;
-	if (!blob.get("gunInfo", @gun) || gun.bullet_count <= 0) return;
-	
-	if (gun.tracer_tick == 1)
-	{
-		for (int i = 0; i < gun.bullet_count; i++)
-		{
-			CSpriteLayer@ tracer = this.getSpriteLayer("tracer" + i);
-			tracer.ResetTransform();
-			tracer.ScaleBy(Vec2f(0.0f, 1.0f));
-		}
-	}
-	if (gun.tracer_tick < 2)
-		gun.tracer_tick++;
-}
-
-void DrawLine(CSprite@ this, GunInfo@ gun, const u8&in index, const f32&in length, f32&in angle)
-{
-	const bool facing = this.isFacingLeft();
-	angle += (facing ? 180 : 0);
-	CSpriteLayer@ tracer = this.getSpriteLayer("tracer" + index);
-	tracer.ResetTransform();
-	tracer.SetVisible(true);
-	tracer.ScaleBy(Vec2f(length, 1.0f));
-	tracer.TranslateBy(Vec2f(length * 16.0f, 0.0f));
-	Vec2f offset(gun.muzzle_offset.x, gun.muzzle_offset.y * (facing ? -1 : 1));
-	offset.RotateBy(angle * (facing ? 1 : -1));
-	tracer.SetOffset(offset);
-	tracer.RotateBy(angle, Vec2f());
 }
 
 void DoRecoil(CBlob@ this, CBlob@ holder, GunInfo@ gun)
