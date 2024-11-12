@@ -93,7 +93,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	}
 	{
 		BuildBlock b(0, "iron_door", "$iron_door$", Translate::IronDoor);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 4);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 4);
 		blocks[0].push_back(b);
 	}
 	{
@@ -108,7 +108,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	}
 	{
 		BuildBlock b(CMap::tile_iron, "iron_block", "$iron_block$", Translate::IronBlock);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 2);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		blocks[0].push_back(b);
 	}
 	{
@@ -118,17 +118,17 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	}
 	{
 		BuildBlock b(CMap::tile_plasteel, "plasteel_block", "$plasteel_block$", Translate::PlasteelBlock);
-		AddRequirement(b.reqs, "blob", "mat_plasteel", "Plasteel Sheet", 4);
+		AddRequirement(b.reqs, "blob", "mat_plasteel", name(Translate::Plasteel), 4);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(0, "iron_platform", "$iron_platform$", Translate::IronPlatform);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 3);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 3);
 		blocks[0].push_back(b);
 	}
 	{
 		BuildBlock b(CMap::tile_ground, "ground_block", "$ground_block$", Translate::DirtBlock);
-		AddRequirement(b.reqs, "blob", "mat_dirt", "Dirt", 15);
+		AddRequirement(b.reqs, "blob", "mat_dirt", Translate::Dirt, 15);
 		blocks[0].push_back(b);
 	}
 	{
@@ -274,7 +274,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		BuildBlock b(0, "drillrig", "$icon_drillrig$", Translate::DrillRig);
 		AddRequirement(b.reqs, "blob", "drill", "Drill", 1);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingot", 2);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		b.buildOnGround = true;
 		b.size.Set(24, 24);
 		blocks[2].push_back(b);
@@ -296,14 +296,14 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	{
 		BuildBlock b(0, "industriallamp", "$icon_industriallamp$", Translate::Lamp);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Wood", 30);
-		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
+		AddRequirement(b.reqs, "blob", "mat_copperwire", name(Translate::CopperWire), 1);
 		blocks[2].push_back(b);
 	}
 	{
 		BuildBlock b(0, "grinder", "$icon_grinder$", Translate::Grinder);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 250);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 5);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
 		b.buildOnGround = true;
 		b.size.Set(40, 24);
 		blocks[2].push_back(b);
@@ -336,8 +336,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	}
 	{
 		BuildBlock b(0, "ironlocker", "$icon_ironlocker$", Translate::Locker);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingots", 5);
-		// AddRequirement(b.reqs, "blob", "mat_steelingot", "Steel Ingot", 1);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
 		b.buildOnGround = true;
 		b.size.Set(16, 24);
 		blocks[3].push_back(b);
@@ -346,7 +345,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		BuildBlock b(0, "siren", "$icon_siren$", Translate::Siren);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
-		AddRequirement(b.reqs, "blob", "mat_goldingot", "Gold Ingot", 2);
+		AddRequirement(b.reqs, "blob", "mat_goldingot", name(Translate::GoldIngot), 2);
 		b.buildOnGround = true;
 		b.size.Set(24, 32);
 		blocks[3].push_back(b);
@@ -355,20 +354,20 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		BuildBlock b(0, "lamppost", "$icon_lamppost$", Translate::LampPost);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 40);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 25);
-		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
+		AddRequirement(b.reqs, "blob", "mat_copperwire", name(Translate::CopperWire), 1);
 		b.buildOnGround = true;
 		b.size.Set(8, 24);
 		blocks[3].push_back(b);
 	}
 	{
 		BuildBlock b(0, "barbedwire", "$icon_barbedwire$", Translate::BarbedWire);
-		AddRequirement(b.reqs, "blob", "mat_ironingot", "Iron Ingot", 1);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 1);
 		blocks[3].push_back(b);
 	}
 	{
 		BuildBlock b(0, "teamlamp", "$icon_teamlamp$", Translate::TeamLamp);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 20);
-		AddRequirement(b.reqs, "blob", "mat_copperwire", "Copper Wire", 1);
+		AddRequirement(b.reqs, "blob", "mat_copperwire", name(Translate::CopperWire), 1);
 		blocks[3].push_back(b);
 	}
 	{
@@ -390,7 +389,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	{
 		BuildBlock b(0, "oiltank", "$icon_oiltank$", Translate::OilTank);
 		AddRequirement(b.reqs, "blob", "mat_wood","Wood", 250);
-		AddRequirement(b.reqs, "blob", "mat_ironingot","Iron Ingots", 2);
+		AddRequirement(b.reqs, "blob", "mat_ironingot", name(Translate::IronIngot), 2);
 		b.buildOnGround = true;
 		b.size.Set(32, 16);
 		blocks[3].push_back(b);
