@@ -17,7 +17,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(4, 6));
 	this.set_string("shop description", name(Translate::Bombshop));
 	this.set_u8("shop icon", 15);
-	
+
+	this.setInventoryName(name(Translate::Bombshop));
+
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 	

@@ -27,6 +27,8 @@ void onInit(CBlob@ this)
 	
 	this.getCurrentScript().tickFrequency = 15;
 	
+	this.setInventoryName(name(Translate::DrillRig));
+	
 	this.set_bool("isActive", false);
 	this.addCommandID("sv_toggle");
 	this.addCommandID("cl_toggle");

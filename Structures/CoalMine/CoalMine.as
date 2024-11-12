@@ -50,7 +50,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(3, 2));
 	this.set_string("shop description", Translate::CoalMine);
 	this.set_u8("shop icon", 25);
-		
+	
+	this.setInventoryName(Translate::CoalMine);
+
 	{
 		ShopItem@ s = addShopItem(this, buy(Translate::Dirt, "100"), "$icon_dirt$", "mat_dirt-100", buy(Translate::Dirt, "100", "100"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);

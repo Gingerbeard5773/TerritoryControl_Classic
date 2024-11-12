@@ -25,6 +25,8 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(2, 2));
 	this.set_string("shop description", Translate::WitchShack);
 	this.set_u8("shop icon", 25);
+
+	this.setInventoryName(Translate::WitchShack);
 	
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::ProcessMithril)+" (1)", "$icon_mithrilingot$", "mat_mithrilingot-1", desc(Translate::ProcessMithril));

@@ -23,7 +23,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(3, 2));
 	this.set_string("shop description", name(Translate::Armory)+" ");
 	this.set_u8("shop icon", 15);
-	
+
+	this.setInventoryName(name(Translate::Armory));
+
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::RoyalArmor), "$icon_royalarmor$", "royalarmor", desc(Translate::RoyalArmor));
 		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 8);

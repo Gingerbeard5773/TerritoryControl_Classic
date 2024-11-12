@@ -46,7 +46,7 @@ namespace Translate
 	DrillRig       = Translate("Driller Mole\nAn automatic drilling machine that mines resources underneath.", "Крот-бурильщик\nАвтоматический буровой станок, который добывает ресурсы под ней."),
 	Hopper         = Translate("Hopper\nPicks up items lying on the ground.", "Воронка\nПоднимает предметы, лежащие на земле."),
 	Extractor      = Translate("Extractor\nGrabs items from nearby inventories.", "Экстрактор\nЗахватывает предметы из ближайших запасов."),
-	Lamp           = Translate("Industrial Lamp\nA sturdy lamp to ligten up the mood in your factory.\nActs as a support block.", "Промышленная лампа\nПрочная лампа, которая поднимет настроение на вашем заводе.\nДействует как опорный блок."),
+	Lamp           = Translate("Industrial Lamp\nA sturdy lamp to lighten up the mood in your factory.\nActs as a support block.", "Промышленная лампа\nПрочная лампа, которая поднимет настроение на вашем заводе.\nДействует как опорный блок."),
 	Grinder        = Translate("Grinder\nA dangerous machine capable of destroying almost everything.", "Измельчитель\nОпасная машина, способная уничтожить практически все."),
 	Packer         = Translate("Packer\nA safe machine capable of packing almost everything.", "Упаковщик\nБезопасная машина, способная упаковывать практически все."),
 	Inserter       = Translate("Inserter\nTransfers items between inventories next to it.\nLarge funnel acts as input, small funnel as output.", "Вставщик\nПереносит предметы между соседними инвентарями.\nБольшая воронка служит входом, маленькая - выходом."),

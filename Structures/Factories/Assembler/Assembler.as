@@ -187,6 +187,8 @@ void onInit(CBlob@ this)
 
 	this.getCurrentScript().tickFrequency = 60;
 
+	this.setInventoryName(name(Translate::Assembler));
+
 	this.Tag("builder always hit");
 	this.Tag("ignore extractor");
 

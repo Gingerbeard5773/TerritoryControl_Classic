@@ -16,7 +16,7 @@ void onInit(CBlob@ this)
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
-	
+
 	{
 		ShopItem@ s = addShopItem(this, deconstruct("10 "+name(Translate::Plasteel)), "$icon_matter_0$", "mat_matter-10", transmute2(name(Translate::Plasteel), "10", Translate::Matter, "10"));
 		AddRequirement(s.requirements, "blob", "mat_plasteel", name(Translate::Plasteel), 10);

@@ -41,7 +41,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(4, 4));
 	this.set_string("shop description", name(Translate::Gunsmith)+" ");
 	this.set_u8("shop icon", 15);
-	
+
+	this.setInventoryName(name(Translate::Gunsmith));
+
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::LowCalAmmo)+" (20)", "$icon_pistolammo$", "mat_pistolammo-20", desc(Translate::LowCalAmmo));
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
