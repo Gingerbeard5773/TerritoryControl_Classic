@@ -3,6 +3,7 @@
 #include "Hitters.as";
 #include "HittersTC.as";
 #include "Explosion.as";
+#include "TC_Translation.as";
 
 const Vec2f arm_offset = Vec2f(-2, -4);
 
@@ -55,7 +56,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "mat_tankshell", // bullet ammo config name
-	                    "Tank Shells", // name for ammo selection
+	                    name(Translate::TankShell), // name for ammo selection
 	                    "tankshell", // bullet config name
 	                    "KegExplosion", // fire sound
 	                    "EmptyFire", // empty fire sound

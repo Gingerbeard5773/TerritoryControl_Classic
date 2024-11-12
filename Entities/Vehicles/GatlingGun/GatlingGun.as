@@ -1,6 +1,7 @@
 #include "VehicleCommon.as";
 #include "Hitters.as";
 #include "HittersTC.as";
+#include "TC_Translation.as";
 
 // Gatling Gun Logic
 
@@ -30,7 +31,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "mat_gatlingammo", // bullet ammo config name
-	                    "Machine Gun Ammo", // name for ammo selection
+	                    name(Translate::MachinegunAmmo), // name for ammo selection
 	                    "", // bullet config name
 	                    "GatlingGun-Shoot0", // fire sound
 	                    "EmptyFire", // empty fire sound

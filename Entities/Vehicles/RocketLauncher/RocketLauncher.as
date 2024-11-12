@@ -1,5 +1,6 @@
 #include "VehicleCommon.as";
 #include "Hitters.as";
+#include "TC_Translation.as";
 
 // Rocket Launcher Logic
 
@@ -53,7 +54,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "mat_smallrocket", // bullet ammo config name
-	                    "Rockets", // name for ammo selection
+	                    name(Translate::SmallRocket), // name for ammo selection
 	                    "smallrocket", // bullet config name
 	                    "KegExplosion", // fire sound
 	                    "EmptyFire", // empty fire sound

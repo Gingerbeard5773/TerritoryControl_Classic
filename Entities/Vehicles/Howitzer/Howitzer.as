@@ -1,4 +1,5 @@
 #include "VehicleCommon.as";
+#include "TC_Translation.as";
 
 // Howitzer Logic
 
@@ -52,7 +53,7 @@ void onInit(CBlob@ this)
 	                    1, // fire bullets amount
 	                    1, // fire cost
 	                    "mat_howitzershell", // bullet ammo config name
-	                    "Howitzer Shells", // name for ammo selection
+	                    name(Translate::HowitzerShell), // name for ammo selection
 	                    "howitzershell", // bullet config name
 	                    "KegExplosion", // fire sound
 	                    "EmptyFire", // empty fire sound
