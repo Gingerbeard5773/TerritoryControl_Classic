@@ -9,7 +9,6 @@
 BulletHolder@ BulletGrouped = BulletHolder();
 
 const string[] bullet_types = { "TracerBullet.png", "TracerPlasma.png" };
-
 const string[] bullet_fades = { "FadeBullet.png", "FadePlasma.png" };
 
 Vertex[][] vertex_bullet_book(bullet_types.length);
@@ -47,7 +46,7 @@ void Reset(CRules@ this)
 		vertex_bullet_book[i].clear();
 		vertex_fade_book[i].clear();
 	}
-	
+
 	BulletGrouped.bullets.clear();
 }
 
@@ -72,7 +71,7 @@ void RenderBullets(int id)
 
 		//Render bullet
 		Render::RawQuads(bullet_types[i], vertex_bullet);
-		
+
 		//Render fade
 		Render::RawQuads(bullet_fades[i], vertex_fade);
 
@@ -87,10 +86,13 @@ void RenderBullets(int id)
 
 void onCreateBullet(CBlob@ blob, f32 angle, Vec2f position, u32 time_spawned)
 {
-	Bullet bullet(blob, angle, position);
+	GunInfo@ gun;
+	if (!blob.get("gunInfo", @gun)) { error("gunInfo not set to blob, cannot create bullet! : "+blob.getName()); return; }
+
+	Bullet bullet(blob, gun, angle, position);
 
 	CMap@ map = getMap();
-	
+
 	while (time_spawned++ < getGameTime()) // Catch up to everybody else
 	{
 		bullet.Tick(map);

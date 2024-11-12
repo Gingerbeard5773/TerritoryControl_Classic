@@ -10,6 +10,7 @@
 #include "GunCommon.as";
 
 Driver@ PDriver = getDriver();
+SColor back_color = SColor(0, 255, 255, 255);
 
 class Bullet
 {
@@ -19,66 +20,46 @@ class Bullet
 	Vec2f old_pos;     //previous position the bullet was at
 	Vec2f velocity;    //velocity the bullet is traveling at
 	f32 penetration;   //penetration value for calculating damage
-	f32 range;         //range of the bullet that it can travel
-	u8 tracer_type;    //index of png we will use
 	bool killed;       //bullet death
-	BulletFade@ fade;  //fade
+	GunInfo@ gun;      //pointer to the gun blob's info
 
-	Bullet(CBlob@ gun, const f32&in angle, const Vec2f&in pos)
+	Bullet(CBlob@ gunBlob, GunInfo@ gun_, const f32&in angle, const Vec2f&in pos)
 	{
-		gun_netid = gun.getNetworkID();
+		gun_netid = gunBlob.getNetworkID();
 		current_pos = old_pos = init_pos = pos;
 		killed = false;
 		penetration = 1.0f;
 		
 		Vec2f direction = Vec2f(1, 0.0f).RotateBy(angle);
 		velocity = direction * 80.0f;
-		
-		range = 0.0f;
-		tracer_type = 0;
-		
-		CBlob@ gunBlob = getBlobByNetworkID(gun_netid);
-		if (gunBlob !is null)
-		{
-			GunInfo@ gun;
-			if (gunBlob.get("gunInfo", @gun))
-			{
-				range = gun.bullet_range;
-				tracer_type = gun.tracer_type;
-			}
-		}
-		@fade = BulletFade(@this);
+
+		@gun = gun_;
 	}
 
 	bool Tick(CMap@ map)
 	{
-		const Vec2f dim = map.getMapDimensions();
-		const bool LeftMap = current_pos.x < 0 || current_pos.y < 0 || current_pos.x > dim.x || current_pos.y > dim.y;
-		if (LeftMap || killed) return true;
+		if (killed) return true;
 
 		// Update bullet position
 		old_pos = current_pos;
 		current_pos += velocity;
 		
-		CBlob@ gunBlob = getBlobByNetworkID(gun_netid);
-		if (gunBlob is null) return true;
-		
-		GunInfo@ gun;
-		if (!gunBlob.get("gunInfo", @gun)) return true;
-		
 		const f32 distance_covered = (current_pos - init_pos).Length();
-		if (distance_covered > range)
+		if (distance_covered > gun.bullet_range)
 		{
 			killed = true;
 		}
 		
-		HitTargets(map, gunBlob, gun);
+		HitTargets(map);
 
 		return false;
 	}
-	
-	void HitTargets(CMap@ map, CBlob@ gunBlob, GunInfo@ gun)
+
+	void HitTargets(CMap@ map)
 	{
+		CBlob@ gunBlob = getBlobByNetworkID(gun_netid);
+		if (gunBlob is null) return;
+
 		Vec2f ray = current_pos - old_pos;
 		Vec2f dir = ray;
 		dir.Normalize();
@@ -104,7 +85,7 @@ class Bullet
 			else
 			{
 				Tile tile = map.getTile(hit.tileOffset);
-				if (CanHitTile(map, tile, gun))
+				if (CanHitTile(map, tile))
 				{
 					map.server_DestroyTile(hitpos, gun.bullet_damage * 0.25f);
 				}
@@ -114,7 +95,7 @@ class Bullet
 					{
 						Sound::Play("BulletRico"+XORRandom(4), hitpos, 1.0f);
 					}
-					sparks(hitpos, -ray.Angle(), gun.bullet_damage * 0.5f);
+					sparks(hitpos, -ray.Angle(), Maths::Min(gun.bullet_damage * 0.5f, 5.0f));
 				}
 
 				if (map.isTileGroundStuff(tile.type) && !map.isTileBedrock(tile.type))
@@ -136,7 +117,7 @@ class Bullet
 			}
 		}
 	}
-	
+
 	bool CanHitBlob(CBlob@ gunBlob, CBlob@ blob, Vec2f&in ray)
 	{
 		if (blob.isPlatform())
@@ -149,6 +130,9 @@ class Bullet
 				return false; //passed through platform
 		}
 
+		if (blob.getHealth() <= 0.0f)
+			return false; //dont get stopped by dead blobs
+
 		if (blob.hasTag("no pickup") && blob.get_u8("bomber team") == gunBlob.getTeamNum())
 			return false; //do not kill our own bomber's bombs
 
@@ -158,8 +142,8 @@ class Bullet
 
 		return false;
 	}
-	
-	bool CanHitTile(CMap@ map, const Tile&in tile, GunInfo@ gun)
+
+	bool CanHitTile(CMap@ map, const Tile&in tile)
 	{
 		if (map.isTileBedrock(tile.type))
 			return false;
@@ -190,27 +174,42 @@ class Bullet
 		}
 
 		Vec2f new_pos = Vec2f_lerp(old_pos, current_pos, FRAME_TIME);
+		const f32 angle = -velocity.Angle();
 
+		///render bullet
 		Vec2f TopLeft  = Vec2f(new_pos.x - 5.0f, new_pos.y - 1);
 		Vec2f TopRight = Vec2f(new_pos.x - 5.0f, new_pos.y + 1);
 		Vec2f BotLeft  = Vec2f(new_pos.x + 5.0f, new_pos.y - 1);
 		Vec2f BotRight = Vec2f(new_pos.x + 5.0f, new_pos.y + 1);
-
-		const f32 angle = -velocity.Angle();
 
 		BotLeft.RotateBy( angle, new_pos);
 		BotRight.RotateBy(angle, new_pos);
 		TopLeft.RotateBy( angle, new_pos);
 		TopRight.RotateBy(angle, new_pos);
 
-		Vertex[]@ vertex_bullet = vertex_bullet_book[tracer_type];
+		Vertex[]@ vertex_bullet = vertex_bullet_book[gun.tracer_type];
 
 		vertex_bullet.push_back(Vertex(TopLeft.x,  TopLeft.y,  0, 0, 0, color_white)); // top left
 		vertex_bullet.push_back(Vertex(TopRight.x, TopRight.y, 0, 1, 0, color_white)); // top right
 		vertex_bullet.push_back(Vertex(BotRight.x, BotRight.y, 0, 1, 1, color_white)); // bot right
 		vertex_bullet.push_back(Vertex(BotLeft.x,  BotLeft.y,  0, 0, 1, color_white)); // bot left
+		
+		///render fade
+		const f32 distance_covered = Maths::Min((new_pos - init_pos).Length() / gun.bullet_range, 1.0f);
+		Vec2f back = init_pos + (new_pos - init_pos) * 0.75f * distance_covered;
 
-		fade.onRender(new_pos);
+		Vec2f over(0, 1);
+		Vec2f under(0, -1);
+
+		over.RotateByDegrees(angle);
+		under.RotateByDegrees(angle);
+
+		Vertex[]@ vertex_fade = vertex_fade_book[gun.tracer_type];
+
+		vertex_fade.push_back(Vertex(new_pos.x+under.x,   new_pos.y+under.y,   1, 0, 1, color_white)); //top left
+		vertex_fade.push_back(Vertex(new_pos.x+ over.x,   new_pos.y+over.y,    1, 1, 1, color_white)); //top right
+		vertex_fade.push_back(Vertex(back.x+over.x*0.5f,  back.y+over.y*0.5f,  1, 1, 0, back_color));  //bot right
+		vertex_fade.push_back(Vertex(back.x+under.x*0.5f, back.y+under.y*0.5f, 1, 0, 0, back_color));  //bot left
 	}
 }
 
@@ -232,7 +231,7 @@ class BulletHolder
 			}
 		}
 	}
-	
+
 	void FillArray()
 	{
 		const f32 screenWidth = PDriver.getScreenWidth();
@@ -248,40 +247,4 @@ class BulletHolder
 		bullet.Tick(map);
 		bullets.push_back(bullet);
 	}
-}
-
-class BulletFade
-{
-	Bullet@ bullet;
-	SColor back_color = SColor(0, 255, 255, 255);
-
-    BulletFade(Bullet@ bullet_)
-    {
-		@bullet = bullet_;
-    }
-
-    void onRender(Vec2f&in front)
-    {
-		Vec2f back = bullet.init_pos;
-		const f32 distance_covered = Maths::Min((front - back).Length() / bullet.range, 1.0f);
-
-		back += (front - back) * 0.75f * distance_covered;
-
-		back_color.setAlpha(1.0f - distance_covered);
-
-		Vec2f over(0, 1);
-		Vec2f under(0, -1);
-		Vec2f aim = back - front;
-		const f32 angle = -aim.AngleDegrees();
-
-		over.RotateByDegrees(angle);
-		under.RotateByDegrees(angle);
-		
-		Vertex[]@ vertex_fade = vertex_fade_book[bullet.tracer_type];
-
-		vertex_fade.push_back(Vertex(front.x+under.x, front.y+under.y, 1, 0, 1, color_white)); //top left
-		vertex_fade.push_back(Vertex(front.x+over.x, front.y+over.y, 1, 1, 1, color_white)); //top right
-		vertex_fade.push_back(Vertex(back.x+over.x*0.5f, back.y+over.y*0.5f,1, 1, 0, back_color)); //bot right
-		vertex_fade.push_back(Vertex(back.x+under.x*0.5f, back.y+under.y*0.5f,1, 0, 0, back_color)); //bot left
-    }
 }
