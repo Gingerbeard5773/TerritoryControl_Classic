@@ -70,6 +70,7 @@ void onInit(CRules@ this)
 	AddIconToken("$icon_packer$", "Packer.png", Vec2f(24, 16), 0);
 	AddIconToken("$icon_inserter$", "Inserter.png", Vec2f(16, 16), 0);
 	AddIconToken("$icon_oiltank$", "OilTank.png", Vec2f(32, 16), 0);
+	AddIconToken("$icon_obstructor$", "Obstructor.png", Vec2f(8, 8), 0);
 	
 	//peasant build menu
 	AddIconToken("$icon_faction$", "PeasantIcons.png", Vec2f(64, 32), 0);
