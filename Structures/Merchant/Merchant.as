@@ -28,7 +28,9 @@ void onInit(CBlob@ this)
 	this.set_Vec2f("shop menu size", Vec2f(3,4));
 	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
-	
+
+	this.setInventoryName(Translate::Merchant);
+
 	{
 		ShopItem@ s = addShopItem(this, buy(name(Translate::GoldIngot), "1"), "$icon_goldingot$", "mat_goldingot-1", buy(name(Translate::GoldIngot), "1", "100"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);

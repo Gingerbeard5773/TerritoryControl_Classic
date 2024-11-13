@@ -16,7 +16,7 @@ shared const string Translate(const string&in en, const string&in ru = "")
 namespace Translate
 {
 	const string
-	
+
 	//builder menu
 	WoodTriangle   = Translate("Wooden Triangle", "Деревянный треугольник"),
 	StoneTriangle  = Translate("Stone Triangle",  "Каменный треугольник"),
@@ -28,7 +28,7 @@ namespace Translate
 	DirtBlock      = Translate("Dirt\nFairly resistant to explosions.\nMay be only placed on dirt backgrounds or damaged dirt.", "Земля\nДовольно устойчива к взрывам.\nРазрешается размещать только на земляном фоне или поврежденной земле."),
 	Glass          = Translate("Glass\nFancy and fragile.", "Стекло\nПричудливая и хрупкая."),
 	GlassBack      = Translate("Glass wall\nFancy and fragile.", "Стеклянная стена\nПричудливая и хрупкая."),
-	
+
 	Mechanist      = Translate("Mechanist's Workshop\nA place where you can construct various trinkets and advanced machinery. Repairs adjacent vehicles.", "Мастерская механика\nМесто, где вы можете создавать различные безделушки и современную технику. Ремонтируйте транспортные средства находящиеся рядом."),
 	Armory         = Translate("Armory\nA workshop where you can craft cheap equipment. Automatically stores nearby dropped weapons and ammunition.", "Арсенал\nМастерская, где вы можете изготовить дешевое снаряжение. Автоматически подбирает брошенное поблизости оружии и боеприпасы."),
 	Gunsmith       = Translate("Gunsmith's Workshop\nA workshop for those who enjoy making holes. Slowly produces bullets.", "Мастерская оружейника\nМастерская для тех, кто любит проделывать дырки. Медленно изготавливает пули."),
@@ -36,7 +36,7 @@ namespace Translate
 	Forge          = Translate("Forge\nEnables you to process raw metals into pure ingots and alloys.", "Кузница\nПозволяет перерабатывать необработанные металлы в чистые слитки и сплавы."),
 	Yard           = Translate("Construction Yard\nUsed to construct various vehicles.", "Строительная площадка\nИспользуется для конструирования различных транспортных средств."),
 	Camp           = Translate("Camp\nA basic faction base. Can be upgraded to gain\nspecial functions and more durability.", "Лагерь\nБазовая фракционная база. Может быть улучшен для получения специальных функций и большей прочности."),
-	
+
 	Conveyor       = Translate("Conveyor Belt\nUsed to transport items.", "Конвейерная лента\nИспользуется для транспортировки предметов."),
 	Seperator      = Translate("Separator\nItems matching the filter will be launched away.", "Разделитель\Предметы, соответствующие фильтру, будут выброшены."),
 	Launcher       = Translate("Launcher\nLaunches items to the eternity and beyond.", "Пусковая установка\nОтправляет предметы в бесконечность и за далее!"),
@@ -50,7 +50,7 @@ namespace Translate
 	Grinder        = Translate("Grinder\nA dangerous machine capable of destroying almost everything.", "Измельчитель\nОпасная машина, способная уничтожить практически все."),
 	Packer         = Translate("Packer\nA safe machine capable of packing almost everything.", "Упаковщик\nБезопасная машина, способная упаковывать практически все."),
 	Inserter       = Translate("Inserter\nTransfers items between inventories next to it.\nLarge funnel acts as input, small funnel as output.", "Вставщик\nПереносит предметы между соседними инвентарями.\nБольшая воронка служит входом, маленькая - выходом."),
-	
+
 	WoodChest      = Translate("Wooden Chest\nA regular wooden chest used for storage.\nCan be accessed by anyone.", "Деревянный сундук\nОбычный деревянный сундук, используемый для хранения вещей.\nДоступ к нему может получить любой желающий."),
 	Locker         = Translate("Personal Locker\nA more secure way to store your items.\nCan be only accessed by the first person to claim it.", "Личный шкафчик\nБолее безопасный способ хранения ваших вещей.\nДоступ к нему может получить только тот, кто первым присвоит его."),
 	Siren          = Translate("Air Raid Siren\nWarns of incoming enemy aerial vehicles within 75 block radius.", "Сирена воздушной тревоги\nПредупреждает о приближении вражеских летательных аппаратов в радиусе 75 блоков."),
@@ -61,16 +61,16 @@ namespace Translate
 	StoneSilo      = Translate("Stone Silo\nAutomatically collects ores from all of your team's mines.", "Каменный элеватор\nАвтоматически собирает руду со всех шахт вашей команды."),
 	OilTank        = Translate("Oil Tank\nAutomatically collects oil from all of your team's pumpjacks.", "Нефтяной резервуар\nАвтоматически собирает нефть из всех насосных станций вашей команды."),
 	Sign           = Translate("Sign\nType '!write -text-' in chat and then use it on the sign. Writing on a paper costs 50 coins.", "Табличка\nВведите '!write -текст-' в чате а затем используйте бумажку на табличке. Написать на бумажке стоит 50 монет"),
-	
+
 	//peasant build menu
 	Faction        = Translate("Found a Faction!", "Создать фракцию!"),
 	Campfire       = Translate("Campfire", "Походный костер"),
 	BanditShack    = Translate("An Awful Rundown Bandit Shack\nGives you an option to become bandit scum.", "Ужасная захудалая бандитская лачуга\nДает вам возможность стать бандитом-подонком."),
-	
+
 	//builder shop
 	Chair          = Translate("Chair\nQuite comfortable.", "Стул\nДовольно удобное."),
 	Table          = Translate("Table\nA portable surface with 4 legs.", "Стол\nПереносная поверхность с 4 ножками."),
-	
+
 	//tinker table
 	Gramophone     = Translate("Gramophone\nA device used to play music from Gramophone Records purchased at the Merchant.", "Грамофон\nУстройство, используемое для воспроизведения музыки с грампластинок, приобретенных в магазине."),
 	PowerDrill     = Translate("Giga Drill Breaker\nA huge overpowered drill with a durable mithril head.", "Гига буровая установка\nОгромное мощное сверло с прочной мифриловой головкой."),
@@ -84,12 +84,12 @@ namespace Translate
 	Parachutepack  = Translate("Parachute Pack\nA backpack containing a parachute.\nOccupies the Torso slot.\nPress [Shift] to use.", "Парашютный ранец\nРюкзак с парашютом.\nЗанимает место для туловища.\nНажми [Shift] чтобы использовать."),
 	Jetpack        = Translate("Rocket Pack\nA small rocket-propelled backpack.\nOccupies the Torso slot.\nPress [Shift] to jump!", "Ракетный ранец\nНебольшой рюкзак с реактивным двигателем.\nЗанимает место для туловища.\nНажми [Shift] для прыжка!"),
 	ScubaGear      = Translate("Scuba Gear\nSpecial equipment used for scuba diving.\nOccupies the Head slot.", "Акваланг\nСпециальное снаряжение, используемое для подводного плавания.\nЗанимает место для головы."),
-	
+
 	//armory
 	RoyalArmor     = Translate("Royal Guard Armor\nA heavy armor that offers high damage resistance at cost of low mobility.", "Доспехи королевской гвардии\nТяжелая броня, обладающая высокой устойчивостью к урону но и низкой подвижностью."),
 	Nightstick     = Translate("Truncheon\nA traditional tool used by seal clubbing clubs.", "Дубинка\nТрадиционный инструмент, используемый морскими клубами."),
 	Shackles       = Translate("Slavemaster's Kit\nA kit containing shackles, shiny iron ball, elegant striped pants, noisy chains and a slice of cheese.", "Набор рабовладельца\nНабор, состоящий из кандалов, блестящего железного шара, элегантных полосатых штанов, шумных цепей и ломтика сыра."),
-	
+
 	//gunsmith
 	LowCalAmmo     = Translate("Low Caliber Ammunition\nBullets for pistols and SMGs.", "Боеприпасы малого калибра\nПатроны для пистолетов и автоматов SMG."),
 	HighCalAmmo    = Translate("High Caliber Ammunition\nBullets for rifles. Effective against armored targets.", "Крупнокалиберные боеприпасы\nПули для винтовок. Эффективны против бронированных целей."),
@@ -101,7 +101,7 @@ namespace Translate
 	Bazooka        = Translate("Bazooka\nA long tube capable of shooting rockets. Make sure nobody is standing behind it.\n\nUses Small Rockets.", "Базука\nДлинная труба, способная стрелять ракетами. Убедитесь, что за ней никто не стоит.\n\nИспользует Маленькие Ракеты."),
 	Scorcher       = Translate("Scorcher\nA tool used for incinerating plants, buildings and people.\n\nUses Oil.", "Выжигатель\nИнструмент, используемый для сжигания растений, зданий и людей.\n\nnИспользует нефть."),
 	Shotgun        = Translate("Shotgun\nA short-ranged weapon that deals devastating damage.\n\nUses Shotgun Shells.", "Дробовик\nОружие ближнего боя, наносящее сокрушительный урон.\n\nИспользует патроны для дробовика."),
-	
+
 	//bombshop
 	TankShell      = Translate("Artillery Shell\nA highly explosive shell used by the artillery.", "Артиллерийский снаряд\nОсколочно-фугасный снаряд, используемый артиллерией."),
 	HowitzerShell  = Translate("Howitzer Shell\nA large howitzer shell capable of annihilating a cottage.", "Гаубичный снаряд\nБольшой гаубичный снаряд, способный уничтожить целый участок."),
@@ -117,7 +117,7 @@ namespace Translate
 	SmallRocket    = Translate("Small Rocket\nSelf-propelled ammunition for rocket launchers.", "Маленькая ракета\nСамоходные боеприпасы для ракетных установок."),
 	ClaymoreRemote = Translate("Gregor Remote Detonator\nA device used to remotely detonate Gregors.", "Дистанционный детонатор Грегоров\nУстройство, использовавшееся для дистанционного подрыва Грегоров."),
 	SmokeGrenade   = Translate("Smoke Grenade\nA small hand grenade used to quickly fill a room with smoke. It helps you keep out of sight.", "Дымовая граната\nНебольшая ручная граната, используемая для быстрого заполнения помещения дымом. Помогает оставаться незамеченным."),
-	
+
 	//construction yard
 	SteamTank      = Translate("Steam Tank\nAn armored land vehicle. Comes with a powerful cannon and a durable ram.", "Паровой танк\nБронированный наземный автомобиль. Оснащен мощной пушкой и прочным тараном."),
 	Machinegun     = Translate("Machine Gun\nUseful for making holes.", "Пулемёт\nХорошо проделывает отверстия."),
@@ -126,15 +126,17 @@ namespace Translate
 	ArmoredBomber  = Translate("Armored Bomber\nA fortified but slow moving balloon with an iron basket and two attachment slots. Resistant against gunfire.", "Бронированный бомбардировщик\nУкрепленный, но медленно движущийся воздушный шар с железной корзиной и двумя креплениями. Устойчив к огнестрельному оружию."),
 	Howitzer       = Translate("Howitzer\nMortar's bigger brother.", "Гаубица\nСтарший брат миномёта."),
 	RocketLauncher = Translate("Rocket Launcher\nA rapid-fire rocket launcher especially useful against aerial targets.", "Ракетная установка\nСкорострельная ракетная установка, особенно полезная для борьбы с воздушными целями."),
-	
-	//camp
+
+	//faction
+	Fortress       = Translate("Fortress", "Крепость"),
 	Upgrades       = Translate("Upgrades & Repairs", "Модернизация и ремонт"),
 	UpgradeCamp    = Translate("Upgrade to a Fortress\nUpgrade to a more durable Fortress.\n\n+ Higher inventory capacity\n+ Extra durability\n+ Tunnel travel", "Модернизировать в крепость\nУлучшите свою крепость до более прочной.\n\n+ Более высокий объем складских запасов\n+ Дополнительная прочность\n+ Перемещение по туннелю"),
 	Repair         = Translate("Repair\nRepair this badly damaged building.\nRestores 5% of building's integrity.", "Отремонтировать\nОтремонтируйте это сильно поврежденное здание.\nВосстанавливает 5% целостности здания."),
 	JoinFaction    = Translate("Join the Faction", "Вступить во фракцию"),
+	TooManyPlayers = Translate("Cannot join! This faction has too many players.", "Невозможно присоединиться! В этой фракции слишком много игроков."),
 	Defeated       = Translate("{LOSER} has been defeated by the {WINNER}!", "{LOSER} были побеждены {WINNER}!"),
 	Defeat         = Translate("{LOSER} has been defeated!", "{LOSER} были побеждены!"),
-	
+
 	//bandit shack
 	RatDen         = Translate("Rat's Den", "Крысиное логово"),
 	RatBurger      = Translate("Tasty Rat Burger\nI always ate this as a kid.", "Вкусный крысиный бургер\nЯ всегда ел это в детстве."),
@@ -151,8 +153,9 @@ namespace Translate
 	Buy2           = Translate("Buy {QUANTITY} {ITEM} for {COINS} coins.", "Купить {QUANTITY} {ITEM} за {COINS} монет."),
 	Sell           = Translate("Sell {ITEM} ({QUANTITY})", "Продать {ITEM} ({QUANTITY})"),
 	Sell2          = Translate("Sell {QUANTITY} {ITEM} for {COINS} coins.", "Продать {QUANTITY} {ITEM} за {COINS} монет."),
-	
+
 	//merchant
+	Merchant       = Translate("Merchant", "Купец"),
 	MusicDisc      = Translate("Gramophone Record\nA random gramophone record.", "Грампластинка\nСлучайная грампластинка."),
 	Tree           = Translate("Tree Seed\nA tree seed. Trees don't have seeds, though.", "Семя дерева\nСемя дерева... Но ведь у деревьев нет семян..."),
 	Cake           = Translate("Cinnamon Bun\nA pastry made with love.", "Булочка с корицей\nВыпечка, приготовленная с любовью."),
@@ -161,12 +164,15 @@ namespace Translate
 	//coalmine
 	CoalMine       = Translate("Coalville Mining Company", "Горнодобывающая компания Коулвилла"),
 
+	//pumpjack
+	PumpJack       = Translate("Pump Jack", "Масляный насос"),
+
 	//witch
 	WitchShack     = Translate("Witch's Dilapidated Shack", "Полуразрушенная хижина ведьмы"),
 	ProcessMithril = Translate("Process Mithril\nI shall remove the deadly curse from this mythical metal.", "Обработать Мифрил\nЯ сниму смертельное проклятие с этого мифического металла."),
 	CardPack       = Translate("Funny Magical Card Booster Pack\nA full pack of fun!", "Забавный набор волшебных карт\nПолный набор развлечений!"),
 	MysteryBox     = Translate("Mystery Box\nWhat's inside?\nInconceivable wealth, eternal suffering, upset badgers? Who knows! Only for 75 coins!", "Таинственная шкатулка\nЧто внутри?\nНемыслимое богатство, вечные страдания, дикие барсуки? Кто знает! Всего за 75 монет!"),
-	
+
 	//molecular fabricator
 	Reconstruct    = Translate("Reconstruct {ITEM}", "Воссоздать {ITEM}"),
 	Deconstruct    = Translate("Deconstruct {ITEM}", "Разобрать {ITEM}"),
@@ -178,7 +184,7 @@ namespace Translate
 	Exosuit        = Translate("Exosuit\nA standard issue Model II Exosuit.", "Экзокостюм\nСтандартный экзокостюм Model II."),
 	Scyther        = Translate("Scyther\nA light combat mechanoid equipped with a Charge Lance.", "Скифер\nЛегкий боевой механоид, оснащенный энерго копьем."),
 	Fabricator     = Translate("Molecular Fabricator\nA highly advanced machine capable of restructuring molecules and atoms.", "Молекулярный производитель\nВысокоразвитая машина, способная перестраивать молекулы и атомы."),
-	
+
 	//phone
 	Phone          = Translate("SpaceStar Ordering!", "КосмоСтар Доставка!"),
 	ChickenSquad   = Translate("Combat Chicken Assault Squad!\nGet your own soldier... TODAY!", "Боевой куриный штурмовой отряд!\nЗаведите себе собственного солдата... СЕГОДНЯ ЖЕ!"),
@@ -192,7 +198,7 @@ namespace Translate
 	//assembler
 	SetAssembler   = Translate("Set to Assemble", "Установить для сборки"),
 	AlreadySet     = Translate("Already Assembling", "Уже собирается"),
-	
+
 	//packer
 	SetPacker      = Translate("Set packing threshold", "Установить порог упаковки"),
 	Increment      = Translate("Increment Packing Threshold ({STACKS} stacks)", "Увеличить порог упаковки ({STACKS} стопок)"),
@@ -216,16 +222,16 @@ namespace Translate
 	SteelIngot     = Translate("Steel Ingot\nMuch stronger than iron, but also more expensive.", "Стальной слиток\nНамного прочнее железа, но и дороже."),
 	GoldIngot      = Translate("Gold Ingot\nA fancy metal - traders' favourite.", "Золотой слиток\nДрагоценный металл - любимый у торговцев."),
 	MithrilIngot   = Translate("Mithril Ingot", "Мифриловый слиток"),
-	
+
 	//equipment
 	Equip          = Translate("Equip {ITEM}", "Экипировать"),
 	Unequip        = Translate("Unequip {ITEM}", "Снять экипировку"),
-	
+
 	//events
 	AncientShip    = Translate("A strange object has fallen out of the sky!", "Странный объект упал с неба!"),
 	MeteorEvent    = Translate("A bright flash illuminates the sky.", "Яркая вспышка озаряет небо."),
 	ScytherEvent   = Translate("A Scyther has arrived!", "Прибыл Скифер!"),
-	
+
 	//nuke
 	ArmNuke        = Translate("Arm the R.O.F.L.!", "Вооружите Р.О.Ф.Л.!"),
 	NukeOwner      = Translate("(Only by {OWNER})", "(Только {OWNER})"),

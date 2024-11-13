@@ -20,12 +20,15 @@ void onInit(CBlob@ this)
 	
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
-	
+
 	//SHOP
 	this.set_Vec2f("shop offset", Vec2f(12, -10));
 	this.set_Vec2f("shop menu size", Vec2f(1, 1));
 	this.set_string("shop description", "Buy");
 	this.set_u8("shop icon", 25);
+
+	this.setInventoryName(Translate::PumpJack);
+
 	{
 		ShopItem@ s = addShopItem(this, buy(Translate::Oil, "50"), "$mat_oil$", "mat_oil-50", buy(Translate::Oil, "50", "400"));
 		AddRequirement(s.requirements, "coin", "", "Coins", 400);

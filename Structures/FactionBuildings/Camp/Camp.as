@@ -33,6 +33,8 @@ void onInit(CBlob@ this)
 	this.set_string("shop description", Translate::Upgrades);
 	this.set_u8("shop icon", 15);
 
+	this.setInventoryName(name(Translate::Camp));
+
 	ShopMadeItem@ onMadeItem = @onShopMadeItem;
 	this.set("onShopMadeItem handle", @onMadeItem);
 
