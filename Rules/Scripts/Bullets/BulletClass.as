@@ -104,10 +104,7 @@ class Bullet
 					MakeDustParticle(hitpos, "DustSmall.png");
 				}
 
-				if (!isTileGlass(tile.type))
-				{
-					killed = true;
-				}
+				killed = true;
 			}
 
 			if (killed)
@@ -154,7 +151,7 @@ class Bullet
 		if (gun.bullet_pierce_factor <= 0.5f && (tile.type == CMap::tile_ground_d0 || tile.type == CMap::tile_stone_d0))
 			return false; //pierce is too weak to destroy ground tiles
 
-		if ((map.isTileWood(tile.type) || gun.bullet_damage >= 1.5f))
+		if ((map.isTileWood(tile.type) || isTileGlass(tile.type) || gun.bullet_damage >= 1.5f))
 			return true;
 
 		return false;
