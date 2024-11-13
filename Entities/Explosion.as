@@ -21,6 +21,7 @@
 #include "Hitters.as";
 #include "ShieldCommon.as";
 #include "SplashWater.as";
+#include "CustomTiles.as";
 
 void makeSmallExplosionParticle(Vec2f pos)
 {
@@ -255,9 +256,13 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 			if (isServer())
 			{
 				TileType t = map.getTile(tpos).type;
-				if (t == CMap::tile_bedrock)
+				if (t == CMap::tile_bedrock || isTileIron(t) || isTilePlasteel(t))
 				{
-					if (!justhurt && width_step == width_steps / 2 + 1) //central bedrock only
+					if (t != CMap::tile_bedrock)
+					{
+						map.server_DestroyTile(tpos, 100.0f, this);
+					}
+					if (!justhurt && width_step == width_steps / 2 + 1) //central only
 					{
 						steps = step;
 						damagedsteps = max_depth; //blocked!
