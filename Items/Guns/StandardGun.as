@@ -30,8 +30,6 @@ void onInit(CBlob@ this)
 void onTick(CBlob@ this)
 {
 	if (!this.isAttached()) return;
-	
-	this.getShape().SetRotationsAllowed(false);
 
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	CBlob@ holder = point.getOccupied();
@@ -46,11 +44,12 @@ void onTick(CBlob@ this)
 void ManageGun(CBlob@ this, CBlob@ holder, AttachmentPoint@ point, GunInfo@ gun)
 {
 	const f32 aim_angle = getAimAngle(this, holder);
+	this.setAngleDegrees(aim_angle);
 
 	CSprite@ sprite = this.getSprite();
 	sprite.ResetTransform();
 	sprite.SetOffset(Vec2f(gun.sprite_rebound, 0) + gun.sprite_offset); //Recoil effect for gun blob
-	sprite.RotateBy(aim_angle, sprite.getOffset() * (this.isFacingLeft() ? 1 : -1));
+
 	gun.sprite_rebound = Maths::Lerp(gun.sprite_rebound, 0, 0.45f);
 	
 	CInventory@ inventory = holder.getInventory();
@@ -414,19 +413,12 @@ void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
 
 void DetachFromHolder(CBlob@ this, CBlob@ detached)
 {
-	this.getShape().SetRotationsAllowed(true);
-	this.setAngleDegrees(getAimAngle(this, detached));
-	
-	CSprite@ sprite = this.getSprite();
-	sprite.ResetTransform();
-	sprite.RotateBy(0, sprite.getOffset());
-	
 	GunInfo@ gun;
 	if (!this.get("gunInfo", @gun)) return;
 	
 	if (hasFireEmitSound(gun))
 	{
-		sprite.SetEmitSoundPaused(true);
+		this.getSprite().SetEmitSoundPaused(true);
 	}
 }
 
