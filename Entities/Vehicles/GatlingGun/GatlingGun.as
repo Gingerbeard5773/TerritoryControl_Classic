@@ -34,7 +34,9 @@ void onInit(CBlob@ this)
 	                    "EmptyFire", // empty fire sound
 	                    Vec2f(-6.0f, 2.0f) //fire position offset
 	);
-	
+
+	this.setInventoryName(name(Translate::Machinegun));
+
 	GunInfo gun;
 	gun.bullet_damage = 1.5f;
 	gun.bullet_range = 500.0f;

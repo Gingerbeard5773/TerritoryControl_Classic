@@ -62,6 +62,8 @@ void onInit(CBlob@ this)
 	                    "EmptyFire", // empty fire sound
 	                    Vec2f(-6.0f, 2.0f) //fire position offset
 	);
+	
+	this.setInventoryName(name(Translate::SteamTank));
 		
 	this.set_f32("hit dmg modifier", 20.0f);
 	this.set_f32("map dmg modifier", 40.0f);

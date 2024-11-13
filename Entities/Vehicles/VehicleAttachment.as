@@ -13,26 +13,25 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (caller.getTeamNum() != this.getTeamNum()) return;
 
 	AttachmentPoint@[] aps;
-	if (this.getAttachmentPoints(@aps))
+	if (!this.getAttachmentPoints(@aps)) return;
+
+	for (uint i = 0; i < aps.length; i++)
 	{
-		for (uint i = 0; i < aps.length; i++)
+		AttachmentPoint@ ap = aps[i];
+		if (ap.socket && (ap.name == "VEHICLE" || ap.name == "CARGO"))
 		{
-			AttachmentPoint@ ap = aps[i];
-			if (ap.socket && (ap.name == "VEHICLE" || ap.name == "CARGO"))
-			{
-				CBlob@ occBlob = ap.getOccupied();
-				if (occBlob !is null) //detach button
-				{
-					CBitStream params;
-					params.write_netid(occBlob.getNetworkID());
-					caller.CreateGenericButton(1, ap.offset, this, this.getCommandID("detach vehicle"), "Detach " + occBlob.getInventoryName(), params);
-				}
-			}
+			CBlob@ occBlob = ap.getOccupied();
+			if (occBlob is null) continue;
+
+			CBitStream stream;
+			stream.write_netid(occBlob.getNetworkID());
+			const string message = getTranslatedString("Detach {ITEM}").replace("{ITEM}", occBlob.getInventoryName());
+			caller.CreateGenericButton(1, ap.offset, this, this.getCommandID("detach vehicle"), message, stream);
 		}
 	}
 }
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (isServer() && cmd == this.getCommandID("attach vehicle"))
 	{

@@ -57,6 +57,8 @@ void onInit(CBlob@ this)
 	                    Vec2f(-6.0f, 2.0f) //fire position offset
 	);
 
+	this.setInventoryName(name(Translate::Mortar));
+
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "Mortar_Cannon.png", 16, 8);
 	if (arm !is null)

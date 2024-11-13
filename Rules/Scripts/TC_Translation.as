@@ -225,6 +225,12 @@ namespace Translate
 	AncientShip    = Translate("A strange object has fallen out of the sky!", "Странный объект упал с неба!"),
 	MeteorEvent    = Translate("A bright flash illuminates the sky.", "Яркая вспышка озаряет небо."),
 	ScytherEvent   = Translate("A Scyther has arrived!", "Прибыл Скифер!"),
+	
+	//nuke
+	ArmNuke        = Translate("Arm the R.O.F.L.!", "Вооружите Р.О.Ф.Л.!"),
+	NukeOwner      = Translate("(Only by {OWNER})", "(Только {OWNER})"),
+	ActivateNuke   = Translate("Set off the R.O.F.L.!", "Взрывайте Р.О.Ф.Л.!"),
+	Detonation     = Translate("Detonation in {SECONDS} seconds!", "Детонация через {SECONDS} секунд!"),
 
 	//other
 	ScrubChow      = Translate("Scrub Chow", "Жратва"),

@@ -2,6 +2,7 @@
 #include "VehicleAttachmentCommon.as";
 #include "Hitters.as";
 #include "HittersTC.as";
+#include "TC_Translation.as";
 
 const u32 detonate_seconds = 30;
 
@@ -15,6 +16,8 @@ void onInit(CBlob@ this)
 	             );
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v)) return;
+	
+	this.setInventoryName(name(Translate::Nuke));
 
 	this.getShape().SetOffset(Vec2f(0, 8));
 
@@ -47,10 +50,10 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 		CPlayer@ ply = caller.getPlayer();
 
 		bool canArmNuke = true;
-		string description = "Arm the R.O.F.L.!";
+		string description = Translate::ArmNuke;
 		if (owner !is null)
 		{
-			description += "\n(Only by "+owner.getUsername()+")";
+			description += "\n" + Translate::NukeOwner.replace("{OWNER}", owner.getUsername());
 			canArmNuke = ply !is null && ply.getUsername() == owner.getUsername();
 		}
 		CButton@ btn_ready = caller.CreateGenericButton(11, Vec2f(0, 3), this, this.getCommandID("nuke_ready_sv"), description);
@@ -58,11 +61,11 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	}
 	else
 	{
-		CButton@ btn_detonate = caller.CreateGenericButton(11, Vec2f(0, 3), this, this.getCommandID("nuke_activate_sv"), "Set off the R.O.F.L.!");
+		CButton@ btn_detonate = caller.CreateGenericButton(11, Vec2f(0, 3), this, this.getCommandID("nuke_activate_sv"), Translate::ActivateNuke);
 	}
 }
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 {
 	if (cmd == this.getCommandID("nuke_ready_sv") && isServer())
 	{
@@ -141,8 +144,7 @@ void onRender(CSprite@ this)
 	if (!blob.hasTag("nuke_active") || blob.hasTag("dead")) return;
 
 	const u32 secs = ((blob.get_u32("nuke_boomtime") - 1 - getGameTime()) / getTicksASecond()) + 1;
-	const string units = ((secs != 1) ? "seconds" : "second");
-	const string text = "Detonation in " + secs + " " + units + "!";
+	const string text = Translate::Detonation.replace("{SECONDS}", secs+"");
 	
 	Vec2f pos = getDriver().getScreenPosFromWorldPos(blob.getPosition() + Vec2f(0, 22));
 	GUI::SetFont("menu");

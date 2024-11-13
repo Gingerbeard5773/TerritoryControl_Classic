@@ -61,6 +61,8 @@ void onInit(CBlob@ this)
 	                    Vec2f(-6.0f, 2.0f) //fire position offset
 	);
 
+	this.setInventoryName(name(Translate::RocketLauncher));
+
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "RocketLauncher_Cannon.png", 16, 16);
 	if (arm !is null)

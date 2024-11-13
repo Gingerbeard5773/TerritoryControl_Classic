@@ -60,6 +60,8 @@ void onInit(CBlob@ this)
 	                    Vec2f(-6.0f, 2.0f) //fire position offset
 	);
 
+	this.setInventoryName(name(Translate::Howitzer));
+
 	// init arm
 	CSprite@ sprite = this.getSprite();
 	CSpriteLayer@ arm = sprite.addSpriteLayer("arm", "Howitzer_Cannon.png", 32, 16);

@@ -3,6 +3,7 @@
 #include "Hitters.as";
 #include "HittersTC.as";
 #include "Explosion.as";
+#include "TC_Translation.as";
 
 void onInit(CBlob@ this)
 {
@@ -14,6 +15,8 @@ void onInit(CBlob@ this)
 	             );
 	VehicleInfo@ v;
 	if (!this.get("VehicleInfo", @v)) return;
+	
+	this.setInventoryName(name(Translate::Car));
 
 	this.set_f32("hit dmg modifier", 5.0f);
 	this.set_f32("map dmg modifier", 2.0f);
