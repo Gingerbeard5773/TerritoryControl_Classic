@@ -130,13 +130,36 @@ void server_ResetStorageRemoteAccess(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	CRules@ rules = getRules();
 	const u8 team = this.getTeamNum();
-	const u8 teamsCount = rules.getTeamsCount();
-	if (this.isOverlapping(caller) && caller.getTeamNum() >= teamsCount && team < teamsCount)
+	const u8 teamsCount = getRules().getTeamsCount();
+	if (caller.getTeamNum() < teamsCount || team >= teamsCount) return;
+
+	u8 factionPlayerCount = 0;
+	const u8 playerCount = Maths::Max(getPlayersCount(), 1);
+	if (playerCount > 4)
 	{
-		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_join_faction"), Translate::JoinFaction);
+		for (u8 i = 0; i < playerCount; i++)
+		{
+			CPlayer@ p = getPlayer(i);
+			if (p.getTeamNum() == team)
+			{
+				factionPlayerCount++;
+			}
+		}
 	}
+    
+    const f32 percent = f32(factionPlayerCount) / f32(playerCount);
+
+	//experimental- November 13, 2024
+    if (percent > 0.45f) //if the faction has more than 45% of the server player count then we cannot join
+    {
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, 0, Translate::TooManyPlayers);
+		if (button !is null) button.SetEnabled(false);
+		return;
+	}
+
+	CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_join_faction"), Translate::JoinFaction);
+	if (button !is null) button.SetEnabled(this.isOverlapping(caller));
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
@@ -149,12 +172,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		CBlob@ blob = player.getBlob();
 		if (blob is null) return;
 
-		const u8 myTeam = this.getTeamNum();
+		const u8 team = this.getTeamNum();
 		const u8 teamsCount = getRules().getTeamsCount();
-		if (myTeam < teamsCount && player.getTeamNum() >= teamsCount)
+		if (team < teamsCount && player.getTeamNum() >= teamsCount)
 		{
-			player.server_setTeamNum(myTeam);
-			CBlob@ newPlayer = server_CreateBlob("builder", myTeam, blob.getPosition());
+			player.server_setTeamNum(team);
+			CBlob@ newPlayer = server_CreateBlob("builder", team, blob.getPosition());
 			newPlayer.server_SetPlayer(player);
 			blob.server_Die();
 
