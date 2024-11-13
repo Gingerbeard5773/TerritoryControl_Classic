@@ -111,8 +111,10 @@ void ManageGun(CBlob@ this, CBlob@ holder, AttachmentPoint@ point, GunInfo@ gun)
 void HandleReloading(CBlob@ this, CBlob@ holder, GunInfo@ gun, CInventory@ inventory, const u32&in game_time)
 {
 	if (game_time < gun.reload_time) return;
-	
-	if (!gun.reload_shotgun || gun.reload_shotgun_finished)
+
+	const u16 available_ammo = CountAmmo(inventory, gun);
+
+	if (!gun.reload_shotgun || gun.reload_shotgun_finished || available_ammo <= 0)
 	{
 		gun.reloading = false;
 		gun.reload_shotgun_finished = false;
@@ -122,25 +124,21 @@ void HandleReloading(CBlob@ this, CBlob@ holder, GunInfo@ gun, CInventory@ inven
 	if (isServer())
 	{
 		//shotgun reloading
-		const u16 available_ammo = CountAmmo(inventory, gun);
-		if (available_ammo > 0)
+		server_TakeAmmo(holder, inventory, gun, 1);
+		gun.ammo += 1;
+
+		const u32 reload_time = getMap().getTimeSinceStart() < 180 ? 0 : game_time;
+		gun.reload_time = reload_time + gun.reload_delay;
+
+		client_Reload(this, gun, true);
+
+		if (gun.ammo >= gun.ammo_max || available_ammo == 1)
 		{
-			server_TakeAmmo(holder, inventory, gun, 1);
-			gun.ammo += 1;
-
-			const u32 reload_time = getMap().getTimeSinceStart() < 180 ? 0 : game_time;
-			gun.reload_time = reload_time + gun.reload_delay;
-
-			client_Reload(this, gun, true);
-
-			if (gun.ammo >= gun.ammo_max || available_ammo == 1)
-			{
-				gun.reload_time = game_time + gun.reload_shotgun_delay;
-				gun.fire_time = game_time + gun.fire_delay;
-				gun.reload_shotgun_finished = true;
-				
-				this.SendCommand(this.getCommandID("client_reload_finish"));
-			}
+			gun.reload_time = game_time + gun.reload_shotgun_delay;
+			gun.fire_time = game_time + gun.fire_delay;
+			gun.reload_shotgun_finished = true;
+			
+			this.SendCommand(this.getCommandID("client_reload_finish"));
 		}
 	}
 }
