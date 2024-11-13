@@ -19,5 +19,6 @@ https://discord.gg/PAERqSb
   <li><b>Pirate-Rob</b> - Contributor</li>
   <li><b>Mirsario</b> - Contributor</li>
   <li><b>Sylw</b> - Contributor</li>
+  <li><b>GoldenGuy</b> - Contributor & Russian Translator</li>
   <li><b>Gingerbeard</b> - TCCR Creator</li>
 </ul>
