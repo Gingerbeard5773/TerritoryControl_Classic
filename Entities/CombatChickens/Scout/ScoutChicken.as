@@ -18,9 +18,7 @@ void onInit(CBrain@ this)
 void onInit(CBlob@ this)
 {
 	this.set_f32("gib health", 0.0f);
-	this.set_u32("nextAttack", 0);
-	this.set_u32("nextAttackReal", 0);
-	this.set_u8("reactionTime", 20);
+	this.set_u32("nextAttack", 20);
 	this.set_u8("attackDelay", 0);
 
 	this.Tag("combat chicken");
@@ -35,9 +33,8 @@ void onInit(CBlob@ this)
 		this.server_setTeamNum(-1);
 
 		string gun_config;
-		string ammo_config;
-		
-		switch(XORRandom(10))
+
+		switch(XORRandom(11))
 		{
 			case 0:
 			case 1:
@@ -45,34 +42,26 @@ void onInit(CBlob@ this)
 			case 3:
 			case 4:
 				gun_config = "revolver";
-				ammo_config = "mat_pistolammo";
 				this.set_u8("attackDelay", 5);
 				break;
-			
 			case 5:
 			case 6:
 				gun_config = "rifle";
-				ammo_config = "mat_rifleammo";
 				this.set_u8("attackDelay", 30);
 				break;
-			
 			case 7:
 			case 8:
 				gun_config = "shotgun";
-				ammo_config = "mat_shotgunammo";
 				this.set_u8("attackDelay", 30);
 				break;
 			case 9:
 				gun_config = "bazooka";
-				ammo_config = "mat_smallrocket";
-				this.set_u8("attackDelay", 100);
+				this.set_u8("attackDelay", 30);
 				break;
-		}
-		
-		for (int i = 0; i < 3; i++)
-		{
-			CBlob@ ammo = server_CreateBlob(ammo_config, this.getTeamNum(), this.getPosition());
-			this.server_PutInInventory(ammo);
+			case 10:
+				gun_config = "smg";
+				this.set_u8("attackDelay", 3);
+				break;
 		}
 
 		CBlob@ newgun = server_CreateBlob(gun_config, this.getTeamNum(), this.getPosition());
@@ -82,6 +71,12 @@ void onInit(CBlob@ this)
 		if (newgun.get("gunInfo", @gun))
 		{
 			gun.ammo = gun.ammo_max;
+			
+			for (u8 i = 0; i < 3; i++)
+			{
+				CBlob@ ammo = server_CreateBlob(gun.ammo_name, this.getTeamNum(), this.getPosition());
+				this.server_PutInInventory(ammo);
+			}
 		}
 	}
 }
@@ -150,7 +145,7 @@ void onTick(CBrain@ this)
 		const f32 distance = (target.getPosition() - blob.getPosition()).getLength();
 		f32 visibleDistance;
 		const bool visibleTarget = isVisible(blob, target, visibleDistance);
-		
+
 		if (target.hasTag("dead") || distance > 400.0f) 
 		{
 			if (target.hasTag("dead"))
@@ -161,7 +156,8 @@ void onTick(CBrain@ this)
 			this.SetTarget(null);
 			return;
 		}
-		else if (visibleTarget && visibleDistance < 25.0f) 
+
+		if (visibleTarget && visibleDistance < 25.0f) 
 		{
 			DefaultRetreatBlob(blob, target);
 		}	
@@ -172,18 +168,13 @@ void onTick(CBrain@ this)
 
 		if (visibleTarget && distance < 350.0f && blob.getCarriedBlob() !is null)
 		{
-			const u32 nextAttackReal = blob.get_u32("nextAttackReal");
-			if (nextAttackReal == -1)
-			{
-				Vec2f randomness = Vec2f((100 - XORRandom(200)) * 0.1f, (100 - XORRandom(200)) * 0.1f);
-				blob.setAimPos(target.getPosition() + randomness);
-				blob.set_u32("nextAttackReal", getGameTime() + blob.get_u8("reactionTime"));
-			}
-			else if (nextAttackReal < getGameTime())
+			Vec2f randomness = Vec2f((100 - XORRandom(200)) * 0.1f, (100 - XORRandom(200)) * 0.1f);
+			blob.setAimPos(target.getPosition() + randomness);
+
+			if (blob.get_u32("nextAttack") < getGameTime())
 			{
 				blob.setKeyPressed(key_action1, true);
 				blob.set_u32("nextAttack", getGameTime() + blob.get_u8("attackDelay"));
-				blob.set_u32("nextAttackReal", -1);
 			}
 		}
 		
@@ -191,8 +182,9 @@ void onTick(CBrain@ this)
 	}
 	else
 	{
-		blob.setKeyPressed(key_action1, false);
 		this.getCurrentScript().tickFrequency = 30;
+		blob.setKeyPressed(key_action1, false);
+		blob.set_u32("nextAttack", getGameTime() + 50);
 		RandomTurn(blob);		
 	}
 
@@ -214,7 +206,19 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	{
 		if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
 		{
-			this.getBrain().SetTarget(hitterBlob);
+			CPlayer@ hitterPlayer = hitterBlob.getDamageOwnerPlayer();
+			if (hitterPlayer !is null)
+			{
+				CBlob@ hitterPlayerBlob = hitterPlayer.getBlob();
+				if (hitterPlayerBlob !is null)
+				{
+					this.getBrain().SetTarget(hitterPlayerBlob);
+				}
+			}
+			else if (hitterBlob.hasTag("flesh"))
+			{
+				this.getBrain().SetTarget(hitterBlob);
+			}
 		}
 	}
 	
