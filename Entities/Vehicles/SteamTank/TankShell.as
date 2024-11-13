@@ -9,7 +9,7 @@ void onInit(CBlob@ this)
 	this.getShape().getConsts().bullet = true;
 	this.getShape().getConsts().net_threshold_multiplier = 4.0f;
 
-	this.Tag("map_damage_dirt");
+	//this.Tag("map_damage_dirt");
 	
 	this.set_f32("map_damage_radius", 64.0f);
 	this.set_f32("map_damage_ratio", 0.2f);

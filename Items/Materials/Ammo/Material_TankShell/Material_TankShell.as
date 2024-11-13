@@ -45,7 +45,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 
 void DoExplosion(CBlob@ this)
 {
-	this.Tag("map_damage_dirt");
+	//this.Tag("map_damage_dirt");
 	
 	const f32 quantity = this.getQuantity();
 
