@@ -9,6 +9,9 @@ void onInit(CBlob@ this)
 {
 	this.setInventoryName(name(Translate::Jetpack));
 	this.set_string("equipment_slot", "torso");
+	
+	this.addCommandID("server_offblast");
+	this.addCommandID("client_offblast");
 
 	addOnUnequip(this, @OnUnequip);
 	addOnTickEquipped(this, @onTickEquipped);
@@ -23,23 +26,18 @@ void OnUnequip(CBlob@ this, CBlob@ equipper)
 void onTickEquipped(CBlob@ this, CBlob@ equipper)
 {
 	const u32 next_blastoff = this.get_u32("next_blastoff");
-	if (next_blastoff < getGameTime())
+	if (next_blastoff < getGameTime() && equipper.isMyPlayer())
 	{
 		CControls@ controls = equipper.getControls();
 		if (controls !is null && controls.isKeyPressed(KEY_LSHIFT) && !isKnocked(equipper))
 		{
-			Vec2f dir = equipper.getAimPos() - equipper.getPosition();
-			dir.Normalize();
-
-			equipper.setVelocity(dir * 8.0f);
-
-			if (isClient())
+			OffBlast(this, equipper);
+			if (!isServer())
 			{
-				MakeDustParticle(equipper.getPosition() + Vec2f(2.0f, 4.0f), "Dust.png");
-				equipper.getSprite().PlaySound("/Jetpack_Offblast.ogg");
+				CBitStream stream;
+				stream.write_netid(equipper.getNetworkID());
+				this.SendCommand(this.getCommandID("server_offblast"), stream);
 			}
-
-			this.set_u32("next_blastoff", getGameTime() + 90);
 		}
 	}
 
@@ -86,8 +84,46 @@ void onTickSpriteEquipped(CBlob@ this, CSprite@ equipper_sprite)
 	}
 }
 
+void OffBlast(CBlob@ this, CBlob@ equipper)
+{
+	Vec2f dir = equipper.getAimPos() - equipper.getPosition();
+	dir.Normalize();
+
+	equipper.setVelocity(dir * 8.0f);
+
+	if (isClient())
+	{
+		MakeDustParticle(equipper.getPosition() + Vec2f(2.0f, 4.0f), "Dust.png");
+		equipper.getSprite().PlaySound("/Jetpack_Offblast.ogg");
+	}
+
+	this.set_u32("next_blastoff", getGameTime() + 90);
+}
+
 void makeSteamParticle(CBlob@ this, const Vec2f vel, const string filename = "SmallSteam", const Vec2f displacement = Vec2f(0,0))
 {
 	if (!isClient()) return;
 	ParticleAnimated(filename, this.getPosition() + displacement, vel, float(XORRandom(360)), 1.0f, 2 + XORRandom(3), -0.1f, false);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("server_offblast") && isServer())
+	{
+		CBlob@ equipper = getBlobByNetworkID(params.read_netid());
+		if (equipper is null) return;
+
+		OffBlast(this, equipper);
+
+		CBitStream stream;
+		stream.write_netid(equipper.getNetworkID());
+		this.SendCommand(this.getCommandID("client_offblast"), stream);
+	}
+	else if (cmd == this.getCommandID("client_offblast") && isClient())
+	{
+		CBlob@ equipper = getBlobByNetworkID(params.read_netid());
+		if (equipper is null || equipper.isMyPlayer()) return;
+
+		OffBlast(this, equipper);
+	}
 }
