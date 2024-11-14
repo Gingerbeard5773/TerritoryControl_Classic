@@ -179,7 +179,7 @@ void HandleShooting(CBlob@ this, CBlob@ holder, GunInfo@ gun, const u32&in game_
 			{
 				ShootBullet(this, gun, position, aim_angle, random, game_time);
 			}
-			client_Fire(this, holder, position, aim_angle, random, game_time);
+			client_Fire(this, holder, position, aim_angle, random);
 		}
 	}
 	else
@@ -249,7 +249,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const u32 game_time = params.read_u32();
 
 		ShootBullet(this, gun, position, aim_angle, random, game_time);
-		client_Fire(this, holder, position, aim_angle, random, game_time);
+		client_Fire(this, holder, position, aim_angle, random);
 	}
 	else if (cmd == this.getCommandID("client_fire") && isClient())
 	{	
@@ -259,9 +259,8 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const int random = params.read_s32();
 		const f32 aim_angle = params.read_f32();
 		Vec2f position = params.read_Vec2f();
-		const u32 game_time = params.read_u32();
 
-		ShootBullet(this, gun, position, aim_angle, random, game_time);
+		ShootBullet(this, gun, position, aim_angle, random, getGameTime());
 		PlayFireSound(this.getSprite(), gun);
 	}
 	else if (cmd == this.getCommandID("server_fireblob") && isServer())
@@ -310,14 +309,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	}
 }
 
-void client_Fire(CBlob@ this, CBlob@ holder, Vec2f position, const f32&in aim_angle, const int&in random, const u32&in game_time)
+void client_Fire(CBlob@ this, CBlob@ holder, Vec2f position, const f32&in aim_angle, const int&in random)
 {
 	CBitStream stream;
 	stream.write_netid(holder.getNetworkID());
 	stream.write_s32(random);
 	stream.write_f32(aim_angle);
 	stream.write_Vec2f(position);
-	stream.write_u32(game_time);
 	this.SendCommand(this.getCommandID("client_fire"), stream);
 }
 
