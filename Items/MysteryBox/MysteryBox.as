@@ -33,7 +33,7 @@ const string[][] items =
 	{"mat_ironingot", "0", "25", "358"},
 	{"mat_goldingot", "0", "25", "105"},
 	{"mat_steelingot", "0", "25", "254"},
-	{"artisancertificate", "0", "1", "300"},
+	{"artisancertificate", "1", "0", "350"},
 	{"mat_mithrilingot", "0", "25", "51"},
 	{"card_pack", "1", "2", "404"},
 	{"heart", "1", "4", "743"},
