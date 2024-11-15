@@ -12,6 +12,7 @@ void onInit(CBlob@ this)
 {
 	this.Tag("gun");
 	this.Tag("hopperable");
+	this.Tag("place norotate");
 
 	this.addCommandID("server_fire");
 	this.addCommandID("client_fire");
