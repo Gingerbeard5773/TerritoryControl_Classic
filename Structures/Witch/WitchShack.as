@@ -77,27 +77,15 @@ void onTick(CBlob@ this)
 {
 	if (!isServer()) return;
 
-	/*const u8 myTeam = this.getTeamNum();
-	CBlob@[] blobs;
-	if (getMap().getBlobsInRadius(this.getPosition(), this.getRadius() * 3.0f, @blobs))
-	{
-		for (int i = 0; i < blobs.length; i++)
-		{
-			CBlob@ blob = blobs[i];
-			if (blob.hasTag("player") && blob.getTeamNum() == myTeam)
-			{
-				blob.server_SetHealth(Maths::Min(blob.getHealth() + 0.125f, blob.getInitialHealth()));
-			}
-		}
-	}*/
-	
+	const u8 team = this.getTeamNum();
+	if (team >= getRules().getTeamsCount()) return;
+
 	CBlob@[] blobs;
 	getBlobsByTag("player", @blobs);
-	const u8 myTeam = this.getTeamNum();
 	for (uint i = 0; i < blobs.length; i++)
 	{
 		CBlob@ blob = blobs[i];
-		if (blob.getTeamNum() != myTeam) continue;
+		if (blob.getTeamNum() != team || blob.hasTag("dead")) continue;
 
 		blob.server_SetHealth(Maths::Min(blob.getHealth() + 0.125f, blob.getInitialHealth()));
 	}

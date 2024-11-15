@@ -17,7 +17,7 @@ void onInit(CBrain@ this)
 
 void onInit(CBlob@ this)
 {
-	this.set_f32("gib health", 0.0f);
+	this.set_f32("gib health", -2.0f);
 	this.set_u32("nextAttack", 20);
 	this.set_u8("attackDelay", 0);
 
@@ -93,28 +93,6 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void onTick(CBlob@ this)
 {
-	if (this.getHealth() < 3.0 && !this.hasTag("dead"))
-	{
-		this.Tag("dead");
-		this.getSprite().PlaySound("Wilhelm.ogg", 1.8f, 1.8f);
-
-		this.getShape().getVars().isladder = false;
-		this.getShape().getVars().onladder = false;
-		this.getShape().checkCollisionsAgain = true;
-		this.getShape().SetGravityScale(1.0f);
-
-		if (isServer())
-		{
-			server_DropCoins(this.getPosition(), drop_coins);
-
-			this.server_DetachAll();
-			
-			if (XORRandom(100) < 5) server_CreateBlob("phone", -1, this.getPosition());
-		}
-		
-		this.getCurrentScript().runFlags |= Script::remove_after_this;
-	}
-
 	if (isClient())
 	{
 		if (getGameTime() > this.get_u32("next sound") && XORRandom(100) < 5)
@@ -129,7 +107,7 @@ void onTick(CBrain@ this)
 	if (!isServer()) return;
 
 	CBlob@ blob = this.getBlob();
-	if (blob.getPlayer() !is null)
+	if (blob.getPlayer() !is null || blob.hasTag("dead"))
 	{
 		this.getCurrentScript().tickFrequency = -1; //turn off
 		return;
@@ -185,7 +163,7 @@ void onTick(CBrain@ this)
 		this.getCurrentScript().tickFrequency = 30;
 		blob.setKeyPressed(key_action1, false);
 		blob.set_u32("nextAttack", getGameTime() + 50);
-		RandomTurn(blob);		
+		RandomTurn(blob);
 	}
 
 	FloatInWater(blob); 
@@ -199,26 +177,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			this.getSprite().PlaySound("scoutchicken_vo_hit" + (1 + XORRandom(3)) + ".ogg");
 			this.set_u32("next sound", getGameTime() + 60);
-		}
-	}
-	
-	if (isServer())
-	{
-		if (hitterBlob !is null && hitterBlob.getTeamNum() != this.getTeamNum())
-		{
-			CPlayer@ hitterPlayer = hitterBlob.getDamageOwnerPlayer();
-			if (hitterPlayer !is null)
-			{
-				CBlob@ hitterPlayerBlob = hitterPlayer.getBlob();
-				if (hitterPlayerBlob !is null)
-				{
-					this.getBrain().SetTarget(hitterPlayerBlob);
-				}
-			}
-			else if (hitterBlob.hasTag("flesh"))
-			{
-				this.getBrain().SetTarget(hitterBlob);
-			}
 		}
 	}
 	
