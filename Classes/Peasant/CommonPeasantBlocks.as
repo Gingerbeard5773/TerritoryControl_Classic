@@ -82,6 +82,21 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
+		BuildBlock b(0, "stone_halfblock", "$stone_halfblock$", Translate::HalfBlock);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 5);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
+		blocks[0].push_back(b);
+	}
+	{
 		BuildBlock b(0, "wooden_door", "$wooden_door$", "Wooden Door\nPlace next to walls");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
 		blocks[0].push_back(b);
