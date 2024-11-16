@@ -141,7 +141,6 @@ void onInit(CRules@ this)
 	AddIconToken("$icon_bigfoodcan$", "BigFoodCan.png", Vec2f(16, 24), 0);
 	AddIconToken("$icon_banditammo$", "Material_BanditAmmo.png", Vec2f(16, 16), 2);
 	
-	
 	//merchant
 	AddIconToken("$icon_musicdisc$", "MusicDisc.png", Vec2f(8, 8), 0);
 	AddIconToken("$icon_seed$", "Seed.png",Vec2f(8,8),0);
@@ -173,6 +172,12 @@ void onInit(CRules@ this)
 	//faction
 	AddIconToken("$icon_upgrade$", "InteractionIcons.png", Vec2f(32, 32), 21);
 	AddIconToken("$icon_repair$", "InteractionIcons.png", Vec2f(32, 32), 15);
+	AddIconToken("$faction_claim_leader$", "FactionIcons.png", Vec2f(16, 16), 0);
+	AddIconToken("$faction_resign_leader$", "FactionIcons.png", Vec2f(16, 16), 1);
+	AddIconToken("$faction_bed_true$", "FactionIcons.png", Vec2f(16, 16), 4);
+	AddIconToken("$faction_bed_false$", "FactionIcons.png", Vec2f(16, 16), 5);
+	AddIconToken("$faction_lock_true$", "FactionIcons.png", Vec2f(16, 16), 6);
+	AddIconToken("$faction_lock_false$", "FactionIcons.png", Vec2f(16, 16), 7);
 	
 	//travel
 	for (u8 i = 0; i < this.getTeamsCount(); i++)

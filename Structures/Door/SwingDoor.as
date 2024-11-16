@@ -112,7 +112,7 @@ void onTick(CBlob@ this)
 		CBlob@ blob = this.getTouchingByIndex(step);
 		if (blob is null) continue;
 
-		if (canOpenDoorCustom(this, blob) && !isOpen(this))
+		if (canOpenDoor(this, blob) && !isOpen(this))
 		{
 			OpenDoor(this, blob);
 			break;
@@ -146,7 +146,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (blob is null) return;
 
 	this.getCurrentScript().tickFrequency = 3;
-	if (!isOpen(this) && canOpenDoorCustom(this, blob)) 
+	if (!isOpen(this) && canOpenDoor(this, blob)) 
 	{
 		OpenDoor(this, blob, true);
 	}
@@ -248,7 +248,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (isOpen(this)) return false;
 
-	if (canOpenDoorCustom(this, blob)) return false;
+	if (canOpenDoor(this, blob)) return false;
 
 	return true;
 }
@@ -260,24 +260,4 @@ void OpenDoor(CBlob@ this, CBlob@ blob, bool open = true)
 	Vec2f direction = Vec2f(1, 0);
 	direction.RotateBy(this.getAngleDegrees());
 	setOpen(this, open, ((pos - other_pos) * direction) < 0.0f);
-}
-
-bool canOpenDoorCustom(CBlob@ this, CBlob@ blob)
-{
-	if (canOpenDoor(this, blob)) return true;
-
-	//for bombers
-	if (!blob.hasTag("vehicle") || !blob.hasTag("aerial")) return false;
-	
-	if (this.getTeamNum() != 255 && this.getTeamNum() != blob.getTeamNum()) return false;
-	
-	AttachmentPoint@ ap = blob.getAttachments().getAttachmentPointByName("FLYER");
-	if (ap is null) return false;
-	
-	if (ap.isKeyPressed(key_action1))  return true;
-	if (ap.isKeyPressed(key_action2))  return true;
-	if (ap.isKeyPressed(key_left))     return true;
-	if (ap.isKeyPressed(key_right))    return true;
-	
-	return false;
 }

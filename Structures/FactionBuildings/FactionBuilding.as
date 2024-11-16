@@ -1,4 +1,5 @@
 #include "RemoteAccess.as";
+#include "TeamsCommon.as";
 #include "TC_Translation.as";
 
 const string raid_tag = "under raid";
@@ -14,6 +15,8 @@ void onInit(CBlob@ this)
 	this.addCommandID("client_faction_defeated");
 	this.addCommandID("server_join_faction");
 	this.addCommandID("client_join_faction");
+	this.addCommandID("server_set_teamdata");
+	this.addCommandID("client_set_teamdata");
 }
 
 void onSetStatic(CBlob@ this, const bool isStatic)
@@ -130,9 +133,29 @@ void server_ResetStorageRemoteAccess(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
+	CPlayer@ player = caller.getPlayer();
+	if (player is null) return;
+	
+	const bool overlapping = caller.isOverlapping(this);
 	const u8 team = this.getTeamNum();
 	const u8 teamsCount = getRules().getTeamsCount();
-	if (caller.getTeamNum() < teamsCount || team >= teamsCount) return;
+	if (team >= teamsCount) return;
+
+	TeamData@ TeamData = getTeamData(team);
+	const u8 callerTeam = caller.getTeamNum();
+	if (callerTeam == team && overlapping && (player.getUsername() == TeamData.leader_name || TeamData.leader_name.isEmpty()))
+	{
+		caller.CreateGenericButton(11, Vec2f(0, -8), this, FactionMenu, Translate::FactionManage);
+	}
+
+	if (callerTeam < teamsCount) return;
+
+	if (!TeamData.recruiting)
+	{
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, 0, Translate::CannotJoin1);
+		if (button !is null) button.SetEnabled(false);
+		return;
+	}
 
 	u8 factionPlayerCount = 0;
 	const u8 playerCount = Maths::Max(getPlayersCount(), 1);
@@ -147,23 +170,68 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 			}
 		}
 	}
-    
-    const f32 percent = f32(factionPlayerCount) / f32(playerCount);
+
+	const f32 percent = f32(factionPlayerCount) / f32(playerCount);
 
 	//experimental- November 13, 2024
-    if (percent > 0.45f) //if the faction has more than 45% of the server player count then we cannot join
-    {
-		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, 0, Translate::TooManyPlayers);
+	if (percent > 0.45f) //if the faction has more than 45% of the server player count then we cannot join
+	{
+		CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, 0, Translate::CannotJoin0);
 		if (button !is null) button.SetEnabled(false);
 		return;
 	}
 
 	CButton@ button = caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_join_faction"), Translate::JoinFaction);
-	if (button !is null) button.SetEnabled(this.isOverlapping(caller));
+	if (button !is null) button.SetEnabled(overlapping);
+}
+
+void FactionMenu(CBlob@ this, CBlob@ caller)
+{
+	CPlayer@ player = caller.getPlayer();
+	if (player is null) return;
+
+	CGridMenu@ menu = CreateGridMenu(getDriver().getScreenCenterPos(), this, Vec2f(2, 2), Translate::FactionManage);
+	if (menu is null) return;
+
+	const u8 team = this.getTeamNum();
+	TeamData@ TeamData = getTeamData(team);
+
+	const bool isLeader = player.getUsername() == TeamData.leader_name;
+	const bool recruiting = TeamData.recruiting;
+	const bool lockdown = TeamData.lockdown;
+
+	{
+		CBitStream stream;
+		stream.write_u8(team);
+		stream.write_u8(0);
+		const string message = isLeader ? name(Translate::ResignLeader) : name(Translate::ClaimLeader);
+		const string icon = isLeader ? "$faction_resign_leader$" : "$faction_claim_leader$";
+		CGridButton@ butt = menu.AddButton(icon, message, this.getCommandID("server_set_teamdata"), Vec2f(2, 1), stream);
+		butt.hoverText = isLeader ? desc(Translate::ResignLeader) : desc(Translate::ClaimLeader);
+		butt.SetEnabled(isLeader || TeamData.leader_name.isEmpty());
+	}
+	{
+		CBitStream stream;
+		stream.write_u8(team);
+		stream.write_u8(1);
+		const string message = (recruiting ? Translate::Disable : Translate::Enable).replace("{POLICY}", name(Translate::Recruitment));
+		CGridButton@ butt = menu.AddButton("$faction_bed_" + !recruiting + "$", message, this.getCommandID("server_set_teamdata"), Vec2f(1, 1), stream);
+		butt.hoverText = desc(Translate::Recruitment);
+		butt.SetEnabled(isLeader);
+	}
+	{
+		CBitStream stream;
+		stream.write_u8(team);
+		stream.write_u8(2);
+		const string message = (lockdown ? Translate::Disable : Translate::Enable).replace("{POLICY}", name(Translate::Lockdown));
+		CGridButton@ butt = menu.AddButton("$faction_lock_" + !lockdown + "$", message, this.getCommandID("server_set_teamdata"), Vec2f(1, 1), stream);
+		butt.hoverText = desc(Translate::Lockdown);
+		butt.SetEnabled(isLeader);
+	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
-{		
+{
 	if (cmd == this.getCommandID("server_join_faction") && isServer())
 	{
 		CPlayer@ player = getNet().getActiveCommandPlayer();
@@ -177,8 +245,9 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		if (team < teamsCount && player.getTeamNum() >= teamsCount)
 		{
 			player.server_setTeamNum(team);
-			CBlob@ newPlayer = server_CreateBlob("builder", team, blob.getPosition());
-			newPlayer.server_SetPlayer(player);
+			CBlob@ builder = server_CreateBlob("builder", team, blob.getPosition());
+			builder.server_SetPlayer(player);
+			blob.MoveInventoryTo(builder);
 			blob.server_Die();
 
 			this.SendCommand(this.getCommandID("client_join_faction"));
@@ -192,7 +261,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	{
 		const u8 newTeam = params.read_u8();
 		const u8 oldTeam = params.read_u8();
-		
+
 		CRules@ rules = getRules();
 		if (oldTeam >= rules.getTeamsCount() || newTeam >= rules.getTeamsCount()) return;
 		
@@ -204,7 +273,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 			const string newTeamName = rules.getTeam(oldTeam).getName();
 			message = Translate::Defeated.replace("{LOSER}", oldTeamName).replace("{WINNER}", newTeamName);
 		}
-		
+
 		client_AddToChat(message, SColor(0xff444444));
 
 		CPlayer@ localPlayer = getLocalPlayer();
@@ -216,5 +285,58 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		{
 			Sound::Play("flag_score.ogg");
 		}
+	}
+	else if (cmd == this.getCommandID("server_set_teamdata") && isServer())
+	{
+		CPlayer@ player = getNet().getActiveCommandPlayer();
+		if (player is null) return;
+		
+		const string username = player.getUsername();
+
+		const u8 team = params.read_u8();
+		const u8 type = params.read_u8();
+		
+		CBitStream stream;
+		stream.write_u8(team);
+		stream.write_u8(type);
+
+		TeamData@ TeamData = getTeamData(team);
+
+		switch(type)
+		{
+			case 0:
+			{
+				TeamData.leader_name = username == TeamData.leader_name ? "" : username;
+				stream.write_string(TeamData.leader_name);
+				break;
+			}
+			case 1:
+				TeamData.recruiting = !TeamData.recruiting;
+				break;
+			case 2:
+				TeamData.lockdown = !TeamData.lockdown;
+				break;
+		}
+
+		SerializeTeams(getRules(), stream);
+		this.SendCommand(this.getCommandID("client_set_teamdata"), stream);
+	}
+	else if (cmd == this.getCommandID("client_set_teamdata") && isClient())
+	{
+		const u8 team = params.read_u8();
+		const u8 type = params.read_u8();
+
+		if (type == 0)
+		{
+			const string username = params.read_string();
+			CPlayer@ localPlayer = getLocalPlayer();
+			if (localPlayer !is null && localPlayer.getTeamNum() == team)
+			{
+				const string message = username.isEmpty() ? Translate::LeaderReset : Translate::LeaderClaim.replace("{PLAYER}", username);
+				client_AddToChat(message, SColor(0xff444444));
+			}
+		}
+
+		UnserializeTeams(getRules(), params);
 	}
 }

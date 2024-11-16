@@ -4,6 +4,7 @@
 #include "PlacementCommon.as";
 #include "CheckSpam.as";
 #include "GameplayEventsCommon.as";
+#include "TeamsCommon.as";
 
 const f32 allow_overlap = 2.0f;
 
@@ -149,7 +150,8 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, const u32 &in index)
 
 	this.set_u8("buildblob", index);
 	
-	const u8 teamsCount = getRules().getTeamsCount();
+	CRules@ rules = getRules();
+	const u8 teamsCount = rules.getTeamsCount();
 	const bool isNeutral = this.getTeamNum() >= teamsCount;
 	if (b.name == "camp" && isNeutral)
 	{
@@ -183,6 +185,16 @@ CBlob@ server_BuildBlob(CBlob@ this, BuildBlock[]@ blocks, const u32 &in index)
 				{
 					player.server_setTeamNum(newTeam);
 					builder.server_SetPlayer(player);
+					this.MoveInventoryTo(builder);
+
+					TeamData@ teamdata = getTeamData(newTeam);
+					if (teamdata !is null)
+					{
+						teamdata.leader_name = player.getUsername();
+						CBitStream stream;
+						SerializeTeams(rules, stream);
+						rules.SendCommand(rules.getCommandID("client_sync_teams"), stream);
+					}
 				}
 				this.server_Die();
 
