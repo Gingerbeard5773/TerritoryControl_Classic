@@ -238,6 +238,18 @@ namespace Translate
 	ActivateNuke   = Translate("Set off the R.O.F.L.!", "Взрывайте Р.О.Ф.Л.!"),
 	Detonation     = Translate("Detonation in {SECONDS} seconds!", "Детонация через {SECONDS} секунд!"),
 
+	//cards
+	UnpackCards    = Translate("Open the pack and see what's inside!", "Откройте упаковку и посмотрите, что внутри!"),
+	HolyCards      = Translate("Holy Cards", "Святые Карты"),
+	FireCards      = Translate("Fire Cards", "Карты Огня"),
+	WaterCards     = Translate("Water Cards", "Карты Воды"),
+	CogCards       = Translate("Gear Cards", "Карты Винтик"),
+	DeathCards     = Translate("Death Cards", "Карты Смерти"),
+	SteamCards     = Translate("Steam Cards", "Пар Карты"),
+	MineCards      = Translate("Mine Cards", "Карты майнинга"),
+	NatureCards    = Translate("Nature Cards", "Карточки природы"),
+	ChaosCards     = Translate("Chaos Cards", "Карты Хаоса"),
+
 	//other
 	ScrubChow      = Translate("Scrub Chow", "Жратва"),
 	ScrubChowXL    = Translate("Scrub Chow XL", "Жратва XL"),

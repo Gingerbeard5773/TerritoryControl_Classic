@@ -8,7 +8,7 @@ void onInit(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	CButton@ button = caller.CreateGenericButton(12, Vec2f_zero, this, this.getCommandID("server useitem"), "Open the pack and see what's inside!");
+	CButton@ button = caller.CreateGenericButton(12, Vec2f_zero, this, this.getCommandID("server useitem"), Translate::UnpackCards);
 	button.SetEnabled(this.isAttachedTo(caller));
 }
 
