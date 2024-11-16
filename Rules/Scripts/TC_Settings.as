@@ -5,13 +5,13 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v58";
-	const string remaster_version = "v6";
+	const string remaster_version = "v7";
 	
 	sv_mapcycle_shuffle = true;
 	
 	sv_contact_info = "discord.gg/PAERqSb"; //information to display when an error occurs
 	
-	sv_name = "[EU] Territory Control Classic: Gassy Badgers";
+	sv_name = "[EU] Territory Control Classic: Blurry Badgers";
 
 	print("");
 	print("    --- INITIALIZING TERRITORY CONTROL CLASSIC REMASTERED ---", print_col);
@@ -39,24 +39,15 @@ void onInit(CRules@ this)
 	print("");
 }
 
-//Changelog v6 October 13, 2024
+//Changelog v7 October 15, 2024
 //
-// Added the Inserter.
-// Added glass blocks.
-// Added chair and table.
-// Added small sign.
-// Added equipment: Scuba gear, Jetpack, Backpack, and Parachute pack.
-// Added mustard gas.
-// Added stun bomb.
-// Added bandit rifle.
-// Added wire components from base kag.
-// Added Russian translation.
-// Tank shells no longer destroy dirt.
-// Factions are capped to 45% of the server player count.
-// Fixed shop buttons not appearing.
-// Fixed turrets falling through platforms/doors.
-// Bullets are overhauled entirely and are their own 'object' rather than a laser raycast.
-// Chickens can carry SMGs.
-// Improved the chicken AI.
-// Iron and plasteel have explosion penetration resistance.
+// Fixed blurry shader not appearing.
+// Fixed jetpack effects not appearing.
+// Fixed incorrect burger sprite.
+// Fixed bullets not appearing on players clients
+// Increased chance for builder books from mystery box.
+// Added more blocks for peasant.
+// Contrabass is now much better.
+// Added Faction management.
+// Fixed a bug with healing chickens.
 //
