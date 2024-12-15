@@ -270,7 +270,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		string message = Translate::Defeat.replace("{LOSER}", oldTeamName);
 		if (newTeam != oldTeam)
 		{
-			const string newTeamName = rules.getTeam(oldTeam).getName();
+			const string newTeamName = rules.getTeam(newTeam).getName();
 			message = Translate::Defeated.replace("{LOSER}", oldTeamName).replace("{WINNER}", newTeamName);
 		}
 
