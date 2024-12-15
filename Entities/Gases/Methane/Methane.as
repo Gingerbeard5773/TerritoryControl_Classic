@@ -6,6 +6,8 @@ void onInit(CBlob@ this)
 {
 	this.Tag("gas");
 	this.Tag("invincible");
+	
+	this.set_string("gas_material", "mat_methane");
 
 	this.getShape().SetGravityScale(-0.025f);
 	

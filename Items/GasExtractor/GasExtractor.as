@@ -20,99 +20,95 @@ void onInit(CBlob@ this)
 }
 
 void onTick(CBlob@ this)
-{	
+{
 	if (!this.isAttached()) return;
 
 	UpdateAngle(this);
 
 	AttachmentPoint@ point = this.getAttachments().getAttachmentPointByName("PICKUP");
 	CBlob@ holder = point.getOccupied();
-	
 	if (holder is null) return;
 
-	if (holder.get_u8("knocked") <= 0)
-	{
-		CSprite@ sprite = this.getSprite();
+	if (holder.get_u8("knocked") > 0) return;
 
-		const bool isBot = holder.getPlayer() is null;
-	
-		const bool lmb = (!isBot ? point.isKeyPressed(key_action1) : holder.isKeyPressed(key_action1));
-		const bool rmb = (!isBot ? point.isKeyPressed(key_action2) : holder.isKeyPressed(key_action2));
-		const bool lmb2 = (!isBot ? point.isKeyJustPressed(key_action1) : holder.isKeyJustPressed(key_action1));
-		const bool rmb2 = (!isBot ? point.isKeyJustPressed(key_action2) : holder.isKeyJustPressed(key_action2));
-		if ((!rmb && lmb2) || (!lmb && rmb2))
+	CSprite@ sprite = this.getSprite();
+
+	const bool isBot = holder.getPlayer() is null;
+
+	const bool lmb = (!isBot ? point.isKeyPressed(key_action1) : holder.isKeyPressed(key_action1));
+	const bool rmb = (!isBot ? point.isKeyPressed(key_action2) : holder.isKeyPressed(key_action2));
+	const bool lmb2 = (!isBot ? point.isKeyJustPressed(key_action1) : holder.isKeyJustPressed(key_action1));
+	const bool rmb2 = (!isBot ? point.isKeyJustPressed(key_action2) : holder.isKeyJustPressed(key_action2));
+	if ((!rmb && lmb2) || (!lmb && rmb2))
+	{
+		sprite.PlaySound("/gasextractor_start.ogg");
+	}
+	else if (lmb || rmb)
+	{
+		sprite.SetEmitSound("/gasextractor_loop.ogg");
+		sprite.SetEmitSoundPaused(false);
+		sprite.SetEmitSoundSpeed(1.0f);
+		sprite.SetEmitSoundVolume(0.4f);
+		
+		Vec2f aimDir = holder.getAimPos() - this.getPosition();
+		aimDir.Normalize();
+		
+		// if (getGameTime() % 2 == 0) 
+		// {
+			// if (lmb) makeSteamParticle(this, this.getPosition() + aimDir * 100, -aimDir * 8);
+			// else makeSteamParticle(this, this.getPosition(), aimDir * 8);
+		// }
+		
+		HitInfo@[] hitInfos;
+		if (getMap().getHitInfosFromArc(this.getPosition(), -(aimDir).Angle(), 35, maxDistance, this, @hitInfos))
 		{
-			sprite.PlaySound("/gasextractor_start.ogg");
-		}
-		else if (lmb || rmb)
-		{
-			sprite.SetEmitSound("/gasextractor_loop.ogg");
-			sprite.SetEmitSoundPaused(false);
-			sprite.SetEmitSoundSpeed(1.0f);
-			sprite.SetEmitSoundVolume(0.4f);
-			
-			Vec2f aimDir = holder.getAimPos() - this.getPosition();
-			aimDir.Normalize();
-			
-			// if (getGameTime() % 2 == 0) 
-			// {
-				// if (lmb) makeSteamParticle(this, this.getPosition() + aimDir * 100, -aimDir * 8);
-				// else makeSteamParticle(this, this.getPosition(), aimDir * 8);
-			// }
-			
-			HitInfo@[] hitInfos;
-			if (getMap().getHitInfosFromArc(this.getPosition(), -(aimDir).Angle(), 35, maxDistance, this, @hitInfos))
+			for (uint i = 0; i < hitInfos.length; i++)
 			{
-				for (uint i = 0; i < hitInfos.length; i++)
+				CBlob@ blob = hitInfos[i].blob;
+				if (blob is null) continue;
+
+				Vec2f dir = this.getPosition() - blob.getPosition();
+				f32 dist = dir.Length();
+				dir.Normalize();
+
+				if (rmb) dir = -dir;
+
+				blob.AddForce(dir * (Maths::Clamp(maxDistance - dist, 0, maxDistance) * 0.50f));
+
+				if (lmb && dist < 16)
 				{
-					CBlob@ blob = hitInfos[i].blob;
-					if (blob !is null)
+					if (blob.hasTag("gas"))
 					{
-						Vec2f dir = this.getPosition() - blob.getPosition();
-						f32 dist = dir.Length();
-						dir.Normalize();
-						
-						if (rmb) dir = -dir;
-						
-						// print("" + blob.getMass());
-						blob.AddForce(dir * (Maths::Clamp(maxDistance - dist, 0, maxDistance) * 0.50f));
-						
-						if (lmb)
+						if (isServer())
 						{
-							if (dist < 16)
+							blob.server_Die();
+							if (blob.exists("gas_material"))
 							{
-								if (blob.hasTag("gas"))
-								{
-									if (isServer())
-									{
-										blob.server_Die();
-										Material::createFor(holder, "mat_methane", 1 + XORRandom(5));
-									}
-								
-									sprite.PlaySound("/gasextractor_load.ogg");
-								}
-								else if (blob.canBePickedUp(holder) && blob.canBePutInInventory(holder))
-								{
-									sprite.PlaySound("/gasextractor_load.ogg");
-									if (isServer()) holder.server_PutInInventory(blob);
-								}
+								Material::createFor(holder, blob.get_string("gas_material"), 1 + XORRandom(5));
 							}
 						}
+
+						sprite.PlaySound("/gasextractor_load.ogg");
+					}
+					else if (blob.canBePickedUp(holder) && blob.canBePutInInventory(holder))
+					{
+						sprite.PlaySound("/gasextractor_load.ogg");
+						if (isServer()) holder.server_PutInInventory(blob);
 					}
 				}
 			}
 		}
-		
-		const bool lmb3 = (!isBot ? point.isKeyJustReleased(key_action1) : holder.isKeyJustReleased(key_action1));
-		const bool rmb3 = (!isBot ? point.isKeyJustReleased(key_action2) : holder.isKeyJustReleased(key_action2));
-		
-		if ((!rmb && lmb3) || (!lmb && rmb3))
-		{
-			sprite.PlaySound("/gasextractor_end.ogg");
-			sprite.SetEmitSoundPaused(true);
-			sprite.SetEmitSoundVolume(0.0f);
-			sprite.RewindEmitSound();
-		}
+	}
+	
+	const bool lmb3 = (!isBot ? point.isKeyJustReleased(key_action1) : holder.isKeyJustReleased(key_action1));
+	const bool rmb3 = (!isBot ? point.isKeyJustReleased(key_action2) : holder.isKeyJustReleased(key_action2));
+	
+	if ((!rmb && lmb3) || (!lmb && rmb3))
+	{
+		sprite.PlaySound("/gasextractor_end.ogg");
+		sprite.SetEmitSoundPaused(true);
+		sprite.SetEmitSoundVolume(0.0f);
+		sprite.RewindEmitSound();
 	}
 }
 

@@ -5,6 +5,8 @@ void onInit(CBlob@ this)
 	this.Tag("gas");
 	this.Tag("invincible");
 
+	this.set_string("gas_material", "mat_mustard");
+
 	this.getShape().SetGravityScale(0.10f);
 	
 	this.getSprite().setRenderStyle(RenderStyle::additive);
