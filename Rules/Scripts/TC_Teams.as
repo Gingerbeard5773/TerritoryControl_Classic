@@ -38,29 +38,38 @@ void onTick(CRules@ this)
 	TeamData@[]@ teams;
 	if (!this.get("TeamData", @teams)) return;
 
-	for(u8 i = 0; i < teams.length; i++)
+	for(u8 team = 0; team < teams.length; team++)
 	{
-		TeamData@ teamdata = teams[i];
+		TeamData@ teamdata = teams[team];
 		if (teamdata.leader_name.isEmpty()) continue;
 
 		CPlayer@ leader = getPlayerByUsername(teamdata.leader_name);
 		if (leader !is null)
 		{
 			teamdata.leader_expiration = 0;
+			if (leader.getTeamNum() != team)
+			{
+				ResetTeamLeader(this, team, teamdata);
+			}
 			continue;
 		}
 
 		if (teamdata.leader_expiration >= leader_expiration_seconds)
 		{
-			teamdata.leader_name = "";
-			CBitStream stream;
-			stream.write_u8(i);
-			this.SendCommand(this.getCommandID("client_reset_leadership"), stream);
+			ResetTeamLeader(this, team, teamdata);
 			continue;
 		}
 
 		teamdata.leader_expiration++;
 	}
+}
+
+void ResetTeamLeader(CRules@ this, const u8&in team, TeamData@ teamdata)
+{
+	teamdata.leader_name = "";
+	CBitStream stream;
+	stream.write_u8(team);
+	this.SendCommand(this.getCommandID("client_reset_leadership"), stream);
 }
 
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
