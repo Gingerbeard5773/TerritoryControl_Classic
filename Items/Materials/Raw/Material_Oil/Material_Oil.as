@@ -39,7 +39,7 @@ void DoExplosion(CBlob@ this)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (customData == Hitters::fire || customData == Hitters::burn || isExplosionHitter(customData))
+	if (customData == Hitters::fire || customData == Hitters::burn || isExplosionHitter(customData) || damage >= this.getHealth())
 	{
 		server_SetBombToExplode(this);
 		this.Tag("doExplode");
