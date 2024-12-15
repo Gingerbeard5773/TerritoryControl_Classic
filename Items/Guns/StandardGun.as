@@ -421,6 +421,13 @@ void DetachFromHolder(CBlob@ this, CBlob@ detached)
 	}
 }
 
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	if (this.isAttached()) return 0.0f;
+
+	return damage;
+}
+
 ///SPRITE
 
 void onInit(CSprite@ this)
