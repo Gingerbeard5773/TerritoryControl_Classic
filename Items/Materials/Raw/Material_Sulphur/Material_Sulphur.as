@@ -44,7 +44,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (customData == Hitters::fire || customData == Hitters::burn || isExplosionHitter(customData))
 	{
 		server_SetBombToExplode(this);
-		this.Tag("doExplode");
 		return 0.0f;
 	}
 

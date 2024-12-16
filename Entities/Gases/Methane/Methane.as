@@ -42,7 +42,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		case Hitters::keg:
 		case Hitters::mine:
 			server_SetBombToExplode(this, 30);
-			this.Tag("doExplode");
 			break;
 	}
 	
@@ -56,7 +55,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if ((blob.getName() == "lantern" || blob.getName() == "fireplace") && blob.isLight())
 	{
 		server_SetBombToExplode(this, 30);
-		this.Tag("doExplode");
 	}
 }
  

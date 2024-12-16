@@ -23,7 +23,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (damage >= this.getHealth() && customData != Hitters::sword)
 	{
 		server_SetBombToExplode(this);
-		this.Tag("doExplode");
 		return 0.0f;
 	}
 	return damage;
@@ -39,7 +38,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (vellen > 8.0f)
 	{
 		server_SetBombToExplode(this);
-		this.Tag("doExplode");
 	}
 }
 

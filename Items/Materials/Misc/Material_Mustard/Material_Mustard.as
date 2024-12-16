@@ -39,7 +39,6 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (damage >= this.getHealth())
 	{
 		server_SetBombToExplode(this, 2);
-		this.Tag("doExplode");
 		return 0.0f;
 	}
 
@@ -55,6 +54,5 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	if (vellen > 4.0f)
 	{
 		server_SetBombToExplode(this, 2);
-		this.Tag("doExplode");
 	}
 }

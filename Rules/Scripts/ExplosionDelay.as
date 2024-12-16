@@ -9,6 +9,9 @@ void server_SetBombToExplode(CBlob@ this, const u16&in explosion_threshold = 5)
 {
 	if (!isServer() || this.hasTag("doExplode")) return;
 
+	this.Tag("doExplode");
+	this.Sync("doExplode", true);
+
 	CRules@ rules = getRules();
 	u16 explosion_count = rules.get_u16("explosion count");
 	explosion_count += 1;
