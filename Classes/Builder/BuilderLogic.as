@@ -69,15 +69,18 @@ void onTick(CBlob@ this)
 	}
 
 	// activate/throw
-	if (ismyplayer)
+	if (isClient())
 	{
 		Pickaxe(this);
-		if (this.isKeyJustPressed(key_action3))
+		if (ismyplayer)
 		{
-			CBlob@ carried = this.getCarriedBlob();
-			if (carried is null || !carried.hasTag("temp blob"))
+			if (this.isKeyJustPressed(key_action3))
 			{
-				client_SendThrowOrActivateCommand(this);
+				CBlob@ carried = this.getCarriedBlob();
+				if (carried is null || !carried.hasTag("temp blob"))
+				{
+					client_SendThrowOrActivateCommand(this);
+				}
 			}
 		}
 	}
@@ -199,6 +202,8 @@ void Pickaxe(CBlob@ this)
 	this.get("hitdata", @hitdata);
 
 	if (hitdata is null) return;
+
+	const bool ismyplayer = this.isMyPlayer();
 
 	Vec2f blobPos = this.getPosition();
 	Vec2f aimPos = this.getAimPos();
@@ -332,10 +337,13 @@ void Pickaxe(CBlob@ this)
 
 	if (hitdata.blobID == 0)
 	{
-		CBitStream params;
-		params.write_u16(0);
-		params.write_Vec2f(hitdata.tilepos);
-		this.SendCommand(this.getCommandID("pickaxe"), params);
+		if (ismyplayer)
+		{
+			CBitStream params;
+			params.write_u16(0);
+			params.write_Vec2f(hitdata.tilepos);
+			this.SendCommand(this.getCommandID("pickaxe"), params);
+		}
 
 		TileType t = getMap().getTile(hitdata.tilepos).type;
 		if (t != CMap::tile_empty && t != CMap::tile_ground_back)
@@ -372,10 +380,13 @@ void Pickaxe(CBlob@ this)
 		CBlob@ b = getBlobByNetworkID(hitdata.blobID);
 		if (b !is null)
 		{
-			CBitStream params;
-			params.write_u16(hitdata.blobID);
-			params.write_Vec2f(tilepos);
-			this.SendCommand(this.getCommandID("pickaxe"), params);
+			if (ismyplayer)
+			{
+				CBitStream params;
+				params.write_u16(hitdata.blobID);
+				params.write_Vec2f(tilepos);
+				this.SendCommand(this.getCommandID("pickaxe"), params);
+			}
 
 			// for smaller delay
 			string attacked_name = b.getName();
