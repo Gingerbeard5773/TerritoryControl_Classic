@@ -72,8 +72,6 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 	if (blob.isPlatform() && !solid) return;
 
-	if (blob.hasTag("no pickup") && blob.get_u8("bomber team") == this.getTeamNum()) return; //do not kill our own bomber's bombs
-
 	if (doesCollideWithBlob(this, blob))
 	{
 		this.server_Die();
@@ -82,9 +80,16 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
+	const string name = blob.getName();
+	if (name == "log" || blob.exists("eat sound") || blob.hasTag("gas")) return false;
+
+	if (blob.hasTag("material") && !blob.hasTag("explosive")) return false;
+
 	const bool willExplode = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true;
-	if (blob.isCollidable() && !blob.hasTag("gas") && willExplode)
+	if (blob.isCollidable() && willExplode)
 	{
+		if (blob.hasTag("no pickup") && blob.get_u8("bomber team") == this.getTeamNum()) return false; //do not kill our own bomber's bombs
+
 		CPlayer@ player = blob.getPlayer();
 		if (player !is null && player is this.getDamageOwnerPlayer()) return false;
 
