@@ -63,6 +63,11 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (blob.hasTag("gas")) return blob.isFlammable();
 
+	const string name = blob.getName();
+	if (name == "log" || blob.exists("eat sound")) return false;
+
+	if (blob.hasTag("material") && !blob.hasTag("explosive")) return false;
+
 	const bool willExplode = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true; 
 	if (blob.isCollidable() && willExplode)
 	{

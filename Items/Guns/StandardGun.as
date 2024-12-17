@@ -223,6 +223,7 @@ void server_ShootBlob(CBlob@ this, CBlob@ holder, GunInfo@ gun, Vec2f position, 
 	const bool facing = this.isFacingLeft();
 	Vec2f dir = Vec2f(facing ? -1 : 1, 0.0f).RotateBy(aim_angle);
 	Vec2f offset = gun.projectile_offset;
+	offset.x *= facing ? -1 : 1; 
 	Vec2f startPos = position + offset.RotateBy(aim_angle);
 	
 	CBlob@ blob = server_CreateBlob(gun.projectile, holder.getTeamNum(), startPos);

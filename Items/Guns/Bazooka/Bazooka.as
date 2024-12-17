@@ -14,7 +14,7 @@ void onInit(CBlob@ this)
 
 	gun.projectile = "smallrocket";
 	gun.projectile_speed = 8.0f;
-	gun.projectile_offset = Vec2f(0.0f, -2.0f);
+	gun.projectile_offset = Vec2f(5.5f, -2.0f);
 	
 	gun.fire_delay = 40;
 	
