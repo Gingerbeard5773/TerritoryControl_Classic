@@ -52,7 +52,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (blob is null) return;
 	
-	if ((blob.getName() == "lantern" || blob.getName() == "fireplace") && blob.isLight())
+	const string name = blob.getName();
+	const bool isLightSource = (name == "lantern" || name == "fireplace") && blob.isLight();
+	if (isLightSource || name == "infernalstone")
 	{
 		server_SetBombToExplode(this, 30);
 	}

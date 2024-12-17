@@ -93,12 +93,22 @@ void onDie(CBlob@ this)
 	DoExplosion(this);
 }
 
-void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point1)
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	if (blob.hasTag("gas"))
+	{
+		return this.hasTag("offblast") && blob.isFlammable();
+	}
+
+	return blob.isCollidable();
+}
+
+void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
 	if (!isServer()) return;
 
-	if (blob !is null ? !blob.isCollidable() || (blob.isPlatform() && !solid) : !solid) return;
-	
+	if (blob !is null ? !doesCollideWithBlob(this, blob) || (blob.isPlatform() && !solid) : !solid) return;
+
 	if (this.hasTag("offblast") && this.get_u32("no_explosion_timer") < getGameTime())
 	{
 		this.server_Die();

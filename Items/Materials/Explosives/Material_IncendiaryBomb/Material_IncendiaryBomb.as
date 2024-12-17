@@ -37,7 +37,7 @@ bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	if (this.hasTag("no pickup") && this.get_u8("bomber team") == blob.getTeamNum()) return false; //do not kill our own bomber's bombs
 	
-	return blob.isCollidable();
+	return blob.isCollidable() && !blob.hasTag("gas");
 }
 
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)

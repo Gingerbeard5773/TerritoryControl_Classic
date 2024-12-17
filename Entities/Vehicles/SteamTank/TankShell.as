@@ -83,7 +83,7 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	const bool willExplode = this.getTeamNum() == blob.getTeamNum() ? blob.getShape().isStatic() : true;
-	if (blob.isCollidable() && willExplode)
+	if (blob.isCollidable() && !blob.hasTag("gas") && willExplode)
 	{
 		CPlayer@ player = blob.getPlayer();
 		if (player !is null && player is this.getDamageOwnerPlayer()) return false;

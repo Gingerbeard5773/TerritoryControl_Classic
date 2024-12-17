@@ -45,9 +45,14 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
+bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
+{
+	return blob.isCollidable() && !blob.hasTag("gas");
+}
+
 void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 {
-	if (blob !is null ? !blob.isCollidable() : !solid) return;
+	if (blob !is null ? !doesCollideWithBlob(this, blob) || (blob.isPlatform() && !solid) : !solid) return;
 
 	if (solid) this.Untag("no pickup");
 	const f32 vellen = this.getOldVelocity().Length();
