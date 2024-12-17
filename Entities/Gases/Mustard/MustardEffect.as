@@ -1,4 +1,4 @@
-#include "Hitters.as";
+#include "HittersTC.as";
 
 void onInit(CBlob@ this)
 {	
@@ -32,7 +32,7 @@ void onTick(CBlob@ this)
 		{
 			if (isServer())
 			{
-				this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Min(ticks, 300) * 0.00125f * mod, Hitters::burn);
+				this.server_Hit(this, this.getPosition(), Vec2f(0, 0), Maths::Min(ticks, 300) * 0.00125f * mod, HittersTC::gas);
 			}
 			if (isClient()) 
 			{

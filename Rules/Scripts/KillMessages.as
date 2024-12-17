@@ -156,7 +156,8 @@ class KillFeed
 				case Hitters::drown:            hitterIcon = "$killfeed_water$"; break;
 
 				case Hitters::fire:
-				case Hitters::burn:             hitterIcon = "$killfeed_fire$"; break;
+				case Hitters::burn:
+				case HittersTC::gas:            hitterIcon = "$killfeed_fire$"; break;
 
 				case Hitters::stomp:            hitterIcon = "$killfeed_stomp$"; break;
 
@@ -188,8 +189,8 @@ class KillFeed
 
 				case Hitters::drill:            hitterIcon = "$killfeed_drill$"; break;
 				case Hitters::saw:              hitterIcon = "$killfeed_saw$"; break;
-				
-				case HittersTC::bullet:           hitterIcon = "$killfeed_bullet$"; break;
+
+				case HittersTC::bullet:         hitterIcon = "$killfeed_bullet$"; break;
 
 				default:                        hitterIcon = "$killfeed_fall$";
 			}
