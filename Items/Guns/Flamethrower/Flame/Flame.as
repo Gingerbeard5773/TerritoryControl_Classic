@@ -40,9 +40,9 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	{
 		getMap().server_setFireWorldspace(point1, true);
 	}
-	else if (blob !is null && blob.isCollidable())
+	else if (blob !is null && blob.isCollidable() && blob.getName() != this.getName())
 	{
-		if (this.getTeamNum() != blob.getTeamNum()) this.server_Hit(blob, point1, normal, 0.50f, Hitters::fire, false);
+		this.server_Hit(blob, point1, normal, 0.50f, Hitters::fire, false);
 	}
 }
 
