@@ -29,10 +29,12 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 60;
 
 	this.Tag("builder always hit");
+	this.Tag("ignore extractor");
 }
 
 void onTick(CBlob@ this)
 {
+	const bool hasFilter = this.getInventory().getItemsCount() > 0;
 	CBlob@[] blobsInRadius;
 	getMap().getBlobsInRadius(this.getPosition(), 32.0f, @blobsInRadius);
 
@@ -44,13 +46,18 @@ void onTick(CBlob@ this)
 
 		if (b.getTeamNum() != this.getTeamNum() || b.hasTag("ignore extractor")) continue;
 
-		if (inv.getItemsCount() > 0)
+		const u16 items_count = inv.getItemsCount();
+		for (uint q = 0; q < items_count; q++)
 		{
-			CBlob@ item = inv.getItem(0);
-			b.server_PutOutInventory(item);
-			item.setPosition(this.getPosition());
-			item.IgnoreCollisionWhileOverlapped(this, 1); //somehow fixes a bug with mats falling through grinders
-			item.set_u32("autopick time", getGameTime() + getTicksASecond() * 10);
+			CBlob@ item = inv.getItem(q);
+			if (!hasFilter || this.hasBlob(item.getName(), 1))
+			{
+				b.server_PutOutInventory(item);
+				item.setPosition(this.getPosition());
+				item.IgnoreCollisionWhileOverlapped(this, 1); //somehow fixes a bug with mats falling through grinders
+				item.set_u32("autopick time", getGameTime() + getTicksASecond() * 10);
+				break;
+			}
 		}
 	}
 }
