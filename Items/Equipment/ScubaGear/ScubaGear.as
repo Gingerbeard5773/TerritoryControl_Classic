@@ -18,12 +18,6 @@ void OnEquip(CBlob@ this, CBlob@ equipper)
 	equipper.Tag("scubagear");
 	this.set_u8("breath timer", 1);
 	this.set_bool("inhale", false);
-	
-	if (equipper.exists("air_count"))
-	{
-		equipper.set_u8("air_count", 180);
-		equipper.RemoveScript("RunnerDrowning.as");
-	}
 }
 
 void OnUnequip(CBlob@ this, CBlob@ equipper)
@@ -31,11 +25,6 @@ void OnUnequip(CBlob@ this, CBlob@ equipper)
 	LoadOldHead(equipper);
 
 	equipper.Untag("scubagear");
-
-	if (equipper.exists("air_count"))
-	{
-		equipper.AddScript("RunnerDrowning.as");
-	}
 }
 
 void onTickEquipped(CBlob@ this, CBlob@ equipper)

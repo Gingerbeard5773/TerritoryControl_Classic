@@ -182,6 +182,8 @@ namespace Translate
 	ProcessMithril = Translate("Process Mithril\nI shall remove the deadly curse from this mythical metal.", "Обработать Мифрил\nЯ сниму смертельное проклятие с этого мифического металла."),
 	CardPack       = Translate("Funny Magical Card Booster Pack\nA full pack of fun!", "Забавный набор волшебных карт\nПолный набор развлечений!"),
 	MysteryBox     = Translate("Mystery Box\nWhat's inside?\nInconceivable wealth, eternal suffering, upset badgers? Who knows! Only for 75 coins!", "Таинственная шкатулка\nЧто внутри?\nНемыслимое богатство, вечные страдания, дикие барсуки? Кто знает! Всего за 75 монет!"),
+	BubbleGem      = Translate("Terdla's Bubble Gem\nA useless pretty blue gem!", "Камень-пузырь Тердлы\nБесполезный красивый синий самоцвет!"),
+	Choker         = Translate("Verdla's Suffocation Charm\nA pretty green smokey gem!", "Удушающие чары Вердлы\nКрасивый дымчатый зеленый самоцвет!"),
 
 	//molecular fabricator
 	Reconstruct    = Translate("Reconstruct {ITEM}", "Воссоздать {ITEM}"),

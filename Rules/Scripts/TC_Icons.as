@@ -150,6 +150,8 @@ void onInit(CRules@ this)
 	//witch
 	AddIconToken("$card_pack$", "CardPack.png", Vec2f(9, 9), 0);
 	AddIconToken("$icon_mysterybox$", "MysteryBox.png", Vec2f(24, 16), 0);
+	AddIconToken("$choker_gem$", "Choker.png", Vec2f(10, 10), 0);
+	AddIconToken("$bubble_gem$", "BubbleGem.png", Vec2f(10, 10), 0);
 	
 	//molecular Fabricator
 	AddIconToken("$icon_scythergib$", "ScytherGib.png", Vec2f(16, 16), 2);

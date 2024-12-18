@@ -22,7 +22,7 @@ void onInit(CBlob@ this)
 	
 	// SHOP
 	this.set_Vec2f("shop offset", Vec2f(0, 8));
-	this.set_Vec2f("shop menu size", Vec2f(2, 2));
+	this.set_Vec2f("shop menu size", Vec2f(2, 3));
 	this.set_string("shop description", Translate::WitchShack);
 	this.set_u8("shop icon", 25);
 
@@ -48,6 +48,17 @@ void onInit(CBlob@ this)
 	{
 		ShopItem@ s = addShopItem(this, name(Translate::MysteryBox), "$icon_mysterybox$", "mysterybox", desc(Translate::MysteryBox));
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
+		s.spawnNothing = true;
+	}
+	{
+		ShopItem@ s = addShopItem(this, name(Translate::BubbleGem), "$bubble_gem$", "bubblegem", desc(Translate::BubbleGem));
+		AddRequirement(s.requirements, "coin", "", "Coins", 200);
+		s.spawnNothing = true;
+	}
+	{
+		ShopItem@ s = addShopItem(this, name(Translate::Choker), "$choker_gem$", "choker", desc(Translate::Choker));
+		AddRequirement(s.requirements, "blob", "mat_methane", Translate::Methane, 50);
+		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 2);
 		s.spawnNothing = true;
 	}
 
