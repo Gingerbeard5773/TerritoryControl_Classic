@@ -5,7 +5,7 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v58";
-	const string remaster_version = "v7";
+	const string remaster_version = "v8";
 	
 	sv_mapcycle_shuffle = true;
 	
@@ -39,15 +39,17 @@ void onInit(CRules@ this)
 	print("");
 }
 
-//Changelog v7 October 15, 2024
+//Changelog v8 December 17, 2024
 //
-// Fixed blurry shader not appearing.
-// Fixed jetpack effects not appearing.
-// Fixed incorrect burger sprite.
-// Fixed bullets not appearing on players clients
-// Increased chance for builder books from mystery box.
-// Added more blocks for peasant.
-// Contrabass is now much better.
-// Added Faction management.
-// Fixed a bug with healing chickens.
+// Fixed mustard gas turning into methane when vaccumed.
+// Faction leadership is reset when the leader leaves the faction.
+// Fixed incorrect faction defeat message.
+// Improved collision with projectiles and collisions with gaseous blobs.
+// Guns do not break while held.
+// Added a mod compatible pickup menu.
+// Gas bypasses vehicle immunity.
+// Explosion effects will always appear on clients.
+// Ported over the pickup crash fix.
+// 2v1 votes will pass.
+// Added operetta to the map cycle.
 //
