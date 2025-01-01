@@ -7,7 +7,7 @@
 
 const string[] resources = 
 {
-	"mat_iron",
+	"mat_iron", 
 	"mat_copper",
 	"mat_stone",
 	"mat_gold"
@@ -19,6 +19,14 @@ const u8[] resourceYields =
 	2,
 	4,
 	2
+};
+
+const u8[] resourceWeights = 
+{
+	10,
+	4,
+	10,
+	8
 };
 
 void onInit(CBlob@ this)
@@ -54,12 +62,10 @@ void onTick(CBlob@ this)
 		
 		if (tile.type == CMap::tile_bedrock)
 		{
-			const u8 index = XORRandom(resources.length);
+			const u8 index = GetRandomResourceIndex();
 			Material::createFor(this, resources[index], XORRandom(resourceYields[index]));
 
 			//this.server_Hit(this, this.getPosition(), Vec2f(0, 0), 0.02f, Hitters::drill, true); //slightly damage our drill
-			
-			// print("ore: " + resources[XORRandom(index)] + " yield: " + XORRandom(resourceYields[index]));
 		}
 		else if (!isTileIron(tile.type) && !isTilePlasteel(tile.type))
 		{
@@ -67,6 +73,23 @@ void onTick(CBlob@ this)
 			MaterialsFromTile(this, tile.type, 1.0f, pos);
 		}
 	}
+}
+
+u8 GetRandomResourceIndex()
+{
+    f32 totalWeight = 0.0f;
+    for (uint i = 0; i < resourceWeights.length; i++) totalWeight += resourceWeights[i];
+
+    const f32 randomValue = XORRandom(10000) / 10000.0f * totalWeight;
+    f32 cumulativeWeight = 0.0f;
+
+    for (uint i = 0; i < resourceWeights.length; i++)
+    {
+        cumulativeWeight += resourceWeights[i];
+        if (randomValue <= cumulativeWeight) return i;
+    }
+
+    return 2;
 }
 
 void onDie(CBlob@ this)
