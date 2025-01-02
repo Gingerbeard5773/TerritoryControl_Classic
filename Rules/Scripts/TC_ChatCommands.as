@@ -27,9 +27,11 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 	{
 		string[]@ tokens = text_in.split(" ");
 
+		CSecurity@ sec = getSecurity();
+		const string role = sec.getPlayerSeclev(player).getName();
 		const bool isLocalhost = isServer() && isClient();
-		const bool isDev = isCool.find(player.getUsername()) != -1 || isLocalhost;
-		const bool isMod = isDev || player.isMod() || player.isRCON();
+		const bool isDev = isCool.find(player.getUsername()) != -1 || isLocalhost || player.isMod() || player.isRCON() || role == "Super Admin";
+		const bool isMod = isDev || role == "Admin" || sec.checkAccess_Command(player, "ban");
 		
 		if (!PlayerCommands(this, tokens, player, blob, message))
 			return false;
