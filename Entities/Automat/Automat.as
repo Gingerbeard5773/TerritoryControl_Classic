@@ -2,6 +2,7 @@
 
 #include "BrainCommon.as";
 #include "Hitters.as";
+#include "HittersTC.as";
 
 void onInit(CBrain@ this)
 {
@@ -41,7 +42,7 @@ void onTick(CBlob@ this)
 		const f32 distance = (target.getPosition() - this.getPosition()).Length();
 		f32 visibleDistance;
 		const bool visibleTarget = isVisible(this, target, visibleDistance);
-		if (visibleTarget && distance < 200.0f && !target.hasTag("dead") && target.getTeamNum() != this.getTeamNum())
+		if (visibleTarget && distance < 230.0f && !target.hasTag("dead") && target.getTeamNum() != this.getTeamNum())
 		{
 			if (this.getCarriedBlob() !is null)
 			{					
@@ -112,6 +113,19 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 		{
 			this.getBrain().SetTarget(hitterBlob);
 		}
+	}
+	
+	switch(customData)
+	{
+		case HittersTC::bullet:
+			damage *= 0.1f;
+			break;
+		case Hitters::bomb:
+		case Hitters::explosion:
+		case Hitters::keg:
+		case Hitters::mine:
+			damage *= 0.2f;
+			break;
 	}
 
 	return damage;
