@@ -35,7 +35,10 @@ void Reset(CRules@ this)
 	this.SetGlobalMessage("");
 	this.SetCurrentState(GAME);
 	
-	server_CreateBlob("tc_music");
+	if (getBlobByName("tc_music") is null)
+	{
+		server_CreateBlob("tc_music");
+	}
 }
 
 void onPlayerRequestTeamChange(CRules@ this, CPlayer@ player, u8 newteam)

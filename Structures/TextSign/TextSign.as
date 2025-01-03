@@ -4,7 +4,8 @@ void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
 
-	this.set_string("text", "");
+	if (!this.exists("text"))
+		this.set_string("text", "");
 
 	this.addCommandID("server_write");
 }

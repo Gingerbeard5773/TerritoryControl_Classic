@@ -32,68 +32,68 @@ void onInit(CBlob@ this)
 	this.Tag("map_destroy_ground");
 
 	this.Tag("ignore fall");
-	this.Tag("explosive");
 	this.Tag("high weight");
 	this.Tag("scyther inside");
+	
+	this.inventoryButtonPos = Vec2f(6, 0);
 
 	this.server_setTeamNum(-1);
 
-	if (isServer())
+	if (this.getPosition().y <= 0.0f)
 	{
-		if (XORRandom(100) < 75)
+		this.Tag("explosive");
+		if (isServer())
 		{
-			CBlob@ blob = server_CreateBlob("chargerifle", this.getTeamNum(), this.getPosition());
-			this.server_PutInInventory(blob);
-		}
+			if (XORRandom(100) < 75)
+			{
+				CBlob@ blob = server_CreateBlob("chargerifle", this.getTeamNum(), this.getPosition());
+				this.server_PutInInventory(blob);
+			}
 
-		if (XORRandom(100) < 25)
-		{
-			CBlob@ blob = server_CreateBlob("chargerifle", this.getTeamNum(), this.getPosition());
-			this.server_PutInInventory(blob);
-		}
+			if (XORRandom(100) < 25)
+			{
+				CBlob@ blob = server_CreateBlob("chargerifle", this.getTeamNum(), this.getPosition());
+				this.server_PutInInventory(blob);
+			}
 
-		if (XORRandom(100) < 5)
-		{
-			CBlob@ blob = server_CreateBlob("chargelance", this.getTeamNum(), this.getPosition());
-			this.server_PutInInventory(blob);
+			if (XORRandom(100) < 5)
+			{
+				CBlob@ blob = server_CreateBlob("chargelance", this.getTeamNum(), this.getPosition());
+				this.server_PutInInventory(blob);
+
+				Material::createFor(this, "mat_lancerod", 50 + XORRandom(50));
+			}
+			
+			if (XORRandom(100) == 0)
+			{
+				CBlob@ blob = server_CreateBlob("exosuit", this.getTeamNum(), this.getPosition());
+				this.server_PutInInventory(blob);
+			}
 
 			Material::createFor(this, "mat_lancerod", 50 + XORRandom(50));
+			Material::createFor(this, "mat_matter", 50 + XORRandom(200));
+			Material::createFor(this, "mat_plasteel", 25 + XORRandom(50));
 		}
-		
-		if (XORRandom(100) == 0)
+	
+		Random rand(this.getNetworkID());
+		this.setVelocity(Vec2f((15 + rand.NextRanged(5)) * (rand.NextRanged(2) == 0 ? 1.00f : -1.00f), 5));
+
+		if (isClient())
 		{
-			CBlob@ blob = server_CreateBlob("exosuit", this.getTeamNum(), this.getPosition());
-			this.server_PutInInventory(blob);
+			CSprite@ sprite = this.getSprite();
+			sprite.SetEmitSoundVolume(0.5f);
+			sprite.SetEmitSound("AncientShip_Loop.ogg");
+			sprite.SetEmitSoundPaused(false);
+			sprite.RewindEmitSound();
+
+			sprite.ResetTransform();
+			sprite.RotateBy(-this.getVelocity().Angle(), Vec2f());
+
+			Sound::Play("AncientShip_Intro.ogg");
+
+			// client_AddToChat("A strange object has fallen out of the sky in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + "!", SColor(255, 255, 0, 0));
+			client_AddToChat(Translate::AncientShip, SColor(255, 255, 0, 0));
 		}
-
-		Material::createFor(this, "mat_lancerod", 50 + XORRandom(50));
-		Material::createFor(this, "mat_matter", 50 + XORRandom(200));
-		Material::createFor(this, "mat_plasteel", 25 + XORRandom(50));
-	}
-
-	this.inventoryButtonPos = Vec2f(6, 0);
-	
-	CMap@ map = getMap();
-	this.setPosition(Vec2f(this.getPosition().x, 0.0f));
-	
-	Random rand(this.getNetworkID());
-	this.setVelocity(Vec2f((15 + rand.NextRanged(5)) * (rand.NextRanged(2) == 0 ? 1.00f : -1.00f), 5));
-
-	if (isClient())
-	{
-		CSprite@ sprite = this.getSprite();
-		sprite.SetEmitSoundVolume(0.5f);
-		sprite.SetEmitSound("AncientShip_Loop.ogg");
-		sprite.SetEmitSoundPaused(false);
-		sprite.RewindEmitSound();
-
-		sprite.ResetTransform();
-		sprite.RotateBy(-this.getVelocity().Angle(), Vec2f());
-
-		Sound::Play("AncientShip_Intro.ogg");
-
-		// client_AddToChat("A strange object has fallen out of the sky in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + "!", SColor(255, 255, 0, 0));
-		client_AddToChat(Translate::AncientShip, SColor(255, 255, 0, 0));
 	}
 }
 
@@ -115,6 +115,7 @@ void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
 		this.Untag("scyther inside");
 	}
 }
+
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	if (cmd == this.getCommandID("shop made item client") && isClient())

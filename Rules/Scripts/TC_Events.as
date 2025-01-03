@@ -1,11 +1,29 @@
 #define SERVER_ONLY
 
-u32 lastMeteor = 0;
-u32 lastWreckage = 0;
-
 void onInit(CRules@ this)
 {
+	Reset(this);
+}
 
+void onRestart(CRules@ this)
+{
+	Reset(this);
+}
+
+void Reset(CRules@ this)
+{
+	this.set_u32("next_meteor", getNextMeteor());
+	this.set_u32("next_wreckage", getNextWreckage());
+}
+
+u32 getNextMeteor()
+{
+	return 6000 + XORRandom(29000);
+}
+
+u32 getNextWreckage()
+{
+	return 30000 + XORRandom(90000);
 }
 
 void onTick(CRules@ this)
@@ -13,51 +31,24 @@ void onTick(CRules@ this)
 	if (getGameTime() % 30 == 0)
 	{
 		CMap@ map = getMap();
-		u32 time = getGameTime();
-		u32 timeSinceMeteor = time - lastMeteor;
-		u32 timeSinceWreckage = time - lastWreckage;
-	
-		// print("last meteor: " + timeSinceMeteor + "; Chance: " + Maths::Max(10000 - timeSinceMeteor, 0));
-	
-		if (timeSinceMeteor > 6000 && XORRandom(Maths::Max(35000 - timeSinceMeteor, 0)) == 0) // Meteor strike
+		const u32 time = getGameTime();
+		const u32 nextMeteor = this.get_u32("next_meteor");
+		const u32 nextWreckage = this.get_u32("next_wreckage");
+
+		if (time >= nextMeteor)
 		{
 			print("Random event: Meteor");
 			server_CreateBlob("meteor", -1, Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
-			
-			lastMeteor = time;
+
+			this.set_u32("next_meteor", time + getNextMeteor());
 		}
-		
-		if (timeSinceWreckage > 30000 && XORRandom(Maths::Max(120000 - timeSinceWreckage, 0)) == 0) // Wreckage
+
+		if (time >= nextWreckage)
 		{
 			print("Random event: Wreckage");
 			server_CreateBlob("ancientship", -1, Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
-			
-			lastWreckage = time;
+
+			this.set_u32("next_wreckage", time + getNextWreckage());
 		}
 	}
-
-	// f32 rot = (getGameTime() * 0.5f % 360);
-	
-	// CBlob@ ply = getLocalPlayerBlob();
-	
-	// f32 arc = 360;
-	// f32 modifier = ply.getPosition().x / (getMap().tilemapwidth * 8);
-	// f32 angle = (arc * modifier) - (arc / 2);
-	
-	// ply.getShape().SetRotationsAllowed(true);
-	// ply.getShape().SetAngleDegrees(angle);
-	
-	// getCamera().setRotation(0, 0, angle);
-	
-	// CBlob@[] blobs;
-	// getMap().getBlobs(blobs);
-	
-	// sv_gravity = 0;
-	
-	// Vec2f force = Vec2f(1, 0) * 1;
-	
-	// for (int i = 0; i < blobs.length; i++)
-	// {
-		// blobs[i].setVelocity(force);
-	// }
 }

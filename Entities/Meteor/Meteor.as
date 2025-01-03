@@ -14,7 +14,6 @@ void onInit(CBlob@ this)
 	this.Tag("map_destroy_ground");
 
 	this.Tag("ignore fall");
-	this.Tag("explosive");
 	this.Tag("medium weight");
 	
 	this.addCommandID("client_hitground");
@@ -27,20 +26,23 @@ void onInit(CBlob@ this)
 
 	this.server_setTeamNum(-1);
 
-	this.setPosition(Vec2f(this.getPosition().x, 0.0f));
-
-	Random rand(this.getNetworkID());
-	this.setVelocity(Vec2f(20.0f - int(rand.NextRanged(4001)) / 100.0f, 15.0f));
-
-	if (isClient())
+	if (this.getPosition().y <= 0.0f)
 	{
-		CSprite@ sprite = this.getSprite();
-		sprite.SetEmitSound("Rocket_Idle.ogg");
-		sprite.SetEmitSoundPaused(false);
-		sprite.SetEmitSoundVolume(2.0f);
+		this.Tag("explosive");
 
-		// client_AddToChat("A bright flash has been seen in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + ".", SColor(255, 255, 0, 0));
-		client_AddToChat(Translate::MeteorEvent, SColor(255, 255, 0, 0));
+		Random rand(this.getNetworkID());
+		this.setVelocity(Vec2f(20.0f - int(rand.NextRanged(4001)) / 100.0f, 15.0f));
+
+		if (isClient())
+		{
+			CSprite@ sprite = this.getSprite();
+			sprite.SetEmitSound("Rocket_Idle.ogg");
+			sprite.SetEmitSoundPaused(false);
+			sprite.SetEmitSoundVolume(2.0f);
+
+			// client_AddToChat("A bright flash has been seen in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + ".", SColor(255, 255, 0, 0));
+			client_AddToChat(Translate::MeteorEvent, SColor(255, 255, 0, 0));
+		}
 	}
 }
 

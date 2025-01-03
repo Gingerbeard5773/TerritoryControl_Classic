@@ -10,6 +10,7 @@
 
 #include "MakeSeed.as";
 #include "MakeCrate.as";
+#include "MapSaver.as";
 
 const string[] isCool = { "MrHobo", "Pirate-Rob", "GoldenGuy", "Vamist" };
 
@@ -47,12 +48,6 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 	{
 		CBitStream stream;
 		stream.write_string(message);
-
-		// List is reverse so we can read it correctly into SColor when reading
-		//stream.write_u8(color.getBlue());
-		//stream.write_u8(color.getGreen());
-		//stream.write_u8(color.getRed());
-		//stream.write_u8(color.getAlpha());
 
 		this.SendCommand(this.getCommandID("client_SendPlayerMessage"), stream, player);
 		return false;
@@ -270,21 +265,39 @@ bool DeveloperCommands(CRules@ this, string[]@ tokens, CPlayer@ player, CBlob@ b
 		QuitGame();
 		return false;
 	}
+	else if (tokens[0] == "!loadsave")
+	{
+		const string SaveSlot = tokens.length > 1 ? tokens[1] : "AutoSave"; 
+		this.set_string("mapsaver_save_slot", SaveSlot);
+		this.set_bool("loaded_saved_map", false);
+		LoadNextMap();
+		return false;
+	}
 	
 	return true;
 }
 
 bool onClientProcessChat(CRules@ this, const string& in text_in, string& out text_out, CPlayer@ player)
 {
-	if (text_in == "!fps")
+	if (text_in.substr(0, 1) == "!")
 	{
-		if (player.isMyPlayer())
+		const string[]@ tokens = text_in.split(" ");
+		if (text_in == "!fps" && player.isMyPlayer())
 		{
 			const int showfps = v_showfps == 1 ? 0 : 1;
 			v_showfps = showfps;
-			client_AddToChat("Show FPS: " + (v_showfps == 1), color_black);
+			client_AddToChat("Show FPS: " + (v_showfps == 1), 0xff6678FF);
+			return false;
 		}
-		return false;
+		else if (tokens[0] == "!savemap" && player.isMyPlayer())
+		{
+			const string SaveSlot = tokens.length > 1 ? tokens[1] : "AutoSave";
+			const string message = "Map saved to your cache: "+SaveSlot;
+			print(message, 0xff66C6FF);
+			client_AddToChat(message, 0xff6678FF);
+			SaveMap(this, getMap(), SaveSlot);
+			return false;
+		}
 	}
 
 	return true;
@@ -298,9 +311,9 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 
 	print("Loaded TC Chat Commands", print_col);
-	print("Player Commands: !write, !fps", print_col);
+	print("Player Commands: !write, !fps, !savemap", print_col);
 	print("Moderator Commands: !admin, !tp, !tphere, !freeze, !kick, !ban", print_col);
-	print("Developer Commands: !test, !team, !teambot, !class, !cursor, !ripserver", print_col);
+	print("Developer Commands: !test, !team, !teambot, !class, !cursor, !ripserver, !loadsave", print_col);
 }
 
 void onCommand(CRules@ this, u8 cmd, CBitStream@ params)

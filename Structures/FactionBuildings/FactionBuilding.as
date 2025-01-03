@@ -52,6 +52,8 @@ void SetMinimap(CBlob@ this)
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
 {
+	if (this.getTickSinceCreated() < 30) return; //map saver hack
+
 	server_DefeatFaction(this, oldTeam);
 }
 

@@ -28,6 +28,26 @@ void onPlayerLeave(CRules@ this, CPlayer@ player)
 	}
 }
 
+void onInit(CRules@ this)
+{
+	Reset(this);
+}
+
+void onRestart(CRules@ this)
+{
+	Reset(this);
+}
+
+void Reset(CRules@ this)
+{
+	//set players to any sleepers that were loaded on the map (saved map)
+	const u8 playerCount = getPlayerCount();
+	for (u8 i = 0; i < playerCount; i++)
+	{
+		onNewPlayerJoin(this, getPlayer(i));
+	}
+}
+
 void onNewPlayerJoin(CRules@ this, CPlayer@ player)
 {
 	//see if joining player has a sleeper to use
@@ -69,6 +89,16 @@ void WakeupSleeper(CBlob@ sleeper, CPlayer@ player)
 	sleeper.set_string("sleeper_name", "");
 	sleeper.Untag("sleeper");
 	sleeper.Sync("sleeper", true);
+	
+	if (sleeper.exists("sleeper_coins"))
+	{
+		const u16 coins = sleeper.get_u16("sleeper_coins");
+		if (coins > player.getCoins())
+		{
+			player.server_setCoins(coins);
+		}
+		sleeper.set_u16("sleeper_coins", 0);
+	}
 	
 	//remove knocked
 	if (isKnockable(sleeper))

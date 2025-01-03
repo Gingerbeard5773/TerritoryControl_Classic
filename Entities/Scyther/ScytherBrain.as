@@ -29,14 +29,14 @@ void onInit(CBlob@ this)
 	this.SetLightRadius(32.0f);
 	this.SetLightColor(SColor(255, 255, 20, 0));
 
-	Sound::Play("scyther-intro.ogg");
-
 	if (isClient())
 	{
+		Sound::Play("scyther-intro.ogg");
+
 		client_AddToChat(Translate::ScytherEvent, SColor(255, 255, 0, 0));
 	}
 
-	if (isServer())
+	if (isServer() && !this.hasTag("no_weapon"))
 	{
 		for (u8 i = 0; i < 2; i++)
 		{
@@ -46,12 +46,6 @@ void onInit(CBlob@ this)
 		
 		CBlob@ lance = server_CreateBlob("chargelance", this.getTeamNum(), this.getPosition());
 		this.server_Pickup(lance);
-		
-		GunInfo@ gun;
-		if (lance.get("gunInfo", @gun))
-		{
-			//gun.ammo = gun.ammo_max;
-		}
 	}
 }
 

@@ -150,8 +150,8 @@ void Vehicle_BomberControls(CBlob@ this, VehicleInfo@ v)
 	sprite.SetEmitSoundVolume(volume);
 	
 	const f32 goalSpeed = fakeCrash ? -300.0f : ((up ? 35.0f : 0.0f) + (down ? 220.75f : 310.15f));
-	force.y = Maths::Lerp(v.fly_amount, goalSpeed, (1.0f / getTicksASecond()) * (fakeCrash ? 0.2f : 1.0f));
-	v.fly_amount = force.y;
+	force.y = Maths::Lerp(this.get_f32("fly_amount"), goalSpeed, (1.0f / getTicksASecond()) * (fakeCrash ? 0.2f : 1.0f));
+	this.set_f32("fly_amount", force.y);
 
 	if (left)
 	{
@@ -260,21 +260,4 @@ void onDetach(CBlob@ this, CBlob@ detached, AttachmentPoint@ attachedPoint)
 		detached.IgnoreCollisionWhileOverlapped(null);
 		this.IgnoreCollisionWhileOverlapped(null);
 	}
-}
-
-///NETWORKING
-
-void onSendCreateData(CBlob@ this, CBitStream@ stream)
-{
-	VehicleInfo@ v;
-	if (!this.get("VehicleInfo", @v)) return;
-	stream.write_f32(v.fly_amount);
-}
-
-bool onReceiveCreateData(CBlob@ this, CBitStream@ stream)
-{
-	VehicleInfo@ v;
-	if (!this.get("VehicleInfo", @v))                return true;
-	if (!stream.saferead_f32(v.fly_amount))          return false;
-	return true;
 }

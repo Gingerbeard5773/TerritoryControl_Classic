@@ -32,8 +32,6 @@ void onInit(CBlob@ this)
 	if (!this.exists("trackID")) this.set_u8("trackID", XORRandom(names.length)); // Temporary 
 
 	const u8 trackID = this.get_u8("trackID");
-	
-	this.set_u8("trackID", trackID);
 	this.getSprite().SetAnimation("track" + trackID);
 	this.setInventoryName(name(Translate::MusicDisc)+" (" + (trackID < names.length ? names[trackID] : "ERROR") + ")");
 }

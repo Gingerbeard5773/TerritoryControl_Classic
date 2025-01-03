@@ -120,18 +120,15 @@ void onTick(CBlob@ this)
 		this.Sync(counter_prop, true);
 		this.Sync(raid_tag, true);
 	}
-
 }
 
 void onChangeTeam(CBlob@ this, const int oldTeam)
 {
+	if (this.getTickSinceCreated() < 30) return; //map saver hack
+
 	if (this.getTeamNum() < getRules().getTeamsCount())
 	{
-		CSprite@ sprite = this.getSprite();
-		if (sprite !is null)
-		{
-			sprite.PlaySound("/VehicleCapture");
-		}
+		this.getSprite().PlaySound("/VehicleCapture");
 	}
 }
 
@@ -140,7 +137,7 @@ void onRender(CSprite@ this)
 	if (g_videorecording) return;
 
 	CBlob@ blob = this.getBlob();
-	if (blob is null || !blob.hasTag(raid_tag)) return;
+	if (!blob.hasTag(raid_tag)) return;
 
 	Vec2f pos2d = getDriver().getScreenPosFromWorldPos(blob.getPosition() + Vec2f(0.0f, -blob.getHeight()));
 

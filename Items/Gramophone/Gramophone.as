@@ -29,8 +29,6 @@ const string[] musicNames =
 
 // 255 = no disc
 
-const int DiscNum = 20;
-
 void onInit(CBlob@ this)
 {
 	this.setInventoryName(name(Translate::Gramophone));
@@ -39,114 +37,87 @@ void onInit(CBlob@ this)
 	
 	this.addCommandID("sv_insert");
 	this.addCommandID("sv_eject");
-	this.addCommandID("cl_play");
-	this.addCommandID("cl_stop");
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (isServer())
+	if (cmd == this.getCommandID("sv_insert") && isServer())
 	{
-		if (cmd == this.getCommandID("sv_insert"))
-		{
-			CBlob@ caller = getBlobByNetworkID(params.read_u16());
-			if (caller is null) return;
+		CPlayer@ player = getNet().getActiveCommandPlayer();
+		if (player is null) return;
 
-			CBlob@ carried = caller.getCarriedBlob();
-			if (carried is null) return;
-			
-			if (this.get_bool("isPlaying") || getMap().rayCastSolid(caller.getPosition(), this.getPosition())) return;
-	
-			bool isTrackValid = carried.getName() == "musicdisc" && carried.get_u8("trackID") >= 0 && carried.get_u8("trackID") < DiscNum + 1;
-			if (isTrackValid)
-			{
-				u8 trackID = carried.get_u8("trackID");
-				
-				// print("insert " + musicNames[trackID]);
-				
-				this.set_u8("trackID", trackID);
-				this.set_bool("isPlaying", true);
-				
-				CBitStream stream;
-				stream.write_u8(trackID);
+		CBlob@ caller = player.getBlob();
+		if (caller is null) return;
 
-				carried.server_Die();
-				this.SendCommand(this.getCommandID("cl_play"), stream);
-			}
-		}
-		else if (cmd == this.getCommandID("sv_eject"))
+		CBlob@ carried = caller.getCarriedBlob();
+		if (carried is null) return;
+		
+		if (this.get_bool("isPlaying")) return;
+
+		if (carried.getName() == "musicdisc")
 		{
-			CBlob@ caller = getBlobByNetworkID(params.read_u16());
-			if (caller is null) return;
-			
-			if (getMap().rayCastSolid(caller.getPosition(), this.getPosition())) return;
-			
-			this.set_bool("isPlaying", false);
-			
-			CBlob@ disc = server_CreateBlobNoInit("musicdisc");
-			disc.setPosition(this.getPosition() + Vec2f(0, -4));
-			disc.set_u8("trackID", this.get_u8("trackID"));
-			disc.setVelocity(Vec2f(0, -8));
-			disc.server_setTeamNum(-1);
-			disc.Init();
-			
-			CBitStream stream;
-			this.SendCommand(this.getCommandID("cl_stop"), stream);	
+			this.server_PutInInventory(carried);
 		}
 	}
-	
-	if (isClient())
+	else if (cmd == this.getCommandID("sv_eject") && isServer())
 	{
-		if (cmd == this.getCommandID("cl_play"))
-		{
-			u8 trackID = params.read_u8();
-			bool isTrackValid = trackID >= 0 && trackID < DiscNum + 1;
-			
-			// print("play " + musicNames[trackID]);
-			
-			if (isTrackValid)
-			{
-				this.set_bool("isPlaying", true);
-				this.set_u8("trackID", trackID);
-			
-				CSprite@ sprite = this.getSprite();
-				sprite.RewindEmitSound();
-				sprite.SetEmitSound(musicNames[trackID]);
-				sprite.SetEmitSoundPaused(false);
-				sprite.SetAnimation("track" + trackID);
-			}
-		}
-		else if (cmd == this.getCommandID("cl_stop"))
-		{
-			this.set_u8("trackID", 255); // Empty
-			this.set_bool("isPlaying", false);
+		CBlob@ disc = this.getInventory().getItem("musicdisc");
+		if (disc is null) return;
 		
-			CSprite@ sprite = this.getSprite();
-			sprite.SetEmitSoundPaused(true);
-			sprite.SetAnimation("empty");
-		}
+		this.server_PutOutInventory(disc);
+		disc.setVelocity(Vec2f(0, -8));
 	}
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (getMap().rayCastSolid(caller.getPosition(), this.getPosition())) return;
-	
-	CBitStream params;
-	params.write_u16(caller.getNetworkID());
 
 	if (this.get_bool("isPlaying"))
 	{
-		CButton@ buttonEject = caller.CreateGenericButton(9, Vec2f(0, 4), this, this.getCommandID("sv_eject"), "Eject", params);
+		CButton@ buttonEject = caller.CreateGenericButton(9, Vec2f(0, 4), this, this.getCommandID("sv_eject"), "Eject");
 	}
 	else
 	{
 		CBlob@ carried = caller.getCarriedBlob();
-		bool isTrackValid = carried !is null && carried.getName() == "musicdisc" && carried.get_u8("trackID") >= 0 && carried.get_u8("trackID") < DiscNum + 1;
+		const bool isTrackValid = carried !is null && carried.getName() == "musicdisc";
 
-		CButton@ buttonInsert = caller.CreateGenericButton(17, Vec2f(0, 4), this, this.getCommandID("sv_insert"), "Insert", params);
+		CButton@ buttonInsert = caller.CreateGenericButton(17, Vec2f(0, 4), this, this.getCommandID("sv_insert"), "Insert");
 		buttonInsert.SetEnabled(isTrackValid);
 	}
+}
+
+bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
+{
+	return false;
+}
+
+void onAddToInventory(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() != "musicdisc") return;
+	
+	const u8 trackID = blob.get_u8("trackID");
+
+	this.set_bool("isPlaying", true);
+	this.set_u8("trackID", trackID);
+
+	CSprite@ sprite = this.getSprite();
+	sprite.RewindEmitSound();
+	sprite.SetEmitSound(musicNames[trackID]);
+	sprite.SetEmitSoundPaused(false);
+	sprite.SetAnimation("track" + trackID);
+}
+
+void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
+{
+	if (blob.getName() != "musicdisc") return;
+	
+	this.set_u8("trackID", 255); // Empty
+	this.set_bool("isPlaying", false);
+
+	CSprite@ sprite = this.getSprite();
+	sprite.SetEmitSoundPaused(true);
+	sprite.SetAnimation("empty");
 }
 
 void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
@@ -154,15 +125,8 @@ void onThisAddToInventory(CBlob@ this, CBlob@ inventoryBlob)
 	if (inventoryBlob is null) return;
 
 	CInventory@ inv = inventoryBlob.getInventory();
-
 	if (inv is null) return;
 
 	this.doTickScripts = true;
 	inv.doTickScripts = true;
-}
-
-void onDie(CBlob@ this)
-{
-	CSprite@ sprite = this.getSprite();
-	sprite.SetEmitSoundPaused(true);
 }

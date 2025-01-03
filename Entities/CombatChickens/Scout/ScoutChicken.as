@@ -32,51 +32,58 @@ void onInit(CBlob@ this)
 	{
 		this.server_setTeamNum(-1);
 
-		string gun_config;
+		InitGun(this);
+	}
+}
 
-		switch(XORRandom(11))
-		{
-			case 0:
-			case 1:
-			case 2:
-			case 3:
-			case 4:
-				gun_config = "revolver";
-				this.set_u8("attackDelay", 5);
-				break;
-			case 5:
-			case 6:
-				gun_config = "rifle";
-				this.set_u8("attackDelay", 30);
-				break;
-			case 7:
-			case 8:
-				gun_config = "shotgun";
-				this.set_u8("attackDelay", 30);
-				break;
-			case 9:
-				gun_config = "bazooka";
-				this.set_u8("attackDelay", 30);
-				break;
-			case 10:
-				gun_config = "smg";
-				this.set_u8("attackDelay", 3);
-				break;
-		}
+void InitGun(CBlob@ this)
+{
+	if (this.hasTag("no_weapon")) return;
 
-		CBlob@ newgun = server_CreateBlob(gun_config, this.getTeamNum(), this.getPosition());
-		this.server_Pickup(newgun);
+	string gun_config;
+
+	switch(XORRandom(11))
+	{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+			gun_config = "revolver";
+			this.set_u8("attackDelay", 5);
+			break;
+		case 5:
+		case 6:
+			gun_config = "rifle";
+			this.set_u8("attackDelay", 30);
+			break;
+		case 7:
+		case 8:
+			gun_config = "shotgun";
+			this.set_u8("attackDelay", 30);
+			break;
+		case 9:
+			gun_config = "bazooka";
+			this.set_u8("attackDelay", 30);
+			break;
+		case 10:
+			gun_config = "smg";
+			this.set_u8("attackDelay", 3);
+			break;
+	}
+
+	CBlob@ newgun = server_CreateBlob(gun_config, this.getTeamNum(), this.getPosition());
+	this.server_Pickup(newgun);
+	
+	GunInfo@ gun;
+	if (newgun.get("gunInfo", @gun))
+	{
+		gun.ammo = gun.ammo_max;
 		
-		GunInfo@ gun;
-		if (newgun.get("gunInfo", @gun))
+		for (u8 i = 0; i < 3; i++)
 		{
-			gun.ammo = gun.ammo_max;
-			
-			for (u8 i = 0; i < 3; i++)
-			{
-				CBlob@ ammo = server_CreateBlob(gun.ammo_name, this.getTeamNum(), this.getPosition());
-				this.server_PutInInventory(ammo);
-			}
+			CBlob@ ammo = server_CreateBlob(gun.ammo_name, this.getTeamNum(), this.getPosition());
+			this.server_PutInInventory(ammo);
 		}
 	}
 }

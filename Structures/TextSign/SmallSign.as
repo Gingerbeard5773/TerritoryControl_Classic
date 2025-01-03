@@ -1,11 +1,17 @@
 //Small Sign
 //written by Gingerbeard
 
+const string help_text = "!write -text-";
+
 void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
 
-	this.set_string("text", "!write -text-");
+	if (!this.exists("text"))
+		this.set_string("text", help_text);
+		
+	if (this.get_string("text") != help_text)
+		this.getSprite().SetAnimation("written");
 
 	this.addCommandID("server_write");
 	this.addCommandID("client_write");
