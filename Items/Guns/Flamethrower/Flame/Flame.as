@@ -35,6 +35,13 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid, Vec2f normal, Vec2f point
 	if (!isServer()) return;
 
 	if (getGameTime() % 2 != 0) return;
+	
+	if (this.getTickSinceCreated() < 10 && blob !is null)
+	{
+		CPlayer@ player = blob.getPlayer();
+		if (player !is null && this.getDamageOwnerPlayer() is player)
+			return;
+	}
 
 	if (solid) 
 	{
