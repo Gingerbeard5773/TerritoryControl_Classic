@@ -23,7 +23,7 @@ u32 getNextMeteor()
 
 u32 getNextWreckage()
 {
-	return 30000 + XORRandom(90000);
+	return 60000 + XORRandom(80000);
 }
 
 void onTick(CRules@ this)
