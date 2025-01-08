@@ -166,7 +166,7 @@ namespace Translate
 	TavernRat      = Translate("It doesn't bite because I hit it with a roller", "Он не кусается, потому что я бью его роликом."),
 	TavernBurger   = Translate("FLUFFY BURGER", "ПУШИСТЫЙ БУРГЕР"),
 	ShoddyTavern0  = Translate("Shoddy Tavern", "Шодди Таверна"),
-	ShoddyTavern1  = Translate("{OWNER}'s Shoddy Tavern", "Шодди Таверна {OWNER}"),
+	ShoddyTavern1  = Translate("{OWNER}'s Shoddy Tavern", "Шодди Таверна ({OWNER})"),
 	SetTavern      = Translate("Set this as your current spawn point.\n(Costs 20 coins per respawn)", "Установите это как текущую точку появления.\n(Стоит 20 монет за возрождение.)"),
 	UnsetTavern    = Translate("Unset this as your current spawn point.", "Удалите это как текущую точку появления."),
 
@@ -227,6 +227,11 @@ namespace Translate
 	SetPacker      = Translate("Set packing threshold", "Установить порог упаковки"),
 	Increment      = Translate("Increment Packing Threshold ({STACKS} stacks)", "Увеличить порог упаковки ({STACKS} стопок)"),
 	Decrement      = Translate("Decrement Packing Threshold ({STACKS} stacks)", "Уменьшить порог упаковки ({STACKS} стопок)"),
+	
+	//locker
+	Locker0        = Translate("Personal Locker", "Персональный шкафчик"),
+	Locker1        = Translate("{OWNER}'s Personal Locker", "Персональный шкафчик ({OWNER})"),
+	Locker2        = Translate("{OWNER}'s Personal Safe has been destroyed!", "Личный сейф {OWNER} был уничтожен!"),
 
 	//materials
 	CopperOre      = Translate("Copper", "Медь"),

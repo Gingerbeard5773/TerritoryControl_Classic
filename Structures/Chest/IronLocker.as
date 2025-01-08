@@ -1,32 +1,34 @@
 ﻿// A script by TFlippy
 
+#include "TC_Translation.as";
+
 void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
 	
-	this.server_setTeamNum(-1);
-	
-	this.inventoryButtonPos = Vec2f(0, 0);
-	
 	this.Tag("ignore extractor");
+
+	this.addCommandID("server_setowner");
+	this.addCommandID("client_setowner");
+	this.addCommandID("server_store");
 	
-	this.set_string("Owner", "");
-	this.addCommandID("sv_setowner");
-	this.addCommandID("sv_store");
+	SetInventoryName(this);
 }
 
-void onTick(CBlob@ this)
+void SetInventoryName(CBlob@ this)
 {
-	this.setInventoryName((this.get_string("Owner") == "" ? "Nobody" : this.get_string("Owner")) + "'s Personal Locker");
+	const string owner = this.get_string("Owner");
+	const string name = owner.isEmpty() ? Translate::Locker0 : Translate::Locker1.replace("{OWNER}", owner);
+	this.setInventoryName(name);
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (getMap().rayCastSolid(caller.getPosition(), this.getPosition())) return;
 	
-	if (caller.isOverlapping(this) && this.get_string("Owner") == "")
+	if (caller.isOverlapping(this) && this.get_string("Owner").isEmpty())
 	{
-		CButton@ buttonOwner = caller.CreateGenericButton(9, Vec2f(0, 0), this, this.getCommandID("sv_setowner"), "Claim");
+		caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server_setowner"), Translate::Claim);
 	}
 	
 	CPlayer@ player = caller.getPlayer();
@@ -39,27 +41,36 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 		if (inv.getItemsCount() > 0)
 		{
-			CButton@ buttonOwner = caller.CreateGenericButton(28, Vec2f(0, 8), this, this.getCommandID("sv_store"), getTranslatedString("Store"));
+			caller.CreateGenericButton(28, Vec2f(0, 8), this, this.getCommandID("server_store"), getTranslatedString("Store"));
 		}
 	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("sv_setowner") && isServer())
+	if (cmd == this.getCommandID("server_setowner") && isServer())
 	{
-		if (this.get_string("Owner") != "") return;
+		if (!this.get_string("Owner").isEmpty()) return;
 	
 		CPlayer@ player = getNet().getActiveCommandPlayer();
 		if (player is null) return;
 
 		this.set_string("Owner", player.getUsername());
 		this.server_setTeamNum(player.getTeamNum());
-		this.Sync("Owner", true);
-
-		// print("Set owner to " + this.get_string("Owner") + "; Team: " + this.getTeamNum());
+		
+		CBitStream stream;
+		stream.write_u16(player.getNetworkID());
+		this.SendCommand(this.getCommandID("client_setowner"), stream);
 	}
-	else if (cmd == this.getCommandID("sv_store") && isServer())
+	else if (cmd == this.getCommandID("client_setowner") && isClient())
+	{
+		CPlayer@ player = getPlayerByNetworkId(params.read_u16());
+		if (player is null) return;
+		
+		this.set_string("Owner", player.getUsername());
+		SetInventoryName(this);
+	}
+	else if (cmd == this.getCommandID("server_store") && isServer())
 	{
 		CPlayer@ player = getNet().getActiveCommandPlayer();
 		if (player is null) return;
@@ -88,15 +99,26 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	return damage * (hitterBlob.getPlayer() is null ? 1.0f : hitterBlob.getPlayer().getUsername() == this.get_string("Owner") ? 4.0f : 1.0f);
+	CPlayer@ player = hitterBlob.getPlayer();
+	if (player !is null)
+	{
+		damage *= (player.getUsername() == this.get_string("Owner") ? 4.0f : 1.0f);
+	}
+
+	return damage;
 }
 
 void onDie(CBlob@ this)
 {
-	if (this.get_string("Owner") != "") client_AddToChat("" + this.get_string("Owner") + "'s Personal Safe has been destroyed!");
+	const string owner = this.get_string("Owner");
+	if (!owner.isEmpty())
+	{
+		client_AddToChat(Translate::Locker2.replace("{OWNER}", owner));
+	}
 }
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 {
-	return forBlob.getPlayer().getUsername() == this.get_string("Owner");
+	CPlayer@ player = forBlob.getPlayer();
+	return player !is null && player.getUsername() == this.get_string("Owner");
 }
