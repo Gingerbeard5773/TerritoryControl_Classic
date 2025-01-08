@@ -13,6 +13,8 @@ const u32[] teamcolours = {0xff2CAFDE, 0xffD5543F, 0xff9DCA22, 0xffD379E0, 0xffF
 Vec2f lineoffset = Vec2f(0, -2);
 const f32 stepheight = 16;
 
+bool mousePress;
+
 void onRenderScoreboard(CRules@ this)
 {
 	//sort players
@@ -34,6 +36,9 @@ void onRenderScoreboard(CRules@ this)
 		if (!inserted)
 			sortedplayers.push_back(p);
 	}
+	
+	CControls@ controls = getControls();
+	Vec2f mousePos = controls.getMouseScreenPos();
 
 	//draw board
 
@@ -43,6 +48,8 @@ void onRenderScoreboard(CRules@ this)
 	Vec2f topleft(100, 150);
 	Vec2f bottomright(getScreenWidth() - 100, topleft.y + (sortedplayers.length + 3.5) * stepheight);
 	GUI::DrawPane(topleft, bottomright, SColor(0xffc0c0c0));
+	
+	makeWebsiteLink(Vec2f(getScreenWidth()/2 - 300, topleft.y - 55), "Discord Link", "https://discord.gg/V29BBeba3C", controls, mousePos);
 
 	//offset border
 
@@ -63,9 +70,6 @@ void onRenderScoreboard(CRules@ this)
 	GUI::DrawText("Title", Vec2f(bottomright.x - 200, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
-
-	CControls@ controls = getControls();
-	Vec2f mousePos = controls.getMouseScreenPos();
 	
 	//draw players
 	for (u32 i = 0; i < sortedplayers.length; i++)
@@ -125,6 +129,7 @@ void onRenderScoreboard(CRules@ this)
 	
 	// Vec2f offset = Vec2f(0, bottomright.y - topleft.y + 64);
 	// GUI::DrawPane(topleft + offset, bottomright + offset + Vec2f(0, 64), SColor(0xffc0c0c0));
+	mousePress = controls.mousePressed1; 
 }
 
 string getRank(CPlayer@ p)
@@ -210,4 +215,34 @@ float drawServerRules(float y)
 	GUI::DrawTextCentered(Rule_2, mid, white);
 
 	return bot.y;
+}
+
+void makeWebsiteLink(Vec2f pos, const string&in text, const string&in website, CControls@ controls, Vec2f&in mousePos)
+{
+	GUI::SetFont("menu");
+	Vec2f dim;
+	GUI::GetTextDimensions(text, dim);
+
+	const f32 width = dim.x + 20;
+	const f32 height = 40;
+	Vec2f tl = pos;
+	Vec2f br = Vec2f(width + pos.x, pos.y + height);
+
+	const bool hover = (mousePos.x > tl.x && mousePos.x < br.x && mousePos.y > tl.y && mousePos.y < br.y);
+	if (hover)
+	{
+		GUI::DrawButton(tl, br);
+
+		if (controls.mousePressed1 && !mousePress)
+		{
+			Sound::Play("option");
+			OpenWebsite(website);
+		}
+	}
+	else
+	{
+		GUI::DrawPane(tl, br, 0xffcfcfcf);
+	}
+
+	GUI::DrawTextCentered(text, Vec2f(tl.x + (width * 0.50f), tl.y + (height * 0.50f)), 0xffffffff);
 }
