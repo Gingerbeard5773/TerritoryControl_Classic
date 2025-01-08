@@ -65,6 +65,7 @@ namespace Translate
 	//peasant build menu
 	Faction        = Translate("Found a Faction!", "Создать фракцию!"),
 	Campfire       = Translate("Campfire", "Походный костер"),
+	Tavern         = Translate("Tavern\nA poorly built cozy tavern.\nOther neutrals may set their spawn here, paying you 20 coins for each spawn.", "Таверна\nПлохо построенная, уютная таверна.\nДругие нейтралы могут разместить здесь свою точку возрождения, платя вам 20 монет за каждую точку появления."),
 	BanditShack    = Translate("An Awful Rundown Bandit Shack\nGives you an option to become bandit scum.", "Ужасная захудалая бандитская лачуга\nДает вам возможность стать бандитом-подонком."),
 
 	//builder shop
@@ -157,6 +158,17 @@ namespace Translate
 	BanditRifle    = Translate("Timbr Grindr\nI jammed two pipes in this and it kills people and works it's good.", "Измльчитль дрвесны\nЯ вставил в это две трубки, и это убивает людей и работает хорошо."),
 	BanditAmmo     = Translate("Kill Pebles\nMy grandpa made these.", "Смертоносная галька\nИх делал мой дедушка."),
 	Faultymine     = Translate("A Working Mine\nYou should buy this mine.", "Работающая шахта\nВам следует купить эту шахту."),
+	
+	//tavern
+	Beer           = Translate("Beer's Bear\nHomemade fresh bear with foam!", "Пиво\nДомашнее свежее пиво с пеной!"),
+	Vodka          = Translate("Vodka!\nAlso homemade fun water, buy this!", "Водка!\nТакже домашняя водичка, купите ее!"),
+	BanditMusic    = Translate("Bandit Music\nPlays a bandit music!", "Бандитская музыка\nВоспроизводит бандитскую музыку!"),
+	TavernRat      = Translate("It doesn't bite because I hit it with a roller", "Он не кусается, потому что я бью его роликом."),
+	TavernBurger   = Translate("FLUFFY BURGER", "ПУШИСТЫЙ БУРГЕР"),
+	ShoddyTavern0  = Translate("Shoddy Tavern", "Шодди Таверна"),
+	ShoddyTavern1  = Translate("{OWNER}'s Shoddy Tavern", "Шодди Таверна {OWNER}"),
+	SetTavern      = Translate("Set this as your current spawn point.\n(Costs 20 coins per respawn)", "Установите это как текущую точку появления.\n(Стоит 20 монет за возрождение.)"),
+	UnsetTavern    = Translate("Unset this as your current spawn point.", "Удалите это как текущую точку появления."),
 
 	//generic shop
 	Buy            = Translate("Buy {ITEM} ({QUANTITY})", "Купить {ITEM} ({QUANTITY})"),
@@ -266,7 +278,9 @@ namespace Translate
 	ScrubChow      = Translate("Scrub Chow", "Жратва"),
 	ScrubChowXL    = Translate("Scrub Chow XL", "Жратва XL"),
 	Certificate    = Translate("Building for Dummies", "Строительство для чайников"),
-	InfernalStone  = Translate("Infernal Stone", "Адский камень");
+	InfernalStone  = Translate("Infernal Stone", "Адский камень"),
+	Claim          = Translate("Claim", "Претензия"),
+	Drink          = Translate("Drink!", "Напиток!");
 }
 
 string name(const string&in translated)

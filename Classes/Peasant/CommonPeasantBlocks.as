@@ -45,7 +45,6 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		BuildBlock b(0, "camp", "$icon_faction$", Translate::Faction);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
-		//AddRequirement(b.reqs, "coin", "", "Coins", 100);
 
 		b.buildOnGround = true;
 		b.size.Set(80, 24);
@@ -64,6 +63,11 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 	{
 		BuildBlock b(0, "wood_triangle", "$wood_triangle$", Translate::WoodTriangle);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 5);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
 		blocks[0].push_back(b);
 	}
 	{
@@ -87,11 +91,6 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "ladder", "$ladder$", "Ladder\nAnyone can climb it");
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 10);
-		blocks[0].push_back(b);
-	}
-	{
 		BuildBlock b(0, "wooden_platform", "$wooden_platform$", "Wooden Platform\nOne way platform");
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 15);
 		blocks[0].push_back(b);
@@ -102,10 +101,19 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(0, "quarters", "$quarters$", getTranslatedString("Quarters")+"\n" + Descriptions::quarters);
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 100);
+		BuildBlock b(0, "banditshack", "$icon_banditshack$", Translate::BanditShack);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 200);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
 		b.buildOnGround = true;
 		b.size.Set(40, 24);
+		blocks[0].push_back(b);
+	}
+	{
+		BuildBlock b(0, "tavern", "$tavern$", Translate::Tavern);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 350);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 200);
+		b.buildOnGround = true;
+		b.size.Set(56, 32);
 		blocks[0].push_back(b);
 	}
 	{	///Report fil, he stole my fireplace // Truly ~Fil
@@ -114,14 +122,6 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 50);
 		b.buildOnGround = true;
 		b.size.Set(16, 16);
-		blocks[0].push_back(b);
-	}
-	{
-		BuildBlock b(0, "banditshack", "$icon_banditshack$", Translate::BanditShack);
-		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 200);
-		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 50);
-		b.buildOnGround = true;
-		b.size.Set(40, 24);
 		blocks[0].push_back(b);
 	}
 	

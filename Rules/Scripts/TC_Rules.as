@@ -20,9 +20,7 @@ void onRestart(CRules@ this)
 }
 
 void Reset(CRules@ this)
-{
-	printf("Restarting rules script: " + getCurrentScriptName());
-	
+{	
 	for (u8 i = 0; i < getPlayerCount(); i++)
 	{
 		CPlayer@ p = getPlayer(i);
@@ -145,10 +143,35 @@ void onTick(CRules@ this)
 		{
 			team = getAssignedNeutralTeam(this, player.getUsername());
 			player.server_setTeamNum(team);
-			
+
 			CBlob@[] spawns;
 			getBlobsByName("ruins", @spawns);
 			//getBlobsByName("banditshack", @spawns); //exploitable :(
+			
+			if (player.exists("tavern_netid"))
+			{
+				CBlob@ tavern = getBlobByNetworkID(player.get_netid("tavern_netid"));
+				if (tavern !is null)
+				{
+					CPlayer@ tavern_owner = getPlayerByUsername(tavern.get_string("Owner"));
+					const bool isOwner = player is tavern_owner;
+					if (player.getCoins() >= 20 || isOwner)
+					{
+						spawns.clear();
+						spawns.push_back(tavern);
+						
+						if (!isOwner)
+						{
+							player.server_setCoins(player.getCoins() - 20);
+							if (tavern_owner !is null)
+							{
+								tavern_owner.server_setCoins(tavern_owner.getCoins() + 20);
+							}
+						}
+					}
+				}
+			}
+
 			if (spawns.length > 0)
 			{
 				CBlob@ new_blob = server_CreateBlob("peasant");

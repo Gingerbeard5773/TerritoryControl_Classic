@@ -73,7 +73,7 @@ void onInit(CRules@ this)
 	AddIconToken("$icon_obstructor$", "Obstructor.png", Vec2f(8, 8), 0);
 	
 	//peasant build menu
-	AddIconToken("$icon_faction$", "PeasantIcons.png", Vec2f(64, 32), 0);
+	AddIconToken("$icon_faction$", "PeasantIcons.png", Vec2f(80, 32), 0);
 	AddIconToken("$icon_banditshack$", "BanditShack.png", Vec2f(40, 24), 0);
 	
 	//tinkershop

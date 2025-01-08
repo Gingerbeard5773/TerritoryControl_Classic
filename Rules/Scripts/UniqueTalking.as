@@ -1,7 +1,7 @@
 
-string[] w_wtf = {"gosh", "omg", "geez", "jesus", "woot", "wut", "wat", "oo", "xd"};
-string[] w_filler = {"like", "just", "maybe", "basically", "well"};
-string[] w_friends = {"darlings", "loves", "children", "friends", "comrades", "players", "beings"};
+string[] w_wtf = {"gosh", "omg", "geez", "jesus", "woot", "wut", "wat", "oo", "xd", "huhuhu", "blurgle"};
+string[] w_filler = {"like", "just", "maybe", "basically", "well", "*burp*", "pbfpsfst", "pffffoo", "buhuhu", "huhu", "harhar"};
+string[] w_friends = {"darlings", "loves", "children", "friends", "comrades", "players", "beings", "bwoosh", "geti"};
 string[] w_smileys = {":)", ":(", ":D", "XD", "xd", ":)))", ":o", ";(", ";_;", "<3", ":3"};
 
 string GetWTF() { return w_wtf[XORRandom(w_wtf.length)]; }
@@ -150,6 +150,30 @@ bool onServerProcessChat(CRules@ this, const string& in text_in, string& out tex
 		if (XORRandom(40) == 0) text_out += " xD";
 		if (XORRandom(40) == 0) text_out += " LAG";
 		if (XORRandom(40) == 0) text_out = "kag";
+	}
+	
+	if (blob.exists("drunk") && blob.get_u16("drunk") > 0)
+	{
+		if (XORRandom(100) < blob.get_u16("drunk") * 10)
+		{
+			switch(XORRandom(13))
+			{
+				case 0:  text_out += "... hic!";                                                                  break;
+				case 1:  text_out += ". jk " + GetSmileys();                                                      break;
+				case 2:  text_out = "my " + GetFriends() + ", " + text_out + "!";                                 break;
+				case 3:  text_out += " yesterday";                                                                break;
+				case 4:  text_out = GetFiller() + " " + text_out + " " + GetSmileys();                            break;
+				case 5:  text_out = GetWTF() + ", like just " + text_out;                                         break;
+				case 6:  text_out = "shouldn't we " + GetFiller() + " " + text_out + "? " + GetSmileys();         break;
+				case 7:  text_out += " just " + GetFiller() + " like gregor_builder";                             break;
+				case 8:  text_out += " pffffut " + GetSmileys();                                                  break;
+				case 9:  text_out += " rofl";                                                                     break;
+				case 10: text_out += " " + GetSmileys();                                                          break;
+				case 11: text_out += " belugh?";                                                                  break;	
+				case 12: text_out = GetFiller() + " if we " + text_out + ", nobodsy can stop us " + GetSmileys(); break;	
+			}
+			text_out = text_out.toLower().replace("c", "sh").replace("o", "hoh").replace("ing", "h...");
+		}
 	}
 
 	return true;
