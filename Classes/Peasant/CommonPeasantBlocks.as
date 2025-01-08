@@ -109,6 +109,11 @@ void addCommonPeasantBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
+		BuildBlock b(CMap::tile_ground, "ground_block", "$ground_block$", Translate::DirtBlock);
+		AddRequirement(b.reqs, "blob", "mat_dirt", Translate::Dirt, 15);
+		blocks[0].push_back(b);
+	}
+	{
 		BuildBlock b(0, "tavern", "$tavern$", Translate::Tavern);
 		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 350);
 		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 200);
