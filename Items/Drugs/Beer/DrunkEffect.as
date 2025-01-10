@@ -17,9 +17,9 @@ void onTick(CBlob@ this)
 		this.set_u16("drunk", Maths::Max(this.get_u16("drunk") - 1, 0));
 	}
 	
-	if (getKnocked(this) < 10 && XORRandom(4000 / (1 + level * 1.5f)) == 0)
+	if (getKnocked(this) < 10 && XORRandom(8000 / (1 + level * 1.5f)) == 0)
 	{
-		const u8 knock = 5 + XORRandom(5) * level;
+		const u8 knock = 5 + XORRandom(3) * level;
 	
 		SetKnocked(this, knock);
 		this.getSprite().PlaySound("drunk_fx" + XORRandom(5), 0.8f, this.getSexNum() == 0 ? 1.0f : 2.0f);
