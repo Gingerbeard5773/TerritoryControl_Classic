@@ -61,13 +61,13 @@ void onRenderScoreboard(CRules@ this)
 
 	//draw player table header
 
-	GUI::DrawText("Character Name", Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
-	GUI::DrawText("User Name", Vec2f(topleft.x + 300, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Player", Vec2f(topleft.x, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Username", Vec2f(topleft.x + 300, topleft.y), SColor(0xffffffff));
 	// GUI::DrawText("Coins", Vec2f(bottomright.x - 600, topleft.y), SColor(0xffffffff));
-	GUI::DrawText("Ping", Vec2f(bottomright.x - 500, topleft.y), SColor(0xffffffff));
-	GUI::DrawText("Kills", Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
-	GUI::DrawText("Deaths", Vec2f(bottomright.x - 300, topleft.y), SColor(0xffffffff));
-	GUI::DrawText("Title", Vec2f(bottomright.x - 200, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Ping", Vec2f(bottomright.x - 500, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Kills", Vec2f(bottomright.x - 400, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Deaths", Vec2f(bottomright.x - 300, topleft.y), SColor(0xffffffff));
+	GUI::DrawTranslatedText("Accolades", Vec2f(bottomright.x - 200, topleft.y), SColor(0xffffffff));
 
 	topleft.y += stepheight * 0.5f;
 	
