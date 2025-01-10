@@ -171,8 +171,8 @@ void onDie(CBlob@ this)
 
 void DoExplosion(CBlob@ this)
 {
-	if (this.hasTag("dead")) return;
-	this.Tag("dead");
+	if (this.hasTag("exploded")) return;
+	this.Tag("exploded");
 	
 	CMap@ map = getMap();
 	Vec2f pos = this.getPosition();
