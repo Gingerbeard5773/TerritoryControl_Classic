@@ -161,6 +161,7 @@ namespace Translate
 	
 	//tavern
 	Beer           = Translate("Beer's Bear\nHomemade fresh bear with foam!", "Пиво\nДомашнее свежее пиво с пеной!"),
+	Beer2          = Translate("A real beer for real men. Those who drink Bear's Bear are strong men.", "Настоящее пиво для настоящих мужчин. Те, кто пьют пиво — сильные мужчины."),
 	Vodka          = Translate("Vodka!\nAlso homemade fun water, buy this!", "Водка!\nТакже домашняя водичка, купите ее!"),
 	BanditMusic    = Translate("Bandit Music\nPlays a bandit music!", "Бандитская музыка\nВоспроизводит бандитскую музыку!"),
 	TavernRat      = Translate("It doesn't bite because I hit it with a roller", "Он не кусается, потому что я бью его роликом."),
