@@ -1,6 +1,7 @@
 #include "RemoteAccess.as";
 #include "TeamsCommon.as";
 #include "TC_Translation.as";
+#include "Hitters.as";
 
 const string raid_tag = "under raid";
 
@@ -341,4 +342,15 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		UnserializeTeams(getRules(), params);
 	}
+}
+
+f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
+{
+	switch(customData)
+	{
+		case Hitters::builder:
+			damage *= 3.0f;
+			break;
+	}
+	return damage;
 }

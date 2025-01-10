@@ -506,8 +506,25 @@ bool canHit(CBlob@ this, CBlob@ b, Vec2f tpos, bool extra = true)
 	{
 		return false;
 	}
+	
+	const u8 team = this.getTeamNum();
+	if (b.hasTag("faction_base"))
+	{
+		if (team != b.getTeamNum())
+			return true;
 
-	if (b.getTeamNum() == this.getTeamNum())
+		u16 teamForts = 0;
+		CBlob@[] forts;
+		getBlobsByTag("faction_base", @forts);
+		for (u16 i = 0; i < forts.length; i++)
+		{
+			if (forts[i].getTeamNum() == team) teamForts++;
+		}
+		
+		return teamForts > 1;
+	}
+
+	if (team == b.getTeamNum())
 	{
 		//no hitting friendly carried stuff
 		if (b.isAttached())
