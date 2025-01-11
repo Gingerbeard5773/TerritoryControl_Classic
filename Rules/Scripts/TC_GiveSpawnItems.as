@@ -8,6 +8,8 @@ const string timer_prop = "mats_time";
 
 const u32 materials_wait = 20;
 
+const string[] builder_names = { "builder", "peasant" };
+
 void onInit(CRules@ this)
 {
 	this.addCommandID(give_items_cmd);
@@ -31,17 +33,19 @@ void onTick(CRules@ this)
 	if (blob is null) return;
 	
 	const string name = getRecieverName(blob);
-	if (getMatsTime(this, name) > gameTime || name != "builder") return;
+	if (getMatsTime(this, name) > gameTime || builder_names.find(name) == -1) return;
 
 	CBlob@[] overlapping;
 	if (blob.getOverlapping(@overlapping))
 	{
-		const u8 overlappingLength = overlapping.length;
-		for (u8 i = 0; i < overlappingLength; ++i)
+		const u16 overlappingLength = overlapping.length;
+		for (u16 i = 0; i < overlappingLength; ++i)
 		{
 			CBlob@ overlapped = overlapping[i];
-			bool ismybase = overlapped.hasTag("faction_base") && overlapped.getTeamNum() == blob.getTeamNum();
-			if (overlapped.getName() == "buildershop" || ismybase)
+			const string b_name = overlapped.getName();
+			const bool ismybase = overlapped.hasTag("faction_base") && overlapped.getTeamNum() == blob.getTeamNum();
+			const bool istavern = b_name == "tavern" && blob.getTeamNum() >= getRules().getTeamsCount();
+			if (b_name == "buildershop" || istavern || ismybase)
 			{
 				client_GiveMats(this, player, blob);
 			}
@@ -55,7 +59,7 @@ void onSetPlayer(CRules@ this, CBlob@ blob, CPlayer@ player)
 	if (player !is null && player.isMyPlayer() && blob !is null)
 	{
 		const string name = getRecieverName(blob);
-		if (getMatsTime(this, name) > getGameTime() || name != "builder") return;
+		if (getMatsTime(this, name) > getGameTime() || builder_names.find(name) == -1) return;
 		
 		client_GiveMats(this, player, blob, true);
 	}
@@ -86,7 +90,7 @@ void client_GiveMats(CRules@ this, CPlayer@ player, CBlob@ blob, const bool&in c
 void server_GiveMats(CRules@ this, CPlayer@ player, CBlob@ blob)
 {
 	const string name = getRecieverName(blob);
-	if (name == "builder")
+	if (builder_names.find(name) != -1)
 	{
 		server_SpawnMats(blob, "mat_wood", 80);
 		server_SpawnMats(blob, "mat_stone", 30);
@@ -134,29 +138,24 @@ void onRender(CRules@ this)
 	if (player is null || !player.isMyPlayer()) return;
 
 	CBlob@ b = player.getBlob();
-	if (b !is null)
-	{
-		const u32 gameTime = getGameTime();
-		const string name = getRecieverName(b);
-		const s32 next_items = getMatsTime(this, name);
-		if (next_items > gameTime)
-		{
-			string action = (name == "builder" ? "Go Build" : "Go Fight");
-			if (this.isWarmup())
-			{
-				action = "Prepare for Battle";
-			}
+	if (b is null) return;
 
-			const u32 secs = ((next_items - 1 - gameTime) / getTicksASecond()) + 1;
-			const string units = ((secs != 1) ? " seconds" : " second");
-			GUI::SetFont("menu");
-			GUI::DrawTextCentered(getTranslatedString("Next resupply in {SEC}{TIMESUFFIX}, {ACTION}!")
-							.replace("{SEC}", "" + secs)
-							.replace("{TIMESUFFIX}", getTranslatedString(units))
-							.replace("{ACTION}", getTranslatedString(action)),
-			              Vec2f(getScreenWidth() / 2, getScreenHeight() / 3 - 70.0f + Maths::Sin(gameTime / 3.0f) * 5.0f),
-			              SColor(255, 255, 55, 55));
-		}
+	const u32 gameTime = getGameTime();
+	const string name = getRecieverName(b);
+	const s32 next_items = getMatsTime(this, name);
+	if (next_items > gameTime)
+	{
+		const string action = (builder_names.find(name) != -1 ? "Go Build" : "Go Fight");
+
+		const u32 secs = ((next_items - 1 - gameTime) / getTicksASecond()) + 1;
+		const string units = ((secs != 1) ? " seconds" : " second");
+		GUI::SetFont("menu");
+		GUI::DrawTextCentered(getTranslatedString("Next resupply in {SEC}{TIMESUFFIX}, {ACTION}!")
+						.replace("{SEC}", "" + secs)
+						.replace("{TIMESUFFIX}", getTranslatedString(units))
+						.replace("{ACTION}", getTranslatedString(action)),
+					  Vec2f(getScreenWidth() / 2, getScreenHeight() / 3 - 70.0f + Maths::Sin(gameTime / 3.0f) * 5.0f),
+					  SColor(255, 255, 55, 55));
 	}
 }
 
