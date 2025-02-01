@@ -8,6 +8,10 @@
 void onInit(CBlob@ this)
 {
 	this.Tag("builder always hit");
+	
+	this.set_string("required class", "peasant");
+	this.set_string("required tag", "neutral");
+	this.set_Vec2f("class offset", Vec2f(-3, -6));
 
 	this.addCommandID("server_setowner");
 	this.addCommandID("client_setowner");
