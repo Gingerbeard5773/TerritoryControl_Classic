@@ -8,8 +8,6 @@ const string timer_prop = "mats_time";
 
 const u32 materials_wait = 20;
 
-const string[] builder_names = { "builder", "peasant" };
-
 void onInit(CRules@ this)
 {
 	this.addCommandID(give_items_cmd);
@@ -33,7 +31,7 @@ void onTick(CRules@ this)
 	if (blob is null) return;
 	
 	const string name = getRecieverName(blob);
-	if (getMatsTime(this, name) > gameTime || builder_names.find(name) == -1) return;
+	if (getMatsTime(this, name) > gameTime || name != "builder") return;
 
 	CBlob@[] overlapping;
 	if (blob.getOverlapping(@overlapping))
@@ -59,7 +57,7 @@ void onSetPlayer(CRules@ this, CBlob@ blob, CPlayer@ player)
 	if (player !is null && player.isMyPlayer() && blob !is null)
 	{
 		const string name = getRecieverName(blob);
-		if (getMatsTime(this, name) > getGameTime() || builder_names.find(name) == -1) return;
+		if (getMatsTime(this, name) > getGameTime()) return;
 		
 		client_GiveMats(this, player, blob, true);
 	}
@@ -67,7 +65,8 @@ void onSetPlayer(CRules@ this, CBlob@ blob, CPlayer@ player)
 
 const string getRecieverName(CBlob@ blob)
 {
-	const string name = blob.getName();
+	string name = blob.getName();
+	if (name == "peasant") name = "builder";
 	return name;
 }
 
@@ -89,12 +88,8 @@ void client_GiveMats(CRules@ this, CPlayer@ player, CBlob@ blob, const bool&in c
 
 void server_GiveMats(CRules@ this, CPlayer@ player, CBlob@ blob)
 {
-	const string name = getRecieverName(blob);
-	if (builder_names.find(name) != -1)
-	{
-		server_SpawnMats(blob, "mat_wood", 80);
-		server_SpawnMats(blob, "mat_stone", 30);
-	}
+	server_SpawnMats(blob, "mat_wood", 80);
+	server_SpawnMats(blob, "mat_stone", 30);
 }
 
 void server_SpawnMats(CBlob@ blob, const string&in name, const int&in quantity)
@@ -145,7 +140,7 @@ void onRender(CRules@ this)
 	const s32 next_items = getMatsTime(this, name);
 	if (next_items > gameTime)
 	{
-		const string action = (builder_names.find(name) != -1 ? "Go Build" : "Go Fight");
+		const string action = (name == "builder" ? "Go Build" : "Go Fight");
 
 		const u32 secs = ((next_items - 1 - gameTime) / getTicksASecond()) + 1;
 		const string units = ((secs != 1) ? " seconds" : " second");
