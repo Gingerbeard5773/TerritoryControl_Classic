@@ -5,13 +5,13 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v58";
-	const string remaster_version = "v8";
+	const string remaster_version = "v9";
 	
 	sv_mapcycle_shuffle = true;
 	
-	sv_contact_info = "discord.gg/PAERqSb"; //information to display when an error occurs
+	sv_contact_info = "https://discord.gg/V29BBeba3C"; //information to display when an error occurs
 	
-	sv_name = "[EU] Territory Control Classic: Blurry Badgers";
+	sv_name = "[EU] Territory Control Classic: Drunk Badgers";
 
 	print("");
 	print("    --- INITIALIZING TERRITORY CONTROL CLASSIC REMASTERED ---", print_col);
@@ -39,17 +39,16 @@ void onInit(CRules@ this)
 	print("");
 }
 
-//Changelog v8 December 17, 2024
+//Changelog v9 February 1st, 2025
 //
-// Fixed mustard gas turning into methane when vaccumed.
-// Faction leadership is reset when the leader leaves the faction.
-// Fixed incorrect faction defeat message.
-// Improved collision with projectiles and collisions with gaseous blobs.
-// Guns do not break while held.
-// Added a mod compatible pickup menu.
-// Gas bypasses vehicle immunity.
-// Explosion effects will always appear on clients.
-// Ported over the pickup crash fix.
-// 2v1 votes will pass.
-// Added operetta to the map cycle.
-//
+// Added tavern.
+// Added beer & vodka.
+// Added choker gem.
+// Added bubble gem.
+// Added the map saver.
+// Extractor now has optional filter functionality.
+// Automat is must more resistant to damage.
+// Peasants can place dirt blocks.
+// The pickup menu is improved drastically.
+// Nerfed tank cannon fire rate.
+// Peasants have resupply
