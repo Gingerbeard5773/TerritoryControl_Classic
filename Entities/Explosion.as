@@ -143,14 +143,14 @@ void Explode(CBlob@ this, const f32&in radius, const f32&in damage)
 						if (!canHit) continue;
 
 						Vec2f tpos = m_pos + offset;
-						TileType tile = map.getTile(tpos).type;
+						Tile tile = map.getTile(tpos);
 
 						canHit = this.hasTag("map_damage_dirt") || canExplosionDamage(map, tpos, tile);
 						if (!canHit) continue;
 
-						if (map.isTileBedrock(tile)) continue;
+						if (map.isTileBedrock(tile.type)) continue;
 
-						if (dist >= rad_thresh || !canExplosionDestroy(this, map, tpos, tile))
+						if (dist >= rad_thresh || !canExplosionDestroy(this, map, tpos, tile.type))
 						{
 							map.server_DestroyTile(tpos, 1.0f, this);
 						}
@@ -255,10 +255,10 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 
 			if (isServer())
 			{
-				TileType t = map.getTile(tpos).type;
-				if (t == CMap::tile_bedrock || isTileIron(t) || isTilePlasteel(t))
+				Tile tile = map.getTile(tpos);
+				if (tile.type == CMap::tile_bedrock || isTileIron(tile.type) || isTilePlasteel(tile.type))
 				{
-					if (t != CMap::tile_bedrock)
+					if (tile.type != CMap::tile_bedrock)
 					{
 						map.server_DestroyTile(tpos, 100.0f, this);
 					}
@@ -269,14 +269,14 @@ void LinearExplosion(CBlob@ this, Vec2f _direction, f32 length, const f32&in wid
 						break;
 					}
 				}
-				else if (t != CMap::tile_empty && t != CMap::tile_ground_back)
+				else if (tile.type != CMap::tile_empty && tile.type != CMap::tile_ground_back)
 				{
-					if (this.hasTag("map_damage_dirt") || canExplosionDamage(map, tpos, t))
+					if (this.hasTag("map_damage_dirt") || canExplosionDamage(map, tpos, tile))
 					{
 						if (!justhurt)
 							damaged = true;
 
-						justhurt = justhurt || !(this.hasTag("map_damage_dirt") ? true : canExplosionDestroy(this, map, tpos, t));
+						justhurt = justhurt || !(this.hasTag("map_damage_dirt") ? true : canExplosionDestroy(this, map, tpos, tile.type));
 						map.server_DestroyTile(tpos, justhurt ? 5.0f : 100.0f, this);
 					}
 					else
@@ -365,11 +365,11 @@ void BombermanExplosion(CBlob@ this, const f32&in radius, const f32&in damage, c
 	LinearExplosion(this, Vec2f(1, 0), radius, ray_width, steps, damage, hitter, blobs, should_teamkill); //right
 }
 
-bool canExplosionDamage(CMap@ map, Vec2f tpos, TileType type)
+bool canExplosionDamage(CMap@ map, Vec2f tpos, Tile&in tile)
 {
-	if (type == CMap::tile_ground_d0 || type == CMap::tile_stone_d0) return false; //don't _destroy ground, hit until its almost dead tho
+	if (tile.type == CMap::tile_ground_d0 || tile.type == CMap::tile_stone_d0) return false; //don't _destroy ground, hit until its almost dead tho
 	if (map.getSectorAtPosition(tpos, "no explode") !is null) return false;
-	return map.getSectorAtPosition(tpos, "no build") is null;
+	return map.isTileSolid(tile) || map.getSectorAtPosition(tpos, "no build") is null;
 }
 
 bool canExplosionDestroy(CBlob@ this, CMap@ map, Vec2f tpos, TileType t)
