@@ -1,24 +1,11 @@
-// Scout brain
+// Scout
 
-#include "BrainCommon.as"
 #include "GunCommon.as";
 #include "GenericButtonCommon.as";
-
-const int drop_coins = 150;
-
-void onInit(CBrain@ this)
-{
-	if (isServer())
-	{
-		InitBrain(this);
-		this.server_SetActive(true); // always running
-	}
-}
 
 void onInit(CBlob@ this)
 {
 	this.set_f32("gib health", -2.0f);
-	this.set_u32("nextAttack", 20);
 	this.set_u8("attackDelay", 0);
 
 	this.Tag("combat chicken");
@@ -98,87 +85,9 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 	return (this.hasTag("dead") && this.getInventory().getItemsCount() > 0 && canSeeButtons(this, forBlob));
 }
 
-void onTick(CBlob@ this)
-{
-	if (isClient())
-	{
-		if (getGameTime() > this.get_u32("next sound") && XORRandom(100) < 5)
-		{
-			this.set_u32("next sound", getGameTime() + 100);
-		}
-	}
-}
-
-void onTick(CBrain@ this)
-{
-	if (!isServer()) return;
-
-	CBlob@ blob = this.getBlob();
-	if (blob.getPlayer() !is null || blob.hasTag("dead"))
-	{
-		this.getCurrentScript().tickFrequency = -1; //turn off
-		return;
-	}
-	
-	SearchTarget(this, false, true);
-	CBlob@ target = this.getTarget();
-	
-	if (target !is null)
-	{
-		this.getCurrentScript().tickFrequency = 1;
-		
-		const f32 distance = (target.getPosition() - blob.getPosition()).getLength();
-		f32 visibleDistance;
-		const bool visibleTarget = isVisible(blob, target, visibleDistance);
-
-		if (target.hasTag("dead") || distance > 400.0f) 
-		{
-			if (target.hasTag("dead"))
-			{
-				blob.getSprite().PlaySound("scoutchicken_vo_victory.ogg");
-			}
-			blob.setKeyPressed(key_action1, false);
-			this.SetTarget(null);
-			return;
-		}
-
-		if (visibleTarget && visibleDistance < 25.0f) 
-		{
-			DefaultRetreatBlob(blob, target);
-		}	
-		else if (target.isOnGround())
-		{
-			DefaultChaseBlob(blob, target);
-		}
-
-		if (visibleTarget && distance < 350.0f && blob.getCarriedBlob() !is null)
-		{
-			Vec2f randomness = Vec2f((100 - XORRandom(200)) * 0.1f, (100 - XORRandom(200)) * 0.1f);
-			blob.setAimPos(target.getPosition() + randomness);
-
-			if (blob.get_u32("nextAttack") < getGameTime())
-			{
-				blob.setKeyPressed(key_action1, true);
-				blob.set_u32("nextAttack", getGameTime() + blob.get_u8("attackDelay"));
-			}
-		}
-		
-		LoseTarget(this, target);
-	}
-	else
-	{
-		this.getCurrentScript().tickFrequency = 30;
-		blob.setKeyPressed(key_action1, false);
-		blob.set_u32("nextAttack", getGameTime() + 50);
-		RandomTurn(blob);
-	}
-
-	FloatInWater(blob); 
-} 
-
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)
 {
-	if (isClient())
+	if (isClient() && !this.hasTag("dead"))
 	{
 		if (getGameTime() > this.get_u32("next sound") - 50)
 		{
