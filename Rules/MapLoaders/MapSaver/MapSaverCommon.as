@@ -56,6 +56,7 @@ void InitializeBlobHandlers()
 	blobHandlers.set("bandit",        PlayerBlobHandler());
 	blobHandlers.set("royalguard",    PlayerBlobHandler());
 	blobHandlers.set("exosuit",       PlayerBlobHandler());
+	blobHandlers.set("grandpa",       PlayerBlobHandler());
 
 	blobHandlers.set("rifle",         GunBlobHandler());
 	blobHandlers.set("revolver",      GunBlobHandler());
