@@ -120,7 +120,9 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		gunner.offsetZ = 5.0f;
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		CBlob@ operator = gunner.getOccupied();
+		Vec2f aimpos = operator.getPlayer() is null ? operator.getAimPos() : gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - aimpos;
 
 		if (this.isAttached())
 		{
@@ -173,7 +175,34 @@ void onTick(CBlob@ this)
 			arm.RotateBy(rotation, Vec2f(4.0f * sign, 0.0f));
 		}
 
-		Vehicle_StandardControls(this, v);
+		Vehicle_HowitzerControls(this, v);
+	}
+}
+
+void Vehicle_HowitzerControls(CBlob@ this, VehicleInfo@ v)
+{
+	if (!isServer()) return;
+
+	AttachmentPoint@ ap = this.getAttachments().getAttachmentPointByName("GUNNER");
+	CBlob@ caller = ap.getOccupied();
+	if (caller is null) return;
+
+	if (ap.isKeyJustPressed(key_up))
+	{
+		this.server_DetachFrom(caller);
+		return;
+	}
+
+	const bool bot = caller.getPlayer() is null;
+	const bool press_action_1 = bot ? caller.isKeyPressed(key_action1) : ap.isKeyPressed(key_action1);
+	if (press_action_1 && getGameTime() > v.fire_time)
+	{
+		CBitStream bt;
+		bt.write_u16(caller.getNetworkID());
+		bt.write_u16(v.charge);
+		this.SendCommand(this.getCommandID("fire client"), bt);
+
+		Fire(this, v, caller, v.charge);
 	}
 }
 

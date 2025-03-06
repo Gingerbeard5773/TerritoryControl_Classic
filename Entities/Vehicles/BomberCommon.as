@@ -24,7 +24,6 @@ void onInit(CBlob@ this)
 
 void onTick(CBlob@ this)
 {
-	//don't stop executing this when bomber is empty
 	if (this.getHealth() > 1.0f)
 	{
 		VehicleInfo@ v;
@@ -59,6 +58,7 @@ void Vehicle_BomberControls(CBlob@ this, VehicleInfo@ v)
 	if (flyer is null) return;
 
 	CBlob@ blob = flyer.getOccupied();
+	const bool bot = blob !is null && blob.getPlayer() is null;
 	
 	// get out of seat
 	if (isServer() && flyer.isKeyJustPressed(key_up) && blob !is null)
@@ -68,7 +68,8 @@ void Vehicle_BomberControls(CBlob@ this, VehicleInfo@ v)
 	}
 
 	//Bombing
-	if (flyer.isKeyPressed(key_action3) && this.get_u32("lastDropTime") < getGameTime())
+	const bool pressed_key_action3 = bot ? blob.isKeyPressed(key_action3) : flyer.isKeyPressed(key_action3);
+	if (pressed_key_action3 && this.get_u32("lastDropTime") < getGameTime())
 	{
 		CInventory@ inv = this.getInventory();
 		if (inv !is null)
@@ -129,11 +130,12 @@ void Vehicle_BomberControls(CBlob@ this, VehicleInfo@ v)
 	const f32 turnSpeed = v.turn_speed;
 
 	Vec2f force;
-	bool up = flyer.isKeyPressed(key_action1);
-	bool down = flyer.isKeyPressed(key_action2);
-	bool left = flyer.isKeyPressed(key_left);
-	bool right = flyer.isKeyPressed(key_right);
+	bool up = bot ? blob.isKeyPressed(key_action1) : flyer.isKeyPressed(key_action1);
+	bool down = bot ? blob.isKeyPressed(key_action2) && getGameTime() % 3 == 0 : flyer.isKeyPressed(key_action2);
+	bool left = bot ? blob.isKeyPressed(key_left) : flyer.isKeyPressed(key_left);
+	bool right = bot ? blob.isKeyPressed(key_right) : flyer.isKeyPressed(key_right);
 	const bool fakeCrash = blob is null && !this.isOnGround() && !this.isInWater();
+
 	if (fakeCrash)
 	{
 		up = false;

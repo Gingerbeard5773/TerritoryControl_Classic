@@ -100,12 +100,12 @@ f32 getAimAngle(CBlob@ this, VehicleInfo@ v)
 	f32 angle = v.wep_angle;
 	const bool facing_left = this.isFacingLeft();
 	AttachmentPoint@ gunner = this.getAttachments().getAttachmentPointByName("GUNNER");
-	bool failed = true;
-
 	if (gunner !is null && gunner.getOccupied() !is null)
 	{
 		gunner.offsetZ = 5.0f;
-		Vec2f aim_vec = gunner.getPosition() - gunner.getAimPos();
+		CBlob@ operator = gunner.getOccupied();
+		Vec2f aimpos = operator.getPlayer() is null ? operator.getAimPos() : gunner.getAimPos();
+		Vec2f aim_vec = gunner.getPosition() - aimpos;
 
 		if (this.isAttached())
 		{
@@ -175,7 +175,9 @@ void Vehicle_GatlingControls(CBlob@ this, VehicleInfo@ v)
 		return;
 	}
 
-	if (ap.isKeyPressed(key_action1) && getGameTime() > v.fire_time)
+	const bool bot = caller.getPlayer() is null;
+	const bool press_action_1 = bot ? caller.isKeyPressed(key_action1) : ap.isKeyPressed(key_action1);
+	if (press_action_1 && getGameTime() > v.fire_time)
 	{
 		const u32 random = XORRandom(300);
 	
@@ -188,10 +190,11 @@ void Vehicle_GatlingControls(CBlob@ this, VehicleInfo@ v)
 			stream.write_f32(aim_angle);
 			stream.write_u32(random);
 			stream.write_u32(getGameTime());
+			stream.write_netid(caller.getNetworkID());
 			this.SendCommand(this.getCommandID("client_fire"), stream);
 		}
 
-		onFire(this, v, this.getPosition(), aim_angle, random, getGameTime());
+		onFire(this, v, this.getPosition(), aim_angle, random, getGameTime(), caller);
 	}
 }
 
@@ -206,18 +209,23 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const f32 aim_angle = params.read_f32();
 		const u32 random = params.read_u32();
 		const u32 game_time = params.read_u32();
-		onFire(this, v, position, aim_angle, random, game_time);
+		CBlob@ caller = getBlobByNetworkID(params.read_netid());
+		onFire(this, v, position, aim_angle, random, game_time, caller);
 	}
 }
 
-void onFire(CBlob@ this, VehicleInfo@ v, Vec2f position, const f32&in aim_angle, const u32&in random, const u32&in game_time)
+void onFire(CBlob@ this, VehicleInfo@ v, Vec2f position, const f32&in aim_angle, const u32&in random, const u32&in game_time, CBlob@ caller)
 {
 	AmmoInfo@ ammo = v.getCurrentAmmo();
 	if (ammo.loaded_ammo > 0)
 	{
 		v.last_fired_index = v.current_ammo_index;
-		ammo.ammo_stocked -= ammo.loaded_ammo;
-		ammo.loaded_ammo = 0;
+		
+		if (caller !is null && !caller.hasTag("infinite ammunition"))
+		{
+			ammo.ammo_stocked -= ammo.loaded_ammo;
+			ammo.loaded_ammo = 0;
+		}
 
 		f32 angle = aim_angle;
 		angle += ((int(random) - 150) / 100.0f);
