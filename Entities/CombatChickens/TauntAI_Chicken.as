@@ -162,7 +162,7 @@ bool hasFriends(CBlob@ this)
 	for (u32 i = 0; i < blobs.length; i++)
 	{
 		CBlob@ blob = blobs[i];
-		if (blob !is this && blob.hasTag("combat chicken"))
+		if (blob !is this && blob.hasTag("combat chicken") && !blob.hasTag("dead"))
 		{
 			return true;
 		}
