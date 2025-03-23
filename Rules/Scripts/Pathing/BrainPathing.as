@@ -1,7 +1,8 @@
-// Gingerbeard @ January 13th - 23th, 2025
+// Gingerbeard @ January 13th, 2025
 // A* Pathfinding Implementation for King Arthur's Gold
 
 #include "PathingNodesCommon.as";
+#include "RunnerCommon.as";
 
 /*
  High-level pathing ensures efficient, large-scale navigation across the map.
@@ -14,14 +15,13 @@
 
 /*
   TODO:
-  - Add parkour to pathing/movement
   - Allow for high level node connections to incorporate blob obstructions (so bots dont try and path through doors etc)
  */
 
 const u32 stuck_time = 30 * 3; // Time it takes to shut off a specific waypoint if the bot cannot pass fast enough
 
 const f32 maximum_pathing_distance_high_level = tilesize * 70;
-const f32 maximum_pathing_distance_low_level = tilesize * 28;
+const f32 maximum_pathing_distance_low_level = tilesize * 15;
 
 class PathHandler
 {
@@ -33,6 +33,7 @@ class PathHandler
 	Vec2f destination;           // Target destination
 	u8 team;                     // Decides what doors we can pass through
 	u8 flags;                    // Decides what paths to use
+	u8 variance;                 // Max amount of random cost we give to each high level node
 	f32 reach_low_level;         // What distance we can 'reach' low level path nodes
 	f32 reach_high_level;        // What distance we can 'reach' high level waypoints
 	
@@ -43,6 +44,7 @@ class PathHandler
 		
 		reach_low_level = 10.0f;
 		reach_high_level = 20.0f;
+		variance = 50;
 	}
 	
 	void Tick(Vec2f&in position)
@@ -82,20 +84,36 @@ class PathHandler
 
 		while (waypoints.length > 0 && (waypoints[0] - position).Length() < reach_high_level)
 		{
-			// Remove waypoints that we have reached
-			waypoints.removeAt(0);
-			if (waypoints.length > 0)
-			{
-				SetLowLevelPath(position, waypoints[0]);
+			ProgressPath(position);
+		}
+	}
+	
+	void ProgressPath(Vec2f&in position)
+	{
+		// Remove waypoints that we have reached
+		string waypoint_key = waypoints[0].toString();
+		if (cached_waypoints.exists(waypoint_key))
+		{
+			cached_waypoints.delete(waypoint_key);
+		}
 
-				// Cache the next waypoint as a potential 'stuck' node
-				const string waypoint_key = waypoints[0].toString();
-				if (!cached_waypoints.exists(waypoint_key))
-				{
-					CachedWaypoint@ cached = CachedWaypoint(waypoints[0]);
-					cached_waypoints.set(waypoint_key, cached);
-				}
-			}
+		waypoints.removeAt(0);
+		path.clear();
+		if (waypoints.length > 0)
+		{
+			SetLowLevelPath(position, waypoints[0]);
+			CacheWaypoint(waypoints[0]);
+		}
+	}
+	
+	void CacheWaypoint(Vec2f&in waypoint)
+	{
+		// Cache the waypoint as a potential 'stuck' node
+		const string waypoint_key = waypoint.toString();
+		if (!cached_waypoints.exists(waypoint_key))
+		{
+			CachedWaypoint@ cached = CachedWaypoint(waypoint);
+			cached_waypoints.set(waypoint_key, cached);
 		}
 	}
 	
@@ -105,6 +123,7 @@ class PathHandler
 		SetHighLevelPath(start, target);
 		if (waypoints.length > 0)
 		{
+			CacheWaypoint(waypoints[0]);
 			SetLowLevelPath(start, waypoints[0]);
 		}
 	}
@@ -143,7 +162,7 @@ class PathHandler
 	{
 		waypoints.clear();
 
-		dictionary@ nodeMap;
+		HighLevelNode@[]@ nodeMap;
 		if (!getRules().get("node_map", @nodeMap)) return;
 
 		HighLevelNode@ startNode = getClosestNode(start, nodeMap, flags);
@@ -214,11 +233,15 @@ class PathHandler
 			{
 				HighLevelNode@ neighbor = currentNode.connections[i];
 				if (closedList.exists(neighbor.original_position.toString())) continue;
+				
+				if (!neighbor.hasFlag(flags)) continue;
 
 				if ((neighbor.position - startNode.position).Length() > maximum_pathing_distance_high_level) continue;
 
-				const f32 underwaterPenalty = isUnderwater(currentNode.position) ? 40 : 0;
-				const f32 tentativeGCost = currentNode.gCost + underwaterPenalty + euclidean(currentNode.position, neighbor.position);
+				const f32 waterCost = isUnderwater(currentNode.position) ? 60 : 0;
+				const f32 groundCost = isGrounded(neighbor.position) ? 0 : 40;
+				const f32 randomCost = XORRandom(variance);
+				const f32 tentativeGCost = currentNode.gCost + waterCost + groundCost + randomCost + euclidean(currentNode.position, neighbor.position);
 
 				// Check if the neighbor is not in the open list or if a better path is found
 				const bool isEvaluated = isInOpenList(neighbor, openList);
@@ -264,7 +287,7 @@ class PathHandler
 
 	bool canPath(Vec2f&in start, Vec2f&in target, Vec2f&out closestPos)
 	{
-		dictionary@ nodeMap;
+		HighLevelNode@[]@ nodeMap;
 		if (!getRules().get("node_map", @nodeMap)) return false;
 
 		HighLevelNode@ startNode = getClosestNode(start, nodeMap, flags);
@@ -309,6 +332,8 @@ class PathHandler
 			{
 				HighLevelNode@ neighbor = currentNode.connections[i];
 				if (closedList.exists(neighbor.original_position.toString())) continue;
+				
+				if (!neighbor.hasFlag(flags)) continue;
 
 				if ((neighbor.position - closestPos).Length() > maximum_pathing_distance_high_level) return false;
 
@@ -356,7 +381,7 @@ class PathHandler
 			LowLevelNode@ currentNode = openList[currentIndex];
 
 			// Check if the target is reached
-			if ((currentNode.position - target).Length() < 16.0f)
+			if ((currentNode.position - target).Length() < 15.0f)
 			{
 				// Reconstruct best path
 				LowLevelNode@ current = currentNode;
@@ -437,7 +462,9 @@ class PathHandler
 					}
 					continue;
 				}
-				
+				const string name = b.getName();
+				if (name == "lantern" || name == "bridge") return true;
+
 				if (b.isPlatform()) // Platforms can only be pathed through if we arent going against it
 				{
 					ShapePlatformDirection@ plat = shape.getPlatformDirection(0);
@@ -450,7 +477,7 @@ class PathHandler
 					continue;
 				}
 				
-				return b.getName() == "lantern"; // Other static blobs like half-block or triangle tiles cant be passed
+				return false; // Other static blobs like mechanisms
 			}
 		}
 
@@ -499,6 +526,7 @@ class CachedWaypoint
 	{
 		position = pos;
 		time = 1;
+		stuck = false;
 	}
 }
 
@@ -549,7 +577,7 @@ void SetSuggestedFacing(CBlob@ this)
 	}
 }
 
-void SetSuggestedKeys(CBlob@ this, const bool&in aerial = false)
+void SetSuggestedKeys(CBlob@ this)
 {
 	PathHandler@ handler;
 	if (!this.get("path_handler", @handler)) return;
@@ -559,44 +587,162 @@ void SetSuggestedKeys(CBlob@ this, const bool&in aerial = false)
 		if (handler.waypoints.length == 0)
 		{
 			EndPath(this);
+			return;
 		}
-		return;
+		else
+		{
+			handler.path.push_back(handler.waypoints[0]);
+		}
 	}
 
+	CMap@ map = getMap();
 	Vec2f position = this.getPosition();
-	Vec2f distance = (aerial && handler.waypoints.length > 0 ? handler.waypoints[0] : handler.path[0]) - position;
+	Vec2f distance = handler.path[0] - position;
 	Vec2f direction = distance;
 	direction.Normalize();
 
-	if (Maths::Abs(distance.y) > 2.0f)
-	{
-		this.setKeyPressed(aerial ? key_action1 : key_up, direction.y < -0.5f);
-	}
+	this.setKeyPressed(key_up, direction.y < -0.35f);
+	this.setKeyPressed(key_down, direction.y > 0.5f);
 	
-	this.setKeyPressed(aerial ? key_action2 : key_down, direction.y > 0.5f);
+	if (WallJump(this, map, handler, direction, distance)) return;
 
-	if (direction.y < - 0.5f && Maths::Abs(distance.x) < 4.0f && !this.isOnLadder())
-	{
-		CMap@ map = getMap();
-		const f32 radius = this.getRadius();
-		const bool right = map.isTileSolid(Vec2f(position.x + radius + tilesize, position.y));
-		const bool left  = map.isTileSolid(Vec2f(position.x - radius - tilesize, position.y));
-		
-		if (right && left)
-		{
-			const bool pressed_right = this.isKeyPressed(key_right);
-			this.setKeyPressed(key_left, pressed_right);
-			this.setKeyPressed(key_right, !pressed_right);
-			return;
-		}
-		else if (right || left)
-		{
-			this.setKeyPressed(key_left, left);
-			this.setKeyPressed(key_right, right);
-			return;
-		}
-	}
+	if (ClimbWall(this, map, handler, direction, distance)) return;
 	
+	if (JumpOverHole(this, map, handler, direction, distance)) return;
+
 	this.setKeyPressed(key_left, direction.x < -0.5f);
 	this.setKeyPressed(key_right, direction.x > 0.5f);
+}
+
+bool WallJump(CBlob@ this, CMap@ map, PathHandler@ handler, Vec2f&in direction, Vec2f&in distance)
+{
+	if (direction.y < -0.35f)
+	{
+		if (handler.path.length <= 1) return false;
+
+		Vec2f path_direction = handler.path[0] - handler.path[1];
+		path_direction.Normalize();
+
+		if (path_direction.y <= 0 || path_direction.x != 0) return false;
+	}
+	
+	if (this.isOnLadder() || this.isInWater()) return false;
+
+	RunnerMoveVars@ moveVars;
+	if (!this.get("moveVars", @moveVars)) return false;
+	
+	if (moveVars.walljumped_side <= 0) return false;
+
+	const bool left = moveVars.walljumped_side == Walljump::LEFT || moveVars.walljumped_side == Walljump::JUMPED_LEFT;
+	const bool right = moveVars.walljumped_side == Walljump::RIGHT || moveVars.walljumped_side == Walljump::JUMPED_RIGHT;
+	const int sign = left ? 1 : -1;
+	Vec2f end = handler.path[0] + Vec2f(tilesize * 6 * sign, 0);
+
+	// Find the next wall to jump off of
+	if (map.rayCastSolid(handler.path[0], end))
+	{
+		this.setKeyPressed(key_up, true);
+		this.setKeyPressed(key_down, false);
+		this.setKeyPressed(key_right, left);
+		this.setKeyPressed(key_left, right);
+		
+		if (handler.path[0].y > this.getPosition().y)
+		{
+			handler.path.erase(0);
+		}
+
+		return true;
+	}
+	
+	return false;
+}
+
+bool ClimbWall(CBlob@ this, CMap@ map, PathHandler@ handler, Vec2f&in direction, Vec2f&in distance)
+{
+	if (direction.y < -0.35f && Maths::Abs(distance.x) < 4.0f && !this.isOnLadder())
+	{
+		Vec2f position = this.getPosition();
+		const f32 radius = this.getRadius();
+		const bool right = map.isTileSolid(Vec2f(position.x + radius + tilesize, position.y - halfsize)) ||
+		                   map.isTileSolid(Vec2f(position.x + radius + tilesize, position.y + halfsize));
+		const bool left  = map.isTileSolid(Vec2f(position.x - radius - tilesize, position.y - halfsize)) ||
+		                   map.isTileSolid(Vec2f(position.x - radius - tilesize, position.y + halfsize));
+		if (right || left)
+		{
+			// Move towards the adjacent wall
+			this.setKeyPressed(key_left, left);
+			this.setKeyPressed(key_right, right);
+			return true;
+		}
+	}
+	return false;
+}
+
+bool JumpOverHole(CBlob@ this, CMap@ map, PathHandler@ handler, Vec2f&in direction, Vec2f&in distance)
+{
+	if (handler.path.length <= 1) return false;
+	
+	if (this.isOnLadder() || this.isInWater()) return false;
+
+	Vec2f depth = Vec2f(0, tilesize * 4);
+	if (handler.path.length > 2 && map.rayCastSolid(handler.path[1], handler.path[1] + depth)) return false;
+	if (map.rayCastSolid(handler.path[0], handler.path[0] + depth)) return false;
+
+	Vec2f path_direction = handler.path[0] - handler.path[1];
+	path_direction.Normalize();
+	if (path_direction.y != 0) return false;
+	
+	if (handler.waypoints.length <= 0) return false;
+	Vec2f position = this.getPosition();
+	Vec2f distance_from_waypoint = handler.waypoints[0] - handler.path[0];
+	if (distance_from_waypoint.y > tilesize * 3) return false;
+	
+	this.setKeyPressed(key_up, true);
+	this.setKeyPressed(key_down, false);
+	this.setKeyPressed(key_left, path_direction.x > 0);
+	this.setKeyPressed(key_right, path_direction.x < 0);
+	
+	// Adjust the last path point to the nearest ground for a clean landing
+	const int index = handler.path.length - 1;
+	handler.path[index] = getJumpLanding(handler.path[index], position, handler);
+	
+	// Clear paths that we progress while jumping
+	if (path_direction.x > 0 && position.x < handler.path[0].x ||
+	    path_direction.x < 0 && position.x > handler.path[0].x)
+	{
+		handler.path.erase(0);
+
+		if (handler.path.length == 1)
+		{
+			handler.ProgressPath(position);
+		}
+	}
+
+	return true;
+}
+
+Vec2f getJumpLanding(Vec2f&in tilePos, Vec2f&in position, PathHandler@ handler)
+{
+	if (handler.isGrounded(tilePos) && handler.isWalkable(tilePos, position)) return tilePos;
+
+	Vec2f best_position = tilePos;
+	f32 closest_dist = 99999.0f;
+
+	const int searchRadius = 3;
+	for (int y = -searchRadius; y <= searchRadius; y++)
+	{
+		for (int x = -searchRadius; x <= searchRadius; x++)
+		{
+			Vec2f nodePos = tilePos + Vec2f(x * tilesize, y * tilesize);
+			if (!handler.isGrounded(nodePos) || !handler.isWalkable(nodePos, position)) continue;
+			
+			const f32 dist = (nodePos - tilePos).Length();
+			if (dist < closest_dist)
+			{
+				best_position = nodePos;
+				closest_dist = dist;
+			}
+		}
+	}
+	return best_position;
 }

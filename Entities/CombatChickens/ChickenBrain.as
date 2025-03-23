@@ -1,5 +1,6 @@
 #include "BrainCommon.as";
 #include "BrainPathing.as";
+#include "SquadCommon.as";
 
 const f32 detection_radius = 350.0f;    // distance it takes to initially 'see' players
 const f32 target_lose_radius = 450.0f;  // distance it takes to start losing target
@@ -10,8 +11,19 @@ void onInit(CBlob@ this)
 	this.set_u16("target_lose_timer", target_lose_time);
 	this.set_u32("nextAttack", 20);
 	
-	PathHandler handler(this.getTeamNum(), Path::GROUND);
-	this.set("path_handler", @handler);
+	if (isServer())
+	{
+		PathHandler handler(this.getTeamNum(), Path::GROUND);
+		this.set("path_handler", @handler);
+
+		if (getMap().getTimeSinceStart() > 120)
+		{
+			const f32 boundary = 128.0f;
+			Vec2f destination = this.getPosition() - Vec2f(boundary, boundary);
+			destination += Vec2f(XORRandom(boundary * 2), XORRandom(boundary * 2));
+			SetPath(this, destination);
+		}
+	}
 }
 
 void onTick(CBlob@ this)
@@ -35,17 +47,17 @@ void onTick(CBlob@ this)
 		EndPath(this);
 	}
 
-	SetSuggestedKeys(this, flyer);
+	SetSuggestedKeys(this);
 	SetSuggestedFacing(this);
 
+	const u32 tick = getGameTime() + this.getNetworkID();
+	Vec2f position = this.getPosition();
 	CBrain@ brain = this.getBrain();
 	CBlob@ target = SearchTarget(this, brain);
 	if (target !is null && !flyer)
 	{	
 		Vec2f target_pos = target.getPosition();
-		const f32 distance = (target_pos - this.getPosition()).Length();
-		f32 visibleDistance;
-		const bool visibleTarget = isVisible(this, target, visibleDistance);
+		const f32 distance = (target_pos - position).Length();
 
 		this.setKeyPressed(key_action1, false);
 		
@@ -63,14 +75,17 @@ void onTick(CBlob@ this)
 			return;
 		}
 
-		if (visibleTarget && visibleDistance < 35.0f) 
+		const bool visibleTarget = isVisible(this, target);
+		if (visibleTarget && distance < 35.0f) 
 		{
 			EndPath(this);
 			DefaultRetreatBlob(this, target);
 		}	
-		else if ((getGameTime() + this.getNetworkID()) % 50 == 0 && !gunner)
+		else if (tick % 50 == 0 && !gunner && !visibleTarget)
 		{
-			SetPath(this, target_pos);
+			Vec2f visible_position = getTargetVisiblePosition(this, target_pos);
+			Vec2f path_pos = visible_position != Vec2f_zero ? visible_position : target_pos;
+			SetPath(this, path_pos);
 		}
 
 		if (visibleTarget && distance < detection_radius + (gunner ? 90 : 0))
@@ -91,12 +106,24 @@ void onTick(CBlob@ this)
 	}
 	else
 	{
-		if ((getGameTime() + this.getNetworkID()) % 50 == 0)
+		if (tick % 50 == 0)
 		{
-			handler.Repath(this.getPosition());
+			handler.Repath(position);
+		}
+		
+		Squad@ squad;
+		if (this.get("squad", @squad))
+		{
+			const bool hasNotReachedArea = (position - squad.destination).Length() > squad.destination_threshold * 1.25f;
+			if (tick % 50 == 0 && squad.destination != Vec2f_zero && hasNotReachedArea)
+			{
+				Vec2f destination = squad.destination - Vec2f(squad.destination_threshold, squad.destination_threshold);
+				destination += Vec2f(XORRandom(squad.destination_threshold * 2), XORRandom(squad.destination_threshold * 2));
+				SetPath(this, destination);
+			}
 		}
 
-		if ((getGameTime() + this.getNetworkID()) % 30 == 0)
+		if (tick % 30 == 0)
 		{
 			this.set_u16("target_lose_timer", target_lose_time);
 			this.setKeyPressed(key_action1, false);
@@ -138,6 +165,28 @@ CBlob@ getNewTarget(CBlob@ this)
 		}
 	}
 	return null;
+}
+
+Vec2f getTargetVisiblePosition(CBlob@ this, Vec2f&in target)
+{
+	HighLevelNode@[]@ nodeMap;
+	if (!getRules().get("node_map", @nodeMap)) return Vec2f_zero;
+
+	HighLevelNode@[] visible_nodes;
+	HighLevelNode@[] nodes = getNodesInRadius(target, tilesize*40, nodeMap, Path::GROUND);
+	if (nodes.length == 0) return Vec2f_zero;
+
+	Random rand(this.getNetworkID());
+	CMap@ map = getMap();
+	int i = 0;
+	const int attempts = Maths::Min(10, nodes.length);
+	while (i++ < attempts)
+	{
+		HighLevelNode@ node = nodes[rand.NextRanged(nodes.length)];
+		if (!map.rayCastSolid(node.position, target)) return node.position;
+	}
+
+	return Vec2f_zero;
 }
 
 f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitterBlob, u8 customData)

@@ -41,7 +41,7 @@ void onTick(CBlob@ this)
 			CBlob@ b = blobsInRadius[i];
 			if (b !is this && b.hasTag("player") && !b.hasTag("dead"))
 			{
-				if (b.getTeamNum() >= teamsCount) continue; //no neutrals
+				if (b.getTeamNum() >= teamsCount && !b.hasTag("combat chicken")) continue; //no neutrals
 
 				if (b.getTeamNum() != this.getTeamNum())
 				{
@@ -126,7 +126,7 @@ void onChangeTeam(CBlob@ this, const int oldTeam)
 {
 	if (this.getTickSinceCreated() < 30) return; //map saver hack
 
-	if (this.getTeamNum() < getRules().getTeamsCount())
+	//if (this.getTeamNum() < getRules().getTeamsCount())
 	{
 		this.getSprite().PlaySound("/VehicleCapture");
 	}

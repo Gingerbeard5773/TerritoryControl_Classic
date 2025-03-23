@@ -7,6 +7,7 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	if (this.getHealth() <= 0.0f && !this.hasTag("dead"))
 	{
 		this.Tag("dead");
+		this.Untag("combat chicken");
 		this.getSprite().PlaySound("Wilhelm.ogg", 1.8f, 1.8f);
 
 		this.getShape().getVars().isladder = false;

@@ -18,7 +18,13 @@ void onTick(CBlob@ this)
 	{
 		CBlob@[] chickens;
 		getBlobsByTag("combat chicken", @chickens);
-		if (chickens.length >= 8) return;
+		
+		CBlob@[] coops;
+		getBlobsByName("chickencoop", @coops);
+		
+		const int player_modifier = Maths::Ceil(getPlayerCount() / 3);
+		const int maximum_chickens = player_modifier + 5 + (4 * coops.length);
+		if (chickens.length >= maximum_chickens) return;
 
 		server_CreateBlob("scoutchicken", -1, this.getPosition() + Vec2f(16 - XORRandom(32), 0));
 	}

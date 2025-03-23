@@ -31,6 +31,11 @@ void onSetStatic(CBlob@ this, const bool isStatic)
 void onTick(CBlob@ this)
 {
 	SetMinimap(this);   //needed for under raid check
+	
+	if (isServer() && (getGameTime() + this.getNetworkID() * 50) % 120 == 0 && this.getTeamNum() >= getRules().getTeamsCount())
+	{
+		this.server_Hit(this, this.getPosition(), Vec2f_zero, this.getInitialHealth() / 15, Hitters::crush, true);
+	}
 }
 
 void SetMinimap(CBlob@ this)
@@ -266,12 +271,12 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		const u8 oldTeam = params.read_u8();
 
 		CRules@ rules = getRules();
-		if (oldTeam >= rules.getTeamsCount() || newTeam >= rules.getTeamsCount()) return;
+		if (oldTeam >= rules.getTeamsCount()) return;
 		
 		const string oldTeamName = rules.getTeam(oldTeam).getName();
 
 		string message = Translate::Defeat.replace("{LOSER}", oldTeamName);
-		if (newTeam != oldTeam)
+		if (newTeam != oldTeam && newTeam < rules.getTeamsCount())
 		{
 			const string newTeamName = rules.getTeam(newTeam).getName();
 			message = Translate::Defeated.replace("{LOSER}", oldTeamName).replace("{WINNER}", newTeamName);

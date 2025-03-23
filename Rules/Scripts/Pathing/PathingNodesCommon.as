@@ -1,6 +1,6 @@
 // Gingerbeard @ January 16th, 2025
 
-const bool render_paths = false;  // Dev rendering, set to true to see nodes + pathing
+const bool render_paths = true;  // Dev rendering, set to true to see nodes + pathing
 
 const u8 tilesize = 8;
 const u8 halfsize = tilesize / 2;
@@ -63,7 +63,19 @@ class HighLevelNode : Node
 	}
 }
 
-HighLevelNode@ getClosestNode(Vec2f&in position, dictionary@ nodeMap, const u8&in flags = Path::GROUND)
+HighLevelNode@ getNodeFromPosition(Vec2f&in position, HighLevelNode@[]@ nodeMap, CMap@ map)
+{
+	const int grid_width = Maths::Ceil((map.getMapDimensions().x - node_distance) / node_distance);
+	const int x = Maths::Ceil(position.x / node_distance) - 1;
+	const int y = Maths::Ceil(position.y / node_distance) - 1;
+
+	if (x < 0 || y < 0 || x >= grid_width) return null;
+
+	const int index = y * grid_width + x;
+	return (index >= 0 && index < nodeMap.length) ? nodeMap[index] : null;
+}
+
+HighLevelNode@ getClosestNode(Vec2f&in position, HighLevelNode@[]@ nodeMap, const int flags = -1)
 {
 	const f32 maxSearchRadius = node_distance * 15.0f; // Maximum radius to avoid excessive searches
 	const f32 searchStep = node_distance * 3.0f;       // Step to increase radius gradually
@@ -71,7 +83,7 @@ HighLevelNode@ getClosestNode(Vec2f&in position, dictionary@ nodeMap, const u8&i
 
 	while (currentRadius <= maxSearchRadius)
 	{
-		HighLevelNode@[] nodes = getNodesInRadius(position, currentRadius, nodeMap);
+		HighLevelNode@[] nodes = getNodesInRadius(position, currentRadius, nodeMap, flags);
 		f32 closestDistance = 999999.0f;
 		HighLevelNode@ closestNode = null;
 
@@ -79,7 +91,7 @@ HighLevelNode@ getClosestNode(Vec2f&in position, dictionary@ nodeMap, const u8&i
 		{
 			HighLevelNode@ node = nodes[i];
 			const f32 distance = (node.position - position).Length();
-			if (distance < closestDistance && node.hasFlag(flags))
+			if (distance < closestDistance)
 			{
 				@closestNode = node;
 				closestDistance = distance;
@@ -94,8 +106,9 @@ HighLevelNode@ getClosestNode(Vec2f&in position, dictionary@ nodeMap, const u8&i
 	return null;
 }
 
-HighLevelNode@[] getNodesInRadius(Vec2f&in position, const f32&in radius, dictionary@ nodeMap)
+HighLevelNode@[] getNodesInRadius(Vec2f&in position, const f32&in radius, HighLevelNode@[]@ nodeMap, const int flags = -1)
 {
+	CMap@ map = getMap();
 	HighLevelNode@[] nodes;
 	const int searchRadius = Maths::Ceil(radius / node_distance);
 
@@ -106,11 +119,12 @@ HighLevelNode@[] getNodesInRadius(Vec2f&in position, const f32&in radius, dictio
 		for (int x = -searchRadius; x <= searchRadius; x++)
 		{
 			Vec2f nodePos = centerNodePos + Vec2f(x * node_distance, y * node_distance);
-
 			if ((nodePos - position).LengthSquared() > radius * radius) continue;
 
-			HighLevelNode@ node;
-			if (!nodeMap.get(nodePos.toString(), @node)) continue;
+			HighLevelNode@ node = getNodeFromPosition(nodePos, nodeMap, map);
+			if (node is null) continue;
+
+			if (flags != -1 && !node.hasFlag(flags)) continue;
 
 			nodes.push_back(node);
 		}
