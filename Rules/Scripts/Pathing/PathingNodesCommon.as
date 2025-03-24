@@ -1,6 +1,6 @@
 // Gingerbeard @ January 16th, 2025
 
-const bool render_paths = true;  // Dev rendering, set to true to see nodes + pathing
+const bool render_paths = false;  // Dev rendering, set to true to see nodes + pathing
 
 const u8 tilesize = 8;
 const u8 halfsize = tilesize / 2;
