@@ -19,7 +19,10 @@ void onTick(CBlob@ this)
 	
 	if (this.isMyPlayer())
 	{
-		getDriver().SetShaderFloat("blurry", "blur_strength", mustard_value * 0.2f);
+		Driver@ driver = getDriver();
+		driver.SetShaderFloat("blurry", "blur_strength", mustard_value * 0.2f);
+		driver.SetShaderFloat("blurry", "screen_width", getScreenWidth());
+		driver.SetShaderFloat("blurry", "screen_height", getScreenHeight());
 	}
 
 	if (mustard_value >= 3)
