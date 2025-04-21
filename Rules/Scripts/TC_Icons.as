@@ -55,7 +55,7 @@ void onInit(CRules@ this)
 	AddIconToken("$iron_block$", "World.png", Vec2f(8, 8), CMap::tile_iron);
 	AddIconToken("$glass_block$", "World.png", Vec2f(8, 8), CMap::tile_glass);
 	AddIconToken("$glass_block_back$", "World.png", Vec2f(8, 8), CMap::tile_glass_back);
-	AddIconToken("$plasteel_block$", "World.png", Vec2f(8, 8), CMap::tile_plasteel);
+	AddIconToken("$icon_plasteel_block$", "World.png", Vec2f(8, 8), CMap::tile_plasteel);
 	AddIconToken("$ground_block$", "World.png", Vec2f(8, 8), CMap::tile_ground);
 	AddIconToken("$icon_conveyor$", "Conveyor.png", Vec2f(8, 8), 0);
 	AddIconToken("$icon_separator$", "Seperator.png", Vec2f(8, 8), 0);

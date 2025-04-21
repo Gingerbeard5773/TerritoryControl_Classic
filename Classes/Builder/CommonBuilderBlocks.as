@@ -117,7 +117,7 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		blocks[0].push_back(b);
 	}
 	{
-		BuildBlock b(CMap::tile_plasteel, "plasteel_block", "$plasteel_block$", Translate::PlasteelBlock);
+		BuildBlock b(CMap::tile_plasteel, "plasteel_block", "$icon_plasteel_block$", Translate::PlasteelBlock);
 		AddRequirement(b.reqs, "blob", "mat_plasteel", name(Translate::Plasteel), 4);
 		blocks[0].push_back(b);
 	}
