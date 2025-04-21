@@ -26,10 +26,8 @@ void onInit(CBlob@ this)
 
 	this.server_setTeamNum(-1);
 
-	if (this.getPosition().y <= 0.0f)
+	if (this.hasTag("explosive"))
 	{
-		this.Tag("explosive");
-
 		Random rand(this.getNetworkID());
 		this.setVelocity(Vec2f(20.0f - int(rand.NextRanged(4001)) / 100.0f, 15.0f));
 
@@ -40,7 +38,6 @@ void onInit(CBlob@ this)
 			sprite.SetEmitSoundPaused(false);
 			sprite.SetEmitSoundVolume(2.0f);
 
-			// client_AddToChat("A bright flash has been seen in the " + ((this.getPosition().x < getMap().tilemapwidth * 4) ? "west" : "east") + ".", SColor(255, 255, 0, 0));
 			client_AddToChat(Translate::MeteorEvent, SColor(255, 255, 0, 0));
 		}
 	}

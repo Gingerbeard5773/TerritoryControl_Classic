@@ -52,7 +52,13 @@ void onTick(CRules@ this)
 		if (time >= nextMeteor)
 		{
 			print("Random event: Meteor");
-			server_CreateBlob("meteor", -1, Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
+			CBlob@ blob = server_CreateBlobNoInit("meteor");
+			if (blob !is null)
+			{
+				blob.setPosition(Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
+				blob.Tag("explosive");
+				blob.Init();
+			}
 
 			this.set_u32("next_meteor", time + getNextMeteor());
 		}
@@ -60,7 +66,13 @@ void onTick(CRules@ this)
 		if (time >= nextWreckage)
 		{
 			print("Random event: Wreckage");
-			server_CreateBlob("ancientship", -1, Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
+			CBlob@ blob = server_CreateBlobNoInit("ancientship");
+			if (blob !is null)
+			{
+				blob.setPosition(Vec2f(XORRandom(map.tilemapwidth) * map.tilesize, 0.0f));
+				blob.Tag("explosive");
+				blob.Init();
+			}
 
 			this.set_u32("next_wreckage", time + getNextWreckage());
 		}
