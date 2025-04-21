@@ -18,6 +18,7 @@ void onInit(CBlob@ this)
 	this.getCurrentScript().tickFrequency = 300;
 	
 	this.inventoryButtonPos = Vec2f(-8, 0);
+	this.addCommandID("sv_store");
 	
 	this.set_Vec2f("shop offset", Vec2f(0,0));
 	this.set_Vec2f("shop menu size", Vec2f(3, 2));
@@ -72,12 +73,17 @@ void onTick(CBlob@ this)
 	for (uint i = 0; i < blobs.length; i++)
 	{
 		CBlob@ blob = blobs[i];
-		if ((blob.hasTag("gun") || blob.hasTag("ammo")) && !blob.isAttached())
+		if (canPickup(blob) && !blob.isAttached())
 		{
 			if (isClient() && this.getInventory().canPutItem(blob)) blob.getSprite().PlaySound("/PutInInventory.ogg");
 			if (isServer()) this.server_PutInInventory(blob);
 		}
 	}
+}
+
+bool canPickup(CBlob@ blob)
+{
+	return blob.hasTag("gun") || blob.hasTag("ammo");
 }
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
@@ -92,6 +98,18 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	if (isInventoryAccessible(this, caller))
 	{
 		this.set_Vec2f("shop offset", Vec2f(8, 0));
+
+		CInventory@ inv = caller.getInventory();
+		if (inv is null) return;
+
+		for (int i = 0; i < inv.getItemsCount(); i++)
+		{
+			CBlob@ item = inv.getItem(i);
+			if (!canPickup(item)) continue;
+
+			caller.CreateGenericButton(28, Vec2f(0, -10), this, this.getCommandID("sv_store"), "Store");
+			break;
+		}
 	}
 	else
 	{
@@ -104,6 +122,32 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 	if (cmd == this.getCommandID("shop made item client") && isClient())
 	{
 		this.getSprite().PlaySound("ConstructShort.ogg");
+	}
+	else if (cmd == this.getCommandID("sv_store") && isServer())
+	{
+		CPlayer@ player = getNet().getActiveCommandPlayer();
+		if (player is null) return;
+
+		CBlob@ caller = player.getBlob();
+		if (caller is null) return;
+
+		CBlob@ carried = caller.getCarriedBlob();
+		if (carried !is null && carried.hasTag("temp blob"))
+		{
+			carried.server_Die();
+		}
+
+		CInventory@ inv = caller.getInventory();
+		if (inv is null) return;
+
+		for (int i = inv.getItemsCount() - 1; i >= 0; i--)
+		{
+			CBlob@ item = inv.getItem(i);
+			if (!canPickup(item)) continue;
+
+			caller.server_PutOutInventory(item);
+			this.server_PutInInventory(item);
+		}
 	}
 }
 
