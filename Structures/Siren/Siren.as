@@ -1,4 +1,4 @@
-﻿// A script by TFlippy & Pirate-Rob
+﻿// A script by TFlippy & Pirate-Rob & Gingerbeard
 
 void onInit(CBlob@ this)
 {
@@ -15,7 +15,7 @@ void onInit(CBlob@ this)
 void onInit(CSprite@ this)
 {
 	this.SetEmitSound("siren_leveled.ogg");
-	this.SetEmitSoundVolume(2.0f);
+	this.SetEmitSoundVolume(0.0f);
 	this.SetEmitSoundSpeed(1.0f);
 	this.SetEmitSoundPaused(true);
 }
@@ -32,7 +32,7 @@ void onTick(CBlob@ this)
 	for (int i = 0; i < blobs.length; i++)
 	{
 		CBlob@ blob = blobs[i];
-		if ((blob.getPosition() - pos).Length() < 600.0f && blob.getTeamNum() != this.getTeamNum())
+		if ((blob.getPosition() - pos).Length() < 750.0f && blob.getTeamNum() != this.getTeamNum())
 		{
 			if (this.get_bool("isActive")) return;
 
@@ -71,16 +71,41 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 	else if (cmd == this.getCommandID("cl_toggle") && isClient())
 	{
 		const bool active = params.read_bool();
-
 		this.set_bool("isActive", active);
 
 		CSprite@ sprite = this.getSprite();
 		sprite.PlaySound("LeverToggle.ogg");
 		sprite.SetEmitSound("siren_leveled.ogg");
-		sprite.SetEmitSoundPaused(!active);
+		sprite.SetEmitSoundPaused(false);
 		sprite.SetAnimation(active ? "on" : "off");
 	}
 }
+
+void onTick(CSprite@ this)
+{
+	CBlob@ blob = this.getBlob();
+	if (blob is null || !isClient()) return;
+
+	f32 current_volume = this.getEmitSoundVolume();
+	const bool active = blob.get_bool("isActive");
+	const f32 target_volume = active ? 2.0f : 0.0f;
+
+	if (Maths::Abs(current_volume - target_volume) > 0.01f)
+	{
+		if (current_volume < target_volume)
+			current_volume = Maths::Min(current_volume + 0.05f, target_volume);
+		else
+			current_volume = Maths::Max(current_volume - 0.05f, target_volume);
+
+		this.SetEmitSoundVolume(current_volume);
+	}
+
+	if (current_volume <= 0.01f && !active)
+	{
+		this.SetEmitSoundPaused(true);
+	}
+}
+
 
 // void GetButtonsFor(CBlob@ this, CBlob@ caller)
 // {
