@@ -225,10 +225,13 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
         return 0.0f;
     }
 
-	Material::createFor(hitterBlob, "mat_stone", 10 + XORRandom(50));
-	if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_copper", 5 + XORRandom(10));
-	if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_iron", 10 + XORRandom(40));
-	if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_mithril", 5 + XORRandom(20));
-	if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_gold", XORRandom(35));
+	if (isServer())
+	{
+		Material::createFor(hitterBlob, "mat_stone", 10 + XORRandom(50));
+		if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_copper", 5 + XORRandom(10));
+		if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_iron", 10 + XORRandom(40));
+		if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_mithril", 5 + XORRandom(20));
+		if (XORRandom(2) == 0) Material::createFor(hitterBlob, "mat_gold", XORRandom(35));
+	}
 	return damage;
 }
