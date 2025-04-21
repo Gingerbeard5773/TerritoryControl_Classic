@@ -7,6 +7,7 @@ void onInit(CBlob@ this)
 {
 	this.setInventoryName(name(Translate::SmallRocket));
 	this.Tag("explosive");
+	this.Tag("ammo");
 	this.maxQuantity = 3;
 }
 
