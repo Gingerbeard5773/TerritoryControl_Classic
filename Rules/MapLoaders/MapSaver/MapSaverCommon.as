@@ -260,6 +260,8 @@ class NukeBlobHandler : BlobDataHandler
 	string Serialize(CBlob@ blob) override
 	{
 		string data = basicHandler.Serialize(blob);
+		const string owner = blob.get_string("Owner");
+		data += (owner.isEmpty() ? "-" : owner) + ";";
 		if (blob.exists("nuke_boomtime"))
 		{
 			data += (blob.get_u32("nuke_boomtime") - getGameTime()) + ";";
@@ -270,7 +272,10 @@ class NukeBlobHandler : BlobDataHandler
 	void LoadBlobData(CBlob@ blob, const string[]@ data) override
 	{
 		basicHandler.LoadBlobData(blob, data);
-		const u32 boomtime = data.length > 9 ? parseInt(data[9]) : 0;
+		
+		const string owner = data[9] == "-" ? "" : data[9];
+		blob.set_string("Owner", owner);
+		const u32 boomtime = data.length > 10 ? parseInt(data[10]) : 0;
 		if (boomtime > 0)
 		{
 			blob.Tag("nuke_active");
@@ -333,7 +338,8 @@ class SignBlobHandler : BlobDataHandler
 	string Serialize(CBlob@ blob) override
 	{
 		string data = basicHandler.Serialize(blob);
-		data += blob.get_string("text") + ";";
+		const string text = blob.get_string("text");
+		data += (text.isEmpty() ? "*" : text) + ";";
 		return data;
 	}
 	

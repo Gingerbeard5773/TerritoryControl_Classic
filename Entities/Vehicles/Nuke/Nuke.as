@@ -46,7 +46,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 	
 	if (!this.get_bool("nuke_ready"))
 	{
-		CPlayer@ owner = this.getDamageOwnerPlayer();
+		CPlayer@ owner = getOwner(this);
 		CPlayer@ ply = caller.getPlayer();
 
 		bool canArmNuke = true;
@@ -73,6 +73,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 		if (player is null || this.isAttached()) return;
 
 		this.SetDamageOwnerPlayer(player);
+		this.set_string("Owner", player.getUsername());
 	
 		this.set_bool("nuke_ready", true);
 		this.SendCommand(this.getCommandID("nuke_ready_cl"));
@@ -87,7 +88,7 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
 
 		if (!this.get_bool("nuke_ready") || this.hasTag("nuke_active")) return;
 	
-		CPlayer@ owner = this.getDamageOwnerPlayer();
+		CPlayer@ owner = getOwner(this);
 		if (owner is null ? false : !this.get_bool("nuke_ready")) return;
 	
 		this.set_u32("nuke_boomtime", getGameTime() + detonate_seconds * 30);
@@ -115,7 +116,7 @@ void onTick(CBlob@ this)
 			if (time > this.get_u32("nuke_boomtime"))
 			{
 				CBlob@ blob = server_CreateBlob("nukeexplosion", this.getTeamNum(), this.getPosition());
-				blob.SetDamageOwnerPlayer(this.getDamageOwnerPlayer());
+				blob.SetDamageOwnerPlayer(getOwner(this));
 				this.server_Die();
 				this.Tag("dead");
 			}
@@ -178,4 +179,9 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 			break;
 	}
 	return damage;
+}
+
+CPlayer@ getOwner(CBlob@ this)
+{
+	return getPlayerByUsername(this.get_string("Owner"));
 }

@@ -176,9 +176,11 @@ void onShopMadeItem(CBitStream@ params)
 	{
 		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
 		if (blob is null) return;
-		if (caller.getPlayer() !is null && name == "nuke")
+		CPlayer@ callerPlayer = caller.getPlayer();
+		if (callerPlayer !is null && name == "nuke")
 		{
-			blob.SetDamageOwnerPlayer(caller.getPlayer());
+			blob.set_string("Owner", callerPlayer.getUsername());
+			blob.SetDamageOwnerPlayer(callerPlayer);
 		}
 		
 		if (!blob.hasTag("vehicle"))
