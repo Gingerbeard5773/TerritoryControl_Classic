@@ -11,7 +11,10 @@ void onInit(CRules@ this)
 	
 	sv_contact_info = "https://discord.gg/V29BBeba3C"; //information to display when an error occurs
 	
-	sv_name = "[EU] Territory Control Classic: Drunk Badgers";
+	if (isServer())
+	{
+		sv_name = "[EU] Territory Control Classic: Drunk Badgers";
+	}
 
 	print("");
 	print("    --- INITIALIZING TERRITORY CONTROL CLASSIC REMASTERED ---", print_col);
