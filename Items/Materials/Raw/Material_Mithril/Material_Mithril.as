@@ -1,5 +1,6 @@
 #include "Hitters.as";
 #include "TC_Translation.as";
+#include "MaterialCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -49,6 +50,12 @@ void onTick(CBlob@ this)
 				for (int i = 0; i < blobsInRadius.length; i++)
 				{
 					CBlob@ blob = blobsInRadius[i];
+					if (blob.getName() == this.getName() && this.getDistanceTo(blob) <= Material::MERGE_RADIUS)
+					{
+						Material::attemptMerge(this, blob);
+						continue;
+					}
+
 					if (!blob.hasTag("flesh") || blob.hasTag("dead")) continue;
 					
 					const f32 distMod = Maths::Max(0, (1 - ((this.getPosition() - blob.getPosition()).Length() / radius)));
