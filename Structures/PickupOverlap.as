@@ -16,7 +16,7 @@ void onTick(CBlob@ this)
 	for (uint i = 0; i < blobs.length; i++)
 	{
 		CBlob@ blob = blobs[i];
-		if (!blob.isAttached() && blob.isOnGround() && blob.hasTag("material"))
+		if (!blob.isAttached() && blob.isOnGround() && blob.hasTag("material") && !blob.hasTag("explosive"))
 		{
 			this.server_PutInInventory(blob);
 		}
