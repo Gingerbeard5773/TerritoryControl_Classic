@@ -1,5 +1,6 @@
 #include "Hitters.as";
 #include "Explosion.as";
+#include "ShockwaveCommon.as";
 
 const u8 explosions_max = 25;
 
@@ -19,6 +20,12 @@ void onInit(CBlob@ this)
 	{
 		Vec2f pos = getDriver().getWorldPosFromScreenPos(getDriver().getScreenCenterPos());
 		sound_delay = (Maths::Abs(this.getPosition().x - pos.x) / 8) / (340 * 0.4f);
+		
+		if (!v_fastrender)
+		{
+			Shockwave wave(this.getPosition(), 4.0f, 0.05f);
+			getRules().push("shockwaves", @wave);
+		}
 	}
 	
 	this.SetLight(true);

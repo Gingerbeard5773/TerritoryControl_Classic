@@ -50,9 +50,21 @@ void onCollision(CBlob@ this, CBlob@ blob, bool solid)
 	}
 }
 
+#include "ShockwaveCommon.as";
 void DoExplosion(CBlob@ this)
 {
-	Sound::Play("KegExplosion", this.getPosition(), 3.0f);
+	if (isClient())
+	{
+		Sound::Play("KegExplosion", this.getPosition(), 3.0f);
+		this.getSprite().Gib();
+		
+		if (!v_fastrender)
+		{
+			Shockwave wave(this.getPosition(), 1.2f, 2.3f);
+			getRules().push("shockwaves", @wave);
+		}
+	}
+
 	Explode(this, 64.0f, 30.0f);
 	
 	Random rand(this.getNetworkID());
@@ -63,5 +75,4 @@ void DoExplosion(CBlob@ this)
 		
 		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y), 40.0f + rand.NextRanged(64), 60.0f, 6, 20.0f, Hitters::explosion, false, true);
 	}
-	this.getSprite().Gib();
 }

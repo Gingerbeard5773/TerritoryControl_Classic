@@ -2,6 +2,7 @@
 #include "Explosion.as";
 #include "Knocked.as";
 #include "TC_Translation.as";
+#include "ShockwaveCommon.as";
 
 string[] particles = 
 {
@@ -82,6 +83,9 @@ void DoExplosion(CBlob@ this)
 			Vec2f dir = getRandomVelocity(angle, 8.5f * (XORRandom(100) * 0.01f), 100);
 			MakeParticle(this, dir, particles[XORRandom(particles.length)]);
 		}
+		
+		Shockwave wave(this.getPosition(), 2.5f, 5.00f);
+		getRules().push("shockwaves", @wave);
 	}
 
 	CMap@ map = getMap();

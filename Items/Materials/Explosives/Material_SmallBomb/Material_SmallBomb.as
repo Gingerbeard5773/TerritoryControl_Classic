@@ -2,6 +2,7 @@
 #include "Explosion.as";
 #include "ExplosionDelay.as";
 #include "TC_Translation.as";
+#include "ShockwaveCommon.as";
 
 void onInit(CBlob@ this)
 {
@@ -60,5 +61,15 @@ void DoExplosion(CBlob@ this)
 		
 		LinearExplosion(this, Vec2f(dir.x * jitter.x, dir.y * jitter.y),32.0f + rand.NextRanged(32), 25.0f, 6, 8.0f, Hitters::explosion, false, true);
 	}
-	this.getSprite().Gib();
+	
+	if (isClient())
+	{
+		this.getSprite().Gib();
+		
+		/*if (!v_fastrender)
+		{
+			Shockwave wave(this.getPosition(), 0.4f, 5.5f);
+			getRules().push("shockwaves", @wave);
+		}*/
+	}
 }
