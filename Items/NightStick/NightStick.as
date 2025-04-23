@@ -12,6 +12,8 @@ void onInit(CBlob@ this)
 	{
 		ap.SetKeysToTake(key_action1 | key_action2);
 	}
+	
+	this.addCommandID("client_nightstick_hit");
 }
 
 void onTick(CBlob@ this)
@@ -37,43 +39,41 @@ void onTick(CBlob@ this)
 	if (holder.get_u8("knocked") > 0) return;
 	
 	const bool isBot = holder.getPlayer() is null;
-	const bool pressing_action1 = isBot ? holder.isKeyPressed(key_action1) : point.isKeyJustPressed(key_action1);
+	const bool pressing_action1 = isBot ? holder.isKeyPressed(key_action1) : point.isKeyPressed(key_action1);
 
 	if (!pressing_action1) return;
 
-	u8 team = holder.getTeamNum();
-	
-	HitInfo@[] hitInfos;
-	if (getMap().getHitInfosFromArc(this.getPosition(), -(holder.getAimPos() - this.getPosition()).Angle(), 45, 16, this, @hitInfos))
+	if (isServer())
 	{
-		for (uint i = 0; i < hitInfos.length; i++)
+		HitInfo@[] hitInfos;
+		if (getMap().getHitInfosFromArc(this.getPosition(), -(holder.getAimPos() - this.getPosition()).Angle(), 45, 16, this, @hitInfos))
 		{
-			CBlob@ blob = hitInfos[i].blob;
-			if (blob !is null && blob.hasTag("flesh"))
+			for (uint i = 0; i < hitInfos.length; i++)
 			{
-				if (isServer())
-				{
-					u8 knock;
-					if (blob.getConfig() == "slave") knock = 30 + (1.0f - (blob.getHealth() / blob.getInitialHealth())) * (30 + XORRandom(50)) * 2.5f;
-					else knock = 15 + (1.0f - (blob.getHealth() / blob.getInitialHealth())) * (30 + XORRandom(50));
+				CBlob@ blob = hitInfos[i].blob;
+				if (blob is null || !blob.hasTag("flesh")) continue;
+
+				const u8 base_knock = 20 + (1.0f - (blob.getHealth() / blob.getInitialHealth())) * (30 + XORRandom(50));
+				const u8 knock = blob.getName() == "slave" ? 10 + base_knock * 2.5f : base_knock;
+			
+				blob.set_u8("knocked", knock);
+				blob.Sync("knocked", true);
+
+				holder.server_Hit(blob, blob.getPosition(), Vec2f(), 0.125f, Hitters::stomp, true);
+				holder.server_Hit(this, this.getPosition(), Vec2f(), 0.125f, Hitters::stomp, true);
 				
-					blob.set_u8("knocked", knock);
-					blob.Sync("knocked", true);
-				}
-				
-				if (isClient())
-				{
-					this.getSprite().PlaySound("nightstick_hit" + (1 + XORRandom(3)) + ".ogg", 0.9f, 0.8f);
-				}
-				
-				if (isServer())
-				{
-					holder.server_Hit(blob, blob.getPosition(), Vec2f(), 0.125f, Hitters::stomp, true);
-					holder.server_Hit(this, this.getPosition(), Vec2f(), 0.125f, Hitters::stomp, true);
-				}
+				this.SendCommand(this.getCommandID("client_nightstick_hit"));
 			}
 		}
 	}
 	
 	this.set_u32("next attack", getGameTime() + 30);
+}
+
+void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
+{
+	if (cmd == this.getCommandID("client_nightstick_hit") && isClient())
+	{
+		this.getSprite().PlaySound("nightstick_hit" + (1 + XORRandom(3)) + ".ogg", 0.9f, 0.8f);
+	}
 }
