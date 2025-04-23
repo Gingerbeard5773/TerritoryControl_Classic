@@ -225,7 +225,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 				CBlob@ blob = inv1.getBlob();
 				taken += Maths::Min(blob.getBlobCount(blobName), quantity - taken);
 				blob.TakeBlob(blobName, quantity);
-				print(blobName+" "+quantity+" "+taken+" INV 1");
+				//print(blobName+" "+quantity+" "+taken+" INV 1");
 			}
 			if (inv2 !is null && taken < quantity)
 			{
@@ -233,7 +233,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 				const u16 remaining = quantity - taken;
 				taken += Maths::Min(blob.getBlobCount(blobName), remaining);
 				blob.TakeBlob(blobName, remaining);
-				print(blobName+" "+remaining+" "+taken+" INV 2");
+				//print(blobName+" "+remaining+" "+taken+" INV 2");
 			}
 
 			for (int i = 0; i < remoteStorages.length; i++)
