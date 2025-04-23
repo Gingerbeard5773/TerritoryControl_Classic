@@ -38,6 +38,14 @@ bool canPlaceNextTo(CMap@ map, const Tile &in tile)
 	return tile.support > 0;
 }
 
+bool canPlaceOnNoBuild(CBlob@ blob)
+{
+	if (blob is null) return false;
+
+	const string bname = blob.getName();
+	return bname == "ladder" || bname == "teamlamp" || bname == "industriallamp";
+}
+
 bool canPlaceOnTile(CMap@ map, Vec2f p, CBlob@ blob, TileType buildTile, Tile backTile)
 {
 	if (buildTile == CMap::tile_ground) //dirt can only be placed on existing dirt areas
@@ -113,7 +121,7 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 	// no blocking actors?
 	if (blob is null || !blob.hasTag("ignore blocking actors"))
 	{
-		bool isLadder = false;
+		bool placeOnNoBuild = canPlaceOnNoBuild(blob);
 		bool isSpikes = false;
 		bool isDoor = false;
 		bool isPlatform = false;
@@ -122,7 +130,6 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 		if (blob !is null)
 		{
 			const string bname = blob.getName();
-			isLadder = bname == "ladder";
 			isSpikes = bname == "spikes";
 			isDoor = bname == "wooden_door" || bname == "stone_door" || bname == "bridge";
 			isPlatform = bname == "wooden_platform";
@@ -153,50 +160,44 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 			}
 		}
 
-		if (!isSeed && !isLadder && (buildSolid || isSpikes || isDoor || isPlatform) && map.getSectorAtPosition(middle, "no build") !is null)
+		if (!isSeed && !placeOnNoBuild && (buildSolid || isSpikes || isDoor || isPlatform) && map.getSectorAtPosition(middle, "no build") !is null)
 		{
 			return false;
 		}
 
-		//if (blob is null)
-		//middle += Vec2f(map.tilesize*0.5f, map.tilesize*0.5f);
-
-		const string name = blob !is null ? blob.getName() : "";
 		CBlob@[] blobsInRadius;
 		if (map.getBlobsInRadius(middle, buildSolid ? map.tilesize : 0.0f, @blobsInRadius))
 		{
 			for (uint i = 0; i < blobsInRadius.length; i++)
 			{
-				CBlob @b = blobsInRadius[i];
-				if (!b.isAttached() && b !is blob)
+				CBlob@ b = blobsInRadius[i];
+				if (b.isAttached() || b is blob) continue;
+
+				if (blob !is null || buildSolid)
 				{
-					if (blob !is null || buildSolid)
+					if (b is this && b.getName() == "spikes") continue;
+
+					Vec2f bpos = b.getPosition();
+
+					bool cantBuild = isBlocking(b);
+					bool buildingOnTeam = isDoor && (b.getTeamNum() == this.getTeamNum() || b.getTeamNum() == 255) && !b.getShape().isStatic() && this !is b;
+
+					// cant place on any other blob
+					if (!placeOnNoBuild &&
+						!buildingOnTeam &&
+						cantBuild &&
+						!b.hasTag("dead") &&
+						!b.hasTag("material") &&
+						!b.hasTag("projectile"))
 					{
-						if (b is this && b.getName() == "spikes") continue;
-
-						Vec2f bpos = b.getPosition();
-
-						bool cantBuild = isBlocking(b);
-						bool buildingOnTeam = isDoor && (b.getTeamNum() == this.getTeamNum() || b.getTeamNum() == 255) && !b.getShape().isStatic() && this !is b;
-						bool ladderBuild = isLadder && !b.getShape().isStatic();
-
-						// cant place on any other blob
-						if (!ladderBuild &&
-							!buildingOnTeam &&
-							cantBuild &&
-							!b.hasTag("dead") &&
-							!b.hasTag("material") &&
-							!b.hasTag("projectile"))
+						f32 angle_decomp = Maths::FMod(Maths::Abs(b.getAngleDegrees()), 180.0f);
+						bool rotated = angle_decomp > 45.0f && angle_decomp < 135.0f;
+						f32 width = rotated ? b.getHeight() : b.getWidth();
+						f32 height = rotated ? b.getWidth() : b.getHeight();
+						if ((middle.x > bpos.x - width * 0.5f) && (middle.x < bpos.x + width * 0.5f)
+							&& (middle.y > bpos.y - height * 0.5f) && (middle.y < bpos.y + height * 0.5f))
 						{
-							f32 angle_decomp = Maths::FMod(Maths::Abs(b.getAngleDegrees()), 180.0f);
-							bool rotated = angle_decomp > 45.0f && angle_decomp < 135.0f;
-							f32 width = rotated ? b.getHeight() : b.getWidth();
-							f32 height = rotated ? b.getWidth() : b.getHeight();
-							if ((middle.x > bpos.x - width * 0.5f) && (middle.x < bpos.x + width * 0.5f)
-								&& (middle.y > bpos.y - height * 0.5f) && (middle.y < bpos.y + height * 0.5f))
-							{
-								return false;
-							}
+							return false;
 						}
 					}
 				}
@@ -208,7 +209,6 @@ bool isBuildableAtPos(CBlob@ this, Vec2f p, TileType buildTile, CBlob @blob, boo
 		{
 			// from canGrow.as
 			return (map.isTileGround(map.getTile(p + Vec2f(0, 8)).type));
-
 		}
 	}
 
@@ -225,20 +225,18 @@ bool isBlocking(CBlob@ blob)
 
 void DestroyScenary(Vec2f tl, Vec2f br)
 {
-	if (isServer())
+	if (!isServer()) return;
+
+	CMap@ map = getMap();
+
+	CBlob@[] overlapping;
+	map.getBlobsInBox(tl, br, @overlapping);
+	for (uint i = 0; i < overlapping.length; i++)
 	{
-		CMap@ map = getMap();
-
-		CBlob@[] overlapping;
-		map.getBlobsInBox(tl, br, @overlapping);
-		for (uint i = 0; i < overlapping.length; i++)
+		CBlob@ blob = overlapping[i];
+		if (blob !is null && blob.hasTag("scenary"))
 		{
-			CBlob@ blob = overlapping[i];
-			if (blob !is null && blob.hasTag("scenary"))
-			{
-				blob.server_Die();
-			}
-
+			blob.server_Die();
 		}
 	}
 }
@@ -324,18 +322,16 @@ bool inNoBuildZone(CMap@ map, Vec2f here, TileType buildTile)
 
 bool inNoBuildZone(CBlob@ blob, CMap@ map, Vec2f here, TileType buildTile)
 {
-	bool isLadder = false;
 	bool isSpikes = false;
 	if (blob !is null)
 	{
 		const string bname = blob.getName();
-		isLadder = bname == "ladder";
 		isSpikes = bname == "spikes";
 	}
 
 	const bool buildSolid = (map.isTileSolid(buildTile) || (blob !is null && blob.isCollidable()));
 
-	return (!isLadder && (buildSolid || isSpikes) && map.getSectorAtPosition(here, "no build") !is null);
+	return (!canPlaceOnNoBuild(blob) && (buildSolid || isSpikes) && map.getSectorAtPosition(here, "no build") !is null);
 }
 
 // This has to exist due to an engine issue where CMap.hasTileSolidBlobs() returns false if the blobtile was placed in the previous tick
