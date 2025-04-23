@@ -1,15 +1,11 @@
 ﻿// Quarters.as
 
 #include "Requirements.as"
-#include "ShopCommon.as"
+#include "StoreCommon.as"
 #include "Descriptions.as"
-#include "Costs.as"
-#include "CheckSpam.as"
-#include "StandardControlsCommon.as"
 #include "GenericButtonCommon.as"
 #include "TC_Translation.as"
 
-const f32 beer_amount = 1.0f;
 const f32 heal_amount = 0.25f;
 const u8 heal_rate = 30;
 
@@ -71,16 +67,10 @@ void onInit(CBlob@ this)
 		bed.SetMouseTaken(true);
 	}
 
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
-
 	this.addCommandID("rest");
 	this.getCurrentScript().runFlags |= Script::tick_hasattached;
 
 	this.Tag("has window");
-
-	//INIT COSTS
-	InitCosts();
 
 	// ICONS
 	AddIconToken("$quarters_beer$", "Quarters.png", Vec2f(24, 24), 7);
@@ -88,39 +78,54 @@ void onInit(CBlob@ this)
 	AddIconToken("$quarters_egg$", "Quarters.png", Vec2f(24, 24), 8);
 	AddIconToken("$quarters_burger$", "Quarters.png", Vec2f(24, 24), 9);
 	AddIconToken("$rest$", "InteractionIcons.png", Vec2f(32, 32), 29);
+	
+	addOnShopMadeItem(this, @onShopMadeItem);
 
-	// SHOP
-	this.set_Vec2f("shop offset", Vec2f_zero);
-	this.set_Vec2f("shop menu size", Vec2f(5, 1));
-	this.set_string("shop description", "Buy");
-	this.set_u8("shop icon", 25);
+	Shop shop(this, "Buy");
+	shop.menu_size = Vec2f(5, 1);
+	shop.button_offset = Vec2f_zero;
+	shop.button_icon = 25;
 
 	/*{
-		ShopItem@ s = addShopItem(this, "Beer - 1 Heart", "$quarters_beer$", "beer", Descriptions::beer, false);
-		s.spawnNothing = true;
-		AddRequirement(s.requirements, "coin", "", "Coins", CTFCosts::beer);
+		SaleItem s(shop.items, "Beer - 1 Heart", "$quarters_beer$", "beer", Descriptions::beer, ItemType::nothing);
+		AddRequirement(s.requirements, "coin", "", "Coins", 10);
 	}*/
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Beer), "$quarters_beer$", "beer", Translate::Beer2, false);
+		SaleItem s(shop.items, name(Translate::Beer), "$quarters_beer$", "beer", Translate::Beer2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Meal - Full Health", "$quarters_meal$", "meal", Descriptions::meal, false);
-		s.spawnNothing = true;
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		AddRequirement(s.requirements, "coin", "", "Coins", CTFCosts::meal);
+		SaleItem s(shop.items, "Meal - Full Health", "$quarters_meal$", "meal", Descriptions::meal, ItemType::nothing);
+		s.button_dimensions = Vec2f(2, 1);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 		AddHurtRequirement(s.requirements);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Egg - Full Health", "$quarters_egg$", "egg", Descriptions::egg, false);
-		AddRequirement(s.requirements, "coin", "", "Coins", CTFCosts::egg);
+		SaleItem s(shop.items, "Egg - Full Health", "$quarters_egg$", "egg", Descriptions::egg);
+		AddRequirement(s.requirements, "coin", "", "Coins", 25);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Burger - Full Health", "$quarters_burger$", "food", Descriptions::burger, true);
-		AddRequirement(s.requirements, "coin", "", "Coins", CTFCosts::burger);
+		SaleItem s(shop.items, "Burger - Full Health", "$quarters_burger$", "food", Descriptions::burger);
+		AddRequirement(s.requirements, "coin", "", "Coins", 20);
 	}
+}
+
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
+{
+	this.getSprite().PlaySound("ChaChing");
+	
+	if (item.blob_name == "meal")
+	{
+		this.getSprite().PlaySound("/Eat.ogg");
+		if (isServer())
+		{
+			caller.server_SetHealth(caller.getInitialHealth());
+		}
+	}
+	/*else if (item.blob_name == "beer")
+	{
+		this.getSprite().PlaySound("/Gulp.ogg");
+	}*/
 }
 
 void onTick(CBlob@ this)
@@ -171,6 +176,9 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
 	if (!canSeeButtons(this, caller)) return;
 
+	Shop@ shop;
+	if (!this.get("shop", @shop)) return;
+
 	// TODO: fix GetButtonsFor Overlapping, when detached this.isOverlapping(caller) returns false until you leave collision box and re-enter
 	Vec2f tl, br, c_tl, c_br;
 	this.getShape().getBoundingRect(tl, br);
@@ -179,61 +187,19 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 	if (!isOverlapping || !bedAvailable(this) || !requiresTreatment(this, caller))
 	{
-		this.set_Vec2f("shop offset", Vec2f_zero);
+		shop.button_offset = Vec2f_zero;
 	}
 	else
 	{
-		this.set_Vec2f("shop offset", Vec2f(6, 0));
+		shop.button_offset = Vec2f(6, 0);
 		caller.CreateGenericButton("$rest$", Vec2f(-6, 0), this, this.getCommandID("rest"), getTranslatedString("Rest"));
 	}
-	this.set_bool("shop available", isOverlapping && !caller.isAttachedTo(this));
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-
-	if (name == "meal")
-	{
-		caller.server_SetHealth(caller.getInitialHealth());
-	}
+	shop.available = isOverlapping && !caller.isAttachedTo(this);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("/ChaChing.ogg");
-
-		u16 this_id, caller_id, item_id;
-		string name;
-
-		if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-		{
-			return;
-		}
-
-		if (name == "beer")
-		{
-			this.getSprite().PlaySound("/Gulp.ogg");
-		}
-		else if (name == "meal")
-		{
-			this.getSprite().PlaySound("/Eat.ogg");
-		}
-	}
-	else if (cmd == this.getCommandID("rest") && isServer())
+	if (cmd == this.getCommandID("rest") && isServer())
 	{
 		CPlayer@ player = getNet().getActiveCommandPlayer();
 

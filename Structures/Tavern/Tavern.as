@@ -1,7 +1,7 @@
 ﻿// A script by TFlippy
 
 #include "Requirements.as"
-#include "ShopCommon.as"
+#include "StoreCommon.as"
 #include "MaterialCommon.as"
 #include "TC_Translation.as"
 
@@ -23,38 +23,32 @@ void onInit(CBlob@ this)
 	sprite.SetEmitSoundVolume(0.60f);
 	sprite.SetEmitSoundSpeed(0.90f);
 	
-	this.set_Vec2f("shop offset", Vec2f(-15, 6));
-	this.set_Vec2f("shop menu size", Vec2f(3, 2));
-	this.set_string("shop description", "Fun tavern!");
-	this.set_u8("shop icon", 25);
-	
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, Translate::FunTavern);
+	shop.menu_size = Vec2f(3, 2);
+	shop.button_offset = Vec2f(-15, 6);
+	shop.button_icon = 25;
 	
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Beer), "$beer$", "beer", desc(Translate::Beer), false);
+		SaleItem s(shop.items, name(Translate::Beer), "$beer$", "beer", desc(Translate::Beer));
 		AddRequirement(s.requirements, "coin", "", "Coins", 29);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Vodka), "$vodka$", "vodka", desc(Translate::Vodka));
+		SaleItem s(shop.items, name(Translate::Vodka), "$vodka$", "vodka", desc(Translate::Vodka));
 		AddRequirement(s.requirements, "coin", "", "Coins", 91);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::RatBurger), "$ratburger$", "ratburger", Translate::TavernBurger);
+		SaleItem s(shop.items, name(Translate::RatBurger), "$ratburger$", "ratburger", Translate::TavernBurger);
 		AddRequirement(s.requirements, "coin", "", "Coins", 31);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::RatFood), "$ratfood$", "ratfood", Translate::TavernRat);
+		SaleItem s(shop.items, name(Translate::RatFood), "$ratfood$", "ratfood", Translate::TavernRat);
 		AddRequirement(s.requirements, "coin", "", "Coins", 17);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::BanditMusic), "$musicdisc$", "musicdisc", desc(Translate::BanditMusic));
+		SaleItem s(shop.items, name(Translate::BanditMusic), "$musicdisc$", "musicdisc", desc(Translate::BanditMusic), ItemType::nothing);
 		AddRequirement(s.requirements, "coin", "", "Coins", 117);
-		s.spawnNothing = true;
 	}
 	
 	this.SetLight(true);
@@ -62,6 +56,26 @@ void onInit(CBlob@ this)
 	this.SetLightColor(SColor(255, 255, 150, 50));
 	
 	SetInventoryName(this);
+}
+
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
+{
+	this.getSprite().PlaySound("MigrantHmm");
+	this.getSprite().PlaySound("/ChaChing.ogg");
+	
+	if (isServer() && item.blob_name == "musicdisc")
+	{
+		CBlob@ disc = server_CreateBlobNoInit("musicdisc");
+		if (disc is null) return;
+		disc.setPosition(this.getPosition());
+		disc.set_u8("trackID", 18);
+		disc.Init();
+	   
+		if (!caller.server_PutInInventory(disc))
+		{
+			caller.server_Pickup(disc);
+		}
+	}
 }
 
 void SetInventoryName(CBlob@ this)
@@ -97,12 +111,7 @@ void GetButtonsFor(CBlob@ this, CBlob@ caller)
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("MigrantHmm");
-		this.getSprite().PlaySound("ChaChing");
-	}
-	else if (cmd == this.getCommandID("server_setowner") && isServer())
+	if (cmd == this.getCommandID("server_setowner") && isServer())
 	{
 		if (!this.get_string("Owner").isEmpty()) return;
 
@@ -135,69 +144,6 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 		CRules@ rules = getRules();
 		rules.set_netid("tavern_netid", netid);
 		rules.SyncToPlayer("tavern_netid", player);
-	}
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-	
-	string[] spl = name.split("-");
-	if (spl[0] == "coin")
-	{
-		CPlayer@ callerPlayer = caller.getPlayer();
-		if (callerPlayer is null) return;
-
-		callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-	}
-	else if (spl[0] == "musicdisc")
-	{
-		CBlob@ disc = server_CreateBlobNoInit("musicdisc");
-		disc.setPosition(this.getPosition());
-		disc.set_u8("trackID", 18);
-		disc.Init();
-		if (disc is null) return;
-	   
-		if (!disc.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(disc);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(disc);
-		}
-	}
-	else if (name.findFirst("mat_") != -1)
-	{
-		Material::createFor(caller, spl[0], parseInt(spl[1]));
-	}
-	else
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-		if (blob is null) return;
-
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
 	}
 }
 

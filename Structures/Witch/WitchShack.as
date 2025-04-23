@@ -1,7 +1,7 @@
-﻿// ArcherShop.as
+﻿// Witchshack.as
 
 #include "Requirements.as";
-#include "ShopCommon.as";
+#include "StoreCommon.as";
 #include "MaterialCommon.as";
 #include "TC_Translation.as";
 
@@ -10,56 +10,48 @@ Random traderRandom(Time());
 void onInit(CBlob@ this)
 {
 	this.Tag("change team on fort capture");
-	
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
 
 	this.SetMinimapOutsideBehaviour(CBlob::minimap_none);
 	this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", 6, Vec2f(8, 8));
 	this.SetMinimapRenderAlways(true);
 	
 	this.getCurrentScript().tickFrequency = 30 * 8;
-	
-	// SHOP
-	this.set_Vec2f("shop offset", Vec2f(0, 8));
-	this.set_Vec2f("shop menu size", Vec2f(2, 3));
-	this.set_string("shop description", Translate::WitchShack);
-	this.set_u8("shop icon", 25);
 
 	this.setInventoryName(Translate::WitchShack);
 	
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, Translate::WitchShack);
+	shop.menu_size = Vec2f(2, 3);
+	shop.button_offset = Vec2f_zero;
+	shop.button_icon = 25;
+	
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::ProcessMithril)+" (1)", "$icon_mithrilingot$", "mat_mithrilingot-1", desc(Translate::ProcessMithril));
+		SaleItem s(shop.items, name(Translate::ProcessMithril)+" (1)", "$icon_mithrilingot$", "mat_mithrilingot", desc(Translate::ProcessMithril), ItemType::material, 1);
 		AddRequirement(s.requirements, "blob", "mat_mithril", Translate::MithrilOre, 10);
 		AddRequirement(s.requirements, "coin", "", "Coins", 25);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::ProcessMithril)+" (4)", "$icon_mithrilingot$", "mat_mithrilingot-4", desc(Translate::ProcessMithril));
+		SaleItem s(shop.items, name(Translate::ProcessMithril)+" (4)", "$icon_mithrilingot$", "mat_mithrilingot", desc(Translate::ProcessMithril), ItemType::material, 4);
 		AddRequirement(s.requirements, "blob", "mat_mithril", Translate::MithrilOre, 40);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::CardPack), "$card_pack$", "card_pack", desc(Translate::CardPack));
+		SaleItem s(shop.items, name(Translate::CardPack), "$card_pack$", "card_pack", desc(Translate::CardPack));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::MysteryBox), "$icon_mysterybox$", "mysterybox", desc(Translate::MysteryBox));
+		SaleItem s(shop.items, name(Translate::MysteryBox), "$icon_mysterybox$", "mysterybox", desc(Translate::MysteryBox));
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::BubbleGem), "$bubble_gem$", "bubblegem", desc(Translate::BubbleGem));
+		SaleItem s(shop.items, name(Translate::BubbleGem), "$bubble_gem$", "bubblegem", desc(Translate::BubbleGem));
 		AddRequirement(s.requirements, "coin", "", "Coins", 200);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Choker), "$choker_gem$", "choker", desc(Translate::Choker));
+		SaleItem s(shop.items, name(Translate::Choker), "$choker_gem$", "choker", desc(Translate::Choker));
 		AddRequirement(s.requirements, "blob", "mat_methane", Translate::Methane, 50);
 		AddRequirement(s.requirements, "blob", "mat_mithrilingot", Translate::MithrilIngot, 2);
-		s.spawnNothing = true;
 	}
 
 	CSprite@ sprite = this.getSprite();
@@ -84,6 +76,11 @@ void onInit(CBlob@ this)
 	}
 }
 
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
+{
+	this.getSprite().PlaySound("ChaChing.ogg");
+}
+
 void onTick(CBlob@ this)
 {
 	if (!isServer()) return;
@@ -99,59 +96,6 @@ void onTick(CBlob@ this)
 		if (blob.getTeamNum() != team || blob.hasTag("dead")) continue;
 
 		blob.server_SetHealth(Maths::Min(blob.getHealth() + 0.125f, blob.getInitialHealth()));
-	}
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("ChaChing.ogg");
-	}
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-
-	string[] spl = name.split("-");
-	if (spl[0] == "coin")
-	{
-		CPlayer@ callerPlayer = caller.getPlayer();
-		if (callerPlayer is null) return;
-
-		callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-	}
-	else if (name.findFirst("mat_") != -1)
-	{
-		Material::createFor(caller, spl[0], parseInt(spl[1]));
-	}
-	else
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-		if (blob is null) return;
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
 	}
 }
 
@@ -211,11 +155,4 @@ void onTick(CSprite@ this)
 			trader.SetAnimation("stop");
 		}
 	}
-
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	this.set_Vec2f("shop offset", Vec2f(2,0));
-	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
 }

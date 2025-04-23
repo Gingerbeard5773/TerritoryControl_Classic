@@ -160,6 +160,7 @@ namespace Translate
 	Faultymine     = Translate("A Working Mine\nYou should buy this mine.", "Работающая шахта\nВам следует купить эту шахту."),
 	
 	//tavern
+	FunTavern      = Translate("Fun Tavern!", "Веселая Таверна!"),
 	Beer           = Translate("Beer's Bear\nHomemade fresh bear with foam!", "Пиво\nДомашнее свежее пиво с пеной!"),
 	Beer2          = Translate("A real beer for real men. Those who drink Bear's Bear are strong men.", "Настоящее пиво для настоящих мужчин. Те, кто пьют пиво — сильные мужчины."),
 	Vodka          = Translate("Vodka!\nAlso homemade fun water, buy this!", "Водка!\nТакже домашняя водичка, купите ее!"),

@@ -1,7 +1,7 @@
 #include "Explosion.as";
 #include "Hitters.as";
 #include "Requirements.as";
-#include "ShopCommon.as";
+#include "StoreCommon.as";
 #include "MaterialCommon.as";
 #include "TC_Translation.as";
 
@@ -16,14 +16,12 @@ void onInit(CBlob@ this)
 	this.SetMinimapRenderAlways(true);
 	
 	this.getSprite().SetZ(-25); //background
-	
-	this.set_Vec2f("shop offset", Vec2f(-6, 0));
-	this.set_Vec2f("shop menu size", Vec2f(5, 4));
-	this.set_string("shop description", name(Translate::Fabricator));
-	this.set_u8("shop icon", 15);
-	
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
+
+	Shop@ shop;
+	if (this.get("shop", @shop))
+	{
+		shop.button_offset = Vec2f(-6, 0);
+	}
 
 	this.set_f32("map_damage_ratio", 1.0f);
 	this.set_bool("map_damage_raycast", true);
@@ -95,11 +93,6 @@ void onInit(CBlob@ this)
 	}
 }
 
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
-}
-
 bool doesCollideWithBlob(CBlob@ this, CBlob@ blob)
 {
 	return false;
@@ -111,63 +104,6 @@ void onRemoveFromInventory(CBlob@ this, CBlob@ blob)
 	{
 		server_CreateBlob("scyther", -1, this.getPosition());
 		this.Untag("scyther inside");
-	}
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("ChaChing.ogg");
-	}
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-
-	string[] spl = name.split("-");
-	if (spl[0] == "coin")
-	{
-		CPlayer@ callerPlayer = caller.getPlayer();
-		if (callerPlayer is null) return;
-
-		callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-	}
-	else if (name.findFirst("mat_") != -1)
-	{
-		Material::createFor(caller, spl[0], parseInt(spl[1]));
-	}
-	else if (spl[0] == "scyther")
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-	}
-	else
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-		if (blob is null) return;
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
 	}
 }
 

@@ -1,7 +1,7 @@
 ﻿// A script by TFlippy
 
 #include "Requirements.as";
-#include "ShopCommon.as";
+#include "StoreCommon.as";
 #include "MaterialCommon.as";
 #include "TC_Translation.as";
 
@@ -30,100 +30,82 @@ void onInit(CBlob@ this)
 
 	this.Tag("builder always hit");
 	this.Tag("has window");
-	
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
-	
+
 	this.getCurrentScript().tickFrequency = 300;
 	this.inventoryButtonPos = Vec2f(-8, 0);
-	
-	this.set_Vec2f("shop offset", Vec2f(0,0));
-	this.set_Vec2f("shop menu size", Vec2f(4, 4));
-	this.set_string("shop description", name(Translate::Gunsmith)+" ");
-	this.set_u8("shop icon", 15);
 
 	this.setInventoryName(name(Translate::Gunsmith));
+	
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, name(Translate::Gunsmith)+" ");
+	shop.menu_size = Vec2f(4, 4);
+	shop.button_offset = Vec2f_zero;
+	shop.button_icon = 15;
 
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::LowCalAmmo)+" (20)", "$icon_pistolammo$", "mat_pistolammo-20", desc(Translate::LowCalAmmo));
+		SaleItem s(shop.items, name(Translate::LowCalAmmo)+" (20)", "$icon_pistolammo$", "mat_pistolammo", desc(Translate::LowCalAmmo), ItemType::material, 20);
 		AddRequirement(s.requirements, "coin", "", "Coins", 60);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::HighCalAmmo)+" (5)", "$icon_rifleammo$", "mat_rifleammo-5", desc(Translate::HighCalAmmo));
+		SaleItem s(shop.items, name(Translate::HighCalAmmo)+" (5)", "$icon_rifleammo$", "mat_rifleammo", desc(Translate::HighCalAmmo), ItemType::material, 5);
 		AddRequirement(s.requirements, "coin", "", "Coins", 45);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::ShotgunAmmo)+" (4)", "$icon_shotgunammo$", "mat_shotgunammo-4", desc(Translate::ShotgunAmmo));
+		SaleItem s(shop.items, name(Translate::ShotgunAmmo)+" (4)", "$icon_shotgunammo$", "mat_shotgunammo", desc(Translate::ShotgunAmmo), ItemType::material, 4);
 		AddRequirement(s.requirements, "coin", "", "Coins", 80);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::MachinegunAmmo)+" (30)", "$icon_gatlingammo$", "mat_gatlingammo-30", desc(Translate::MachinegunAmmo));
+		SaleItem s(shop.items, name(Translate::MachinegunAmmo)+" (30)", "$icon_gatlingammo$", "mat_gatlingammo", desc(Translate::MachinegunAmmo), ItemType::material, 30);
 		AddRequirement(s.requirements, "coin", "", "Coins", 80);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Revolver), "$icon_revolver$", "revolver", desc(Translate::Revolver));
+		SaleItem s(shop.items, name(Translate::Revolver), "$icon_revolver$", "revolver", desc(Translate::Revolver));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
 		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 40);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Rifle), "$icon_rifle$", "rifle", desc(Translate::Rifle));
+		SaleItem s(shop.items, name(Translate::Rifle), "$icon_rifle$", "rifle", desc(Translate::Rifle));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 60);
 		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 75);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::SMG), "$icon_smg$", "smg", desc(Translate::SMG));
+		SaleItem s(shop.items, name(Translate::SMG), "$icon_smg$", "smg", desc(Translate::SMG));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Bazooka), "$icon_bazooka$", "bazooka", desc(Translate::Bazooka));
+		SaleItem s(shop.items, name(Translate::Bazooka), "$icon_bazooka$", "bazooka", desc(Translate::Bazooka));
 		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
 		AddRequirement(s.requirements, "blob", "mat_copperingot", name(Translate::CopperIngot), 2);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Scorcher), "$icon_flamethrower$", "flamethrower", desc(Translate::Scorcher));
+		SaleItem s(shop.items, name(Translate::Scorcher), "$icon_flamethrower$", "flamethrower", desc(Translate::Scorcher));
 		AddRequirement(s.requirements, "blob", "mat_ironingot", name(Translate::IronIngot), 5);
 		AddRequirement(s.requirements, "blob", "mat_copperingot", name(Translate::CopperIngot), 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Shotgun), "$icon_shotgun$", "shotgun", desc(Translate::Shotgun));
+		SaleItem s(shop.items, name(Translate::Shotgun), "$icon_shotgun$", "shotgun", desc(Translate::Shotgun));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 70);
 		AddRequirement(s.requirements, "blob", "mat_steelingot", name(Translate::SteelIngot), 3);
 		AddRequirement(s.requirements, "coin", "", "Coins", 150);
-		s.customButton = true;
-		s.buttonwidth = 2;
-		s.buttonheight = 1;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 1);
 	}
+}
+
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
+{
+	this.getSprite().PlaySound("ConstructShort.ogg");
 }
 
 void onTick(CBlob@ this)
@@ -145,66 +127,8 @@ bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
-	if (isInventoryAccessible(this, caller))
-	{
-		this.set_Vec2f("shop offset", Vec2f(4, 0));
-	}
-	else
-	{
-		this.set_Vec2f("shop offset", Vec2f(0, 0));
-	}
-}
+	Shop@ shop;
+	if (!this.get("shop", @shop)) return;
 
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("ConstructShort.ogg");
-	}
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-
-	string[] spl = name.split("-");
-	if (spl[0] == "coin")
-	{
-		CPlayer@ callerPlayer = caller.getPlayer();
-		if (callerPlayer is null) return;
-
-		callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-	}
-	else if (name.findFirst("mat_") != -1)
-	{
-		Material::createFor(caller, spl[0], parseInt(spl[1]));
-	}
-	else
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-		if (blob is null) return;
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
-	}
+	shop.button_offset = isInventoryAccessible(this, caller) ? Vec2f(8, 0) : Vec2f_zero;
 }

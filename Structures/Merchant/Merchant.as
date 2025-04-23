@@ -1,10 +1,9 @@
 ﻿//Merchant.as
 
 #include "Requirements.as";
-#include "ShopCommon.as";
+#include "StoreCommon.as";
 #include "Descriptions.as";
 #include "MakeSeed.as";
-#include "MakeCrate.as";
 #include "MaterialCommon.as";
 #include "TC_Translation.as";
 
@@ -17,84 +16,67 @@ void onInit(CBlob@ this)
 	this.SetMinimapOutsideBehaviour(CBlob::minimap_none);
 	this.SetMinimapVars("GUI/Minimap/MinimapIcons.png", 6, Vec2f(8, 8));
 	this.SetMinimapRenderAlways(true);
-	
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
-	
+
 	this.getCurrentScript().tickFrequency = 30 * 3;
-	
-	// SHOP
-	this.set_Vec2f("shop offset", Vec2f(0, 8));
-	this.set_Vec2f("shop menu size", Vec2f(3,4));
-	this.set_string("shop description", "Buy");
-	this.set_u8("shop icon", 25);
 
 	this.setInventoryName(Translate::Merchant);
+	
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, "Buy");
+	shop.menu_size = Vec2f(3, 4);
+	shop.button_offset = Vec2f_zero;
+	shop.button_icon = 25;
 
 	{
-		ShopItem@ s = addShopItem(this, buy(name(Translate::GoldIngot), "1"), "$icon_goldingot$", "mat_goldingot-1", buy(name(Translate::GoldIngot), "1", "100"));
+		SaleItem s(shop.items, buy(name(Translate::GoldIngot), "1"), "$icon_goldingot$", "mat_goldingot", buy(name(Translate::GoldIngot), "1", "100"), ItemType::material, 1);
 		AddRequirement(s.requirements, "coin", "", "Coins", 100);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, buy("Stone", "250"), "$mat_stone$", "mat_stone-250", buy("Stone", "250", "125"));
+		SaleItem s(shop.items, buy("Stone", "250"), "$mat_stone$", "mat_stone", buy("Stone", "250", "125"), ItemType::normal, 250);
 		AddRequirement(s.requirements, "coin", "", "Coins", 125);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, buy("Wood", "250"), "$mat_wood$", "mat_wood-250", buy("Wood", "250", "90"));
+		SaleItem s(shop.items, buy("Wood", "250"), "$mat_wood$", "mat_wood", buy("Wood", "250", "90"), ItemType::material, 250);
 		AddRequirement(s.requirements, "coin", "", "Coins", 90);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, sell(name(Translate::GoldIngot), "1"), "$COIN$", "coin-100", sell(name(Translate::GoldIngot), "1", "100"));
+		SaleItem s(shop.items, sell(name(Translate::GoldIngot), "1"), "$COIN$", "coin", sell(name(Translate::GoldIngot), "1", "100"), ItemType::coin, 100);
 		AddRequirement(s.requirements, "blob", "mat_goldingot", name(Translate::GoldIngot), 1);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, sell("Stone", "250"), "$COIN$", "coin-100", sell("Stone", "250", "100"));
+		SaleItem s(shop.items, sell("Stone", "250"), "$COIN$", "coin", sell("Stone", "250", "100"), ItemType::coin, 100);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 250);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, sell("Wood", "250"), "$COIN$", "coin-75", sell("Wood", "250", "75"));
+		SaleItem s(shop.items, sell("Wood", "250"), "$COIN$", "coin", sell("Wood", "250", "75"), ItemType::coin, 75);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 250);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::MusicDisc), "$icon_musicdisc$", "musicdisc", desc(Translate::MusicDisc));
+		SaleItem s(shop.items, name(Translate::MusicDisc), "$icon_musicdisc$", "musicdisc", desc(Translate::MusicDisc));
 		AddRequirement(s.requirements, "coin", "", "Coins", 30);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, sell(Translate::Oil, "50"), "$COIN$", "coin-300", sell(Translate::Oil, "50", "400"));
+		SaleItem s(shop.items, sell(Translate::Oil, "50"), "$COIN$", "coin", sell(Translate::Oil, "50", "300"), ItemType::coin, 300);
 		AddRequirement(s.requirements, "blob", "mat_oil", Translate::Oil, 50);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Tree), "$icon_seed$", "seed", desc(Translate::Tree));
+		SaleItem s(shop.items, name(Translate::Tree), "$icon_seed$", "seed", desc(Translate::Tree), ItemType::nothing);
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Cake), "$icon_cake$", "cake", desc(Translate::Cake));
+		SaleItem s(shop.items, name(Translate::Cake), "$icon_cake$", "cake", desc(Translate::Cake));
 		AddRequirement(s.requirements, "coin", "", "Coins", 50);
-		s.spawnNothing = true;
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Car), "$icon_car$", "car", desc(Translate::Car), false, true);
+		SaleItem s(shop.items, name(Translate::Car), "$icon_car$", "car", desc(Translate::Car), ItemType::crate);
 		AddRequirement(s.requirements, "coin", "", "Coins", 1000);
-		s.crate_icon = 0;
-		s.spawnNothing = true;
-		s.customButton = true;
-		s.buttonwidth = 1;
-		s.buttonheight = 1;
 	}
 	
 	CSprite@ sprite = this.getSprite();
 	if (sprite !is null)
 	{
-		string sex = traderRandom.NextRanged(2) == 0 ? "TraderMale.png" : "TraderFemale.png";
+		const string sex = traderRandom.NextRanged(2) == 0 ? "TraderMale.png" : "TraderFemale.png";
 		CSpriteLayer@ trader = sprite.addSpriteLayer("trader", sex, 16, 16, 0, 0);
 		trader.SetRelativeZ(20);
 		Animation@ stop = trader.addAnimation("stop", 1, false);
@@ -111,6 +93,30 @@ void onInit(CBlob@ this)
 		this.set_bool("moving left", false);
 		this.set_u32("move timer", getGameTime() + (traderRandom.NextRanged(5) + 5)*getTicksASecond());
 		this.set_u32("next offset", traderRandom.NextRanged(16));
+	}
+}
+
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
+{
+	this.getSprite().PlaySound("ChaChing.ogg");
+
+	if (isServer())
+	{
+		if (item.blob_name == "seed")
+		{
+			CBlob@ seed = server_MakeSeed(this.getPosition(), XORRandom(2) == 1 ? "tree_pine" : "tree_bushy");
+			if (seed is null) return;
+		   
+			if (!caller.server_PutInInventory(seed))
+			{
+				caller.server_Pickup(seed);
+			}
+		}
+		else if (blob !is null && item.blob_name == "mat_stone")
+		{
+			blob.Tag("no stone gold");
+			blob.server_SetQuantity(item.quantity);
+		}
 	}
 }
 
@@ -135,94 +141,6 @@ void onTick(CBlob@ this)
 		
 		rules.set_u32("old coin count " + ply.getUsername(), addCoins); //dont update coin hover message
 		rules.SyncToPlayer("old coin count " + ply.getUsername(), ply);
-	}
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("ChaChing.ogg");
-	}
-}
-
-void onShopMadeItem(CBitStream@ params)
-{
-	if (!isServer()) return;
-
-	u16 this_id, caller_id, item_id;
-	string name;
-
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-
-	CBlob@ caller = getBlobByNetworkID(caller_id);
-	if (caller is null) return;
-
-	string[] spl = name.split("-");
-	if (spl[0] == "coin")
-	{
-		CPlayer@ callerPlayer = caller.getPlayer();
-		if (callerPlayer is null) return;
-
-		callerPlayer.server_setCoins(callerPlayer.getCoins() +  parseInt(spl[1]));
-	}
-	else if (spl[0] == "seed")
-	{
-		CBlob@ blob = server_MakeSeed(this.getPosition(), XORRandom(2)==1 ? "tree_pine" : "tree_bushy");
-		if (blob is null) return;
-	   
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
-	}
-	else if (name.findFirst("mat_") != -1)
-	{
-		if (name.findFirst("mat_stone") == -1)
-		{
-			Material::createFor(caller, spl[0], parseInt(spl[1]));
-			return;
-		}
-
-		CBlob@ stone = server_CreateBlob(spl[0]);
-		if (stone !is null)
-		{
-			stone.Tag("no stone gold");
-			stone.server_SetQuantity(parseInt(spl[1]));
-			if (!caller.server_PutInInventory(stone))
-			{
-				stone.setPosition(caller.getPosition());
-			}
-		}
-	}
-	else if (spl[0] == "car")
-	{
-		CBlob@ crate = server_MakeCrate("car", "Car", 0, caller.getTeamNum(), this.getPosition(), false);
-		crate.Init();
-		caller.server_Pickup(crate);
-	}
-	else
-	{
-		CBlob@ blob = server_CreateBlob(spl[0], caller.getTeamNum(), this.getPosition());
-		if (blob is null) return;
-		if (!blob.canBePutInInventory(caller))
-		{
-			caller.server_Pickup(blob);
-		}
-		else if (caller.getInventory() !is null && !caller.getInventory().isFull())
-		{
-			caller.server_PutInInventory(blob);
-		}
 	}
 }
 
@@ -278,10 +196,4 @@ void onTick(CSprite@ this)
 			trader.SetAnimation("stop");
 		}
 	}
-}
-
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
-{
-	this.set_Vec2f("shop offset", Vec2f(2,0));
-	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius() * 1.5f);
 }

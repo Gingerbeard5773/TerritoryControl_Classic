@@ -1,6 +1,6 @@
 ﻿#include "StandardRespawnCommand.as";
 #include "Requirements.as";
-#include "ShopCommon.as";
+#include "StoreCommon.as";
 #include "FactionBuildingCommon.as";
 #include "TC_Translation.as";
 
@@ -27,109 +27,82 @@ void onInit(CBlob@ this)
 
 	server_SetFloor(this, CMap::tile_wood);
 
-	// Upgrading stuff
-	this.set_Vec2f("shop offset", Vec2f(-24, 10));
-	this.set_Vec2f("shop menu size", Vec2f(4, 2));
-	this.set_string("shop description", Translate::Upgrades);
-	this.set_u8("shop icon", 15);
-
 	this.setInventoryName(name(Translate::Camp));
 
-	ShopMadeItem@ onMadeItem = @onShopMadeItem;
-	this.set("onShopMadeItem handle", @onMadeItem);
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, Translate::Upgrades);
+	shop.menu_size = Vec2f(4, 2);
+	shop.button_offset = Vec2f(-24, 10);
+	shop.button_icon = 15;
 
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::UpgradeCamp), "$icon_upgrade$", "fortress", desc(Translate::UpgradeCamp));
+		SaleItem s(shop.items, name(Translate::UpgradeCamp), "$icon_upgrade$", "fortress", desc(Translate::UpgradeCamp), ItemType::nothing);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 750);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 300);
 		AddRequirement(s.requirements, "coin", "", "Coins", 250);
-		s.customButton = true;
-		s.buttonwidth = 2;	
-		s.buttonheight = 2;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 2);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Repair), "$icon_repair$", "repair", desc(Translate::Repair));	
+		SaleItem s(shop.items, name(Translate::Repair), "$icon_repair$", "repair", desc(Translate::Repair), ItemType::nothing);	
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 		AddRequirement(s.requirements, "blob", "mat_stone", "Stone", 50);
-		s.customButton = true;
-		s.buttonwidth = 2;	
-		s.buttonheight = 2;
-		s.spawnNothing = true;
+		s.button_dimensions = Vec2f(2, 2);
 	}
 }
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	if (caller.getTeamNum() == this.getTeamNum() && caller.isOverlapping(this))
+	Shop@ shop;
+	if (!this.get("shop", @shop)) return;
+
+	const bool accessible = isInventoryAccessible(this, caller);
+	if (accessible)
 	{
 		caller.CreateGenericButton("$change_class$", Vec2f(-12, -2.5f), this, buildSpawnMenu, getTranslatedString("Change class"));
 
 		CInventory@ inv = caller.getInventory();
-		if (inv is null) return;
-
-		if (inv.getItemsCount() > 0)
+		if (inv !is null && inv.getItemsCount() > 0)
 		{
-			CButton@ buttonOwner = caller.CreateGenericButton(28, Vec2f(14, 5), this, this.getCommandID("sv_store"), getTranslatedString("Store"));
+			caller.CreateGenericButton(28, Vec2f(14, 5), this, this.getCommandID("sv_store"), getTranslatedString("Store"));
 		}
 	}
-	this.set_bool("shop available", caller.isOverlapping(this));
+	
+	shop.available = accessible;
 }
 
-void onShopMadeItem(CBitStream@ params)
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
 {
-	if (!isServer()) return;
+	if (item.blob_name == "fortress")
+	{
+		this.getSprite().getVars().gibbed = true;
+		this.getSprite().PlaySound("/Construct.ogg");
 
-	u16 this_id, caller_id, item_id;
-	string name;
+		if (isServer())
+		{
+			CBlob@ newBlob = server_CreateBlob("fortress", this.getTeamNum(), this.getPosition());
+			this.MoveInventoryTo(newBlob);
+			this.Tag("upgrading");
+			this.server_Die();
+		}
+	}
+	else if (item.blob_name == "repair")
+	{
+		this.getSprite().PlaySound("/ConstructShort.ogg");
 
-	if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-	{
-		return;
-	}
-	
-	CBlob@ this = getBlobByNetworkID(this_id);
-	if (this is null) return;
-	
-	if (name == "fortress")
-	{
-		CBlob@ newBlob = server_CreateBlob("fortress", this.getTeamNum(), this.getPosition());
-		this.MoveInventoryTo(newBlob);
-		this.Tag("upgrading");
-		this.server_Die();
-	}
-	else if (name == "repair")
-	{
-		const f32 heal = this.getInitialHealth() * 0.05f;
-		this.server_SetHealth(Maths::Min(this.getHealth() + heal, this.getInitialHealth()));
+		if (isServer())
+		{
+			const f32 heal = this.getInitialHealth() * 0.05f;
+			this.server_SetHealth(Maths::Min(this.getHealth() + heal, this.getInitialHealth()));
+		}
 	}
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 {
 	onRespawnCommand(this, cmd, params);
-	
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		u16 this_id, caller_id, item_id;
-		string name;
 
-		if (!params.saferead_u16(this_id) || !params.saferead_u16(caller_id) || !params.saferead_u16(item_id) || !params.saferead_string(name))
-		{
-			return;
-		}
-
-		if (name == "fortress")
-		{
-			this.getSprite().getVars().gibbed = true;
-			this.getSprite().PlaySound("/Construct.ogg");
-		}
-		else
-		{
-			this.getSprite().PlaySound("/ConstructShort.ogg");
-		}
-	}
-	else if (cmd == this.getCommandID("sv_store") && isServer())
+	if (cmd == this.getCommandID("sv_store") && isServer())
 	{
 		CPlayer@ player = getNet().getActiveCommandPlayer();
 		if (player is null) return;
@@ -158,5 +131,13 @@ void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
 
 bool isInventoryAccessible(CBlob@ this, CBlob@ forBlob)
 {
-	return (forBlob.getTeamNum() == this.getTeamNum() && forBlob.isOverlapping(this));
+	return (forBlob.getTeamNum() == this.getTeamNum() && isOverlapping(this, forBlob));
+}
+
+bool isOverlapping(CBlob@ a, CBlob@ b) //engine overlapping sometimes fails
+{
+	Vec2f a_min, a_max, b_min, b_max;
+	a.getShape().getBoundingRect(a_min, a_max);
+	b.getShape().getBoundingRect(b_min, b_max);
+	return (a_max.x > b_min.x && a_min.x < b_max.x && a_max.y > b_min.y && a_min.y < b_max.y);
 }

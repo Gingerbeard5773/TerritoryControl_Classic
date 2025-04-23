@@ -1,7 +1,7 @@
 ﻿// A script by TFlippy
 
 #include "Requirements.as"
-#include "ShopCommon.as"
+#include "StoreCommon.as"
 #include "Descriptions.as"
 #include "GenericButtonCommon.as"
 #include "TeamIconToken.as"
@@ -14,53 +14,46 @@ void onInit(CBlob@ this)
 	this.Tag("has window");
 	this.Tag("builder always hit");
 	
-	this.set_Vec2f("shop offset", Vec2f(0,0));
-	this.set_Vec2f("shop menu size", Vec2f(3, 3));
-	this.set_string("shop description", "Builder's Workshop");
-	this.set_u8("shop icon", 15);
-	
 	const u8 team_num = this.getTeamNum();
 	
+	addOnShopMadeItem(this, @onShopMadeItem);
+
+	Shop shop(this, "Builder's Workshop");
+	shop.menu_size = Vec2f(3, 3);
+	shop.button_offset = Vec2f_zero;
+	shop.button_icon = 15;
+
 	{
-		ShopItem@ s = addShopItem(this, "Lantern", "$lantern$", "lantern", Descriptions::lantern, false);
+		SaleItem s(shop.items, "Lantern", "$lantern$", "lantern", Descriptions::lantern);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Bucket", "$bucket$", "bucket", Descriptions::bucket, false);
+		SaleItem s(shop.items, "Bucket", "$bucket$", "bucket", Descriptions::bucket);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 10);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Sponge", "$sponge$", "sponge", Descriptions::sponge, false);
+		SaleItem s(shop.items, "Sponge", "$sponge$", "sponge", Descriptions::sponge);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Trampoline", getTeamIcon("trampoline", "Trampoline.png", team_num, Vec2f(32, 16), 3), "trampoline", Descriptions::trampoline, false);
+		SaleItem s(shop.items, "Trampoline", getTeamIcon("trampoline", "Trampoline.png", team_num, Vec2f(32, 16), 3), "trampoline", Descriptions::trampoline);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
 	}
 	{
-		ShopItem@ s = addShopItem(this, "Crate", "$crate$", "crate", Descriptions::crate, true);
+		SaleItem s(shop.items, "Crate", "$crate$", "crate", Descriptions::crate);
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Chair), "$chair$", "chair", desc(Translate::Chair), true);
+		SaleItem s(shop.items, name(Translate::Chair), "$chair$", "chair", desc(Translate::Chair));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
 	}
 	{
-		ShopItem@ s = addShopItem(this, name(Translate::Table), "$table$", "table", desc(Translate::Table), true);
+		SaleItem s(shop.items, name(Translate::Table), "$table$", "table", desc(Translate::Table));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 }
 
-void GetButtonsFor(CBlob@ this, CBlob@ caller)
+void onShopMadeItem(CBlob@ this, CBlob@ caller, CBlob@ blob, SaleItem@ item)
 {
-	this.set_Vec2f("shop offset", Vec2f(0, 0));
-	this.set_bool("shop available", caller.getDistanceTo(this) < this.getRadius());
-}
-
-void onCommand(CBlob@ this, u8 cmd, CBitStream @params)
-{
-	if (cmd == this.getCommandID("shop made item client") && isClient())
-	{
-		this.getSprite().PlaySound("ConstructShort");
-	}
+	this.getSprite().PlaySound("ConstructShort.ogg");
 }
