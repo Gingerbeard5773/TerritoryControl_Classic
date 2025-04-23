@@ -14,11 +14,13 @@ u8 getHealingAmount(CBlob@ food)
 	const string name = food.getName();
 
 	if (name == "heart")           return 4;
-	else if (name == "ratburger")  return 3;
-	else if (name == "ratfood")    return 2;
-	else if (name == "food")       return 4;
-	else if (name == "cake")       return 3;
-	else if (name == "foodcan")    return 5;
+	else if (name == "ratburger")  return 4;
+	else if (name == "ratfood")    return 3;
+	else if (name == "food")       return 7;
+	else if (name == "cake")       return 5;
+	else if (name == "foodcan")    return 8;
+	else if (name == "egg")        return 7;
+	else if (name == "grain")      return 4;
 
 	return 255; // full healing
 }
