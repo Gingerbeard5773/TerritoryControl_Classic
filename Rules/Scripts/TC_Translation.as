@@ -21,7 +21,7 @@ namespace Translate
 	WoodTriangle   = Translate("Wooden Triangle", "Деревянный треугольник"),
 	StoneTriangle  = Translate("Stone Triangle",  "Каменный треугольник"),
 	HalfBlock      = Translate("Stone Half Block", "Каменный полублок"),
-	IronDoor       = Translate("Iron Door\nDoesn't have to be placed next to walls!", "Железная дверь\nЕго не обязательно размещать рядом со стенами!"),
+	IronDoor       = Translate("Iron Door\nDoesn't have to be placed next to walls!", "Железная дверь\nЕё не обязательно размещать рядом со стенами!"),
 	IronPlatform   = Translate("Iron Platform\nReinforced one-way platform. Indestructible by peasants.", "Железная платформа\nУсиленная односторонняя платформа. Не поддается разрушению крестьянами."),
 	IronBlock      = Translate("Iron Plating\nA durable metal block. Indestructible by peasants.", "Железная панель\nПрочный металлический блок. Не поддается разрушению крестьянами."),
 	PlasteelBlock  = Translate("Plasteel Panel\nA highly advanced composite material. Nearly indestructible.", "Панель из пластистали\nВысокоэффективный композитный материал. Практически не поддается разрушению."),
@@ -276,9 +276,9 @@ namespace Translate
 	WaterCards     = Translate("Water Cards", "Карты Воды"),
 	CogCards       = Translate("Gear Cards", "Карты Винтик"),
 	DeathCards     = Translate("Death Cards", "Карты Смерти"),
-	SteamCards     = Translate("Steam Cards", "Пар Карты"),
+	SteamCards     = Translate("Steam Cards", "Карты Пара"),
 	MineCards      = Translate("Mine Cards", "Карты майнинга"),
-	NatureCards    = Translate("Nature Cards", "Карточки природы"),
+	NatureCards    = Translate("Nature Cards", "Карты природы"),
 	ChaosCards     = Translate("Chaos Cards", "Карты Хаоса"),
 
 	//other
