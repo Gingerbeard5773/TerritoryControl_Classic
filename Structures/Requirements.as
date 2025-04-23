@@ -114,30 +114,15 @@ void AddHurtRequirement(CBitStream &inout bs)
 
 bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName, string &out friendlyName, u16 &out quantity)
 {
-	if (!bs.saferead_string(req))
-	{
-		return false;
-	}
+	if (!bs.saferead_string(req)) return false;
 
-	if (req == "hurt")
-	{
-		return true;
-	}
+	if (req == "hurt") return true;
 
-	if (!bs.saferead_string(blobName))
-	{
-		return false;
-	}
+	if (!bs.saferead_string(blobName)) return false;
 
-	if (!bs.saferead_string(friendlyName))
-	{
-		return false;
-	}
+	if (!bs.saferead_string(friendlyName)) return false;
 
-	if (!bs.saferead_u16(quantity))
-	{
-		return false;
-	}
+	if (!bs.saferead_u16(quantity)) return false;
 
 	return true;
 }
@@ -270,7 +255,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &ino
 				remoteStorage.TakeBlob(blobName, remaining);
 			}
 		}
-		else if (req == "coin") // TODO...
+		else if (req == "coin")
 		{
 			CPlayer@ player1 = inv1 !is null ? inv1.getBlob().getPlayer() : null;
 			CPlayer@ player2 = inv2 !is null ? inv2.getBlob().getPlayer() : null;

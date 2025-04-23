@@ -33,8 +33,8 @@ void onInit(CBlob@ this)
 	{
 		SaleItem s(shop.items, name(Translate::Rocket), "$icon_rocket$", "rocket", desc(Translate::Rocket));
 		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
-		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 		AddRequirement(s.requirements, "blob", "mat_coal", Translate::Coal, 2);
+		AddRequirement(s.requirements, "coin", "", "Coins", 100);
 	}
 	{
 		SaleItem s(shop.items, name(Translate::BigBomb), "$icon_bigbomb$", "mat_bigbomb", desc(Translate::BigBomb), ItemType::material, 1);
@@ -63,8 +63,8 @@ void onInit(CBlob@ this)
 	}
 	{
 		SaleItem s(shop.items, name(Translate::IncendiaryBomb), "$icon_incendiarybomb$", "mat_incendiarybomb", desc(Translate::IncendiaryBomb), ItemType::material, 1);
-		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 		AddRequirement(s.requirements, "blob", "mat_oil", Translate::Oil, 25);
+		AddRequirement(s.requirements, "coin", "", "Coins", 125);
 	}
 	{
 		SaleItem s(shop.items, "Keg", "$keg$", "keg", Descriptions::keg);
