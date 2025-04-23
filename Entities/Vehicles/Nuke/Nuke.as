@@ -181,6 +181,41 @@ f32 onHit(CBlob@ this, Vec2f worldPoint, Vec2f velocity, f32 damage, CBlob@ hitt
 	return damage;
 }
 
+void onDie(CBlob@ this)
+{
+	if (this.hasTag("nuke_active") && getGameTime() >= this.get_u32("nuke_boomtime")) return;
+
+	if (isClient())
+	{
+		this.getSprite().PlaySound("/WoodDestruct");
+		this.getSprite().Gib();
+	}
+	
+	if (isServer())
+	{
+		for (int i = 0; i < 5; i++)
+		{
+			CBlob@ blob = server_CreateBlob("mat_mithril", -1, this.getPosition());
+			blob.server_SetQuantity(25 + XORRandom(35));
+			blob.setVelocity(Vec2f(4 - XORRandom(8), -4 - XORRandom(8)));
+		}
+		
+		for (int i = 0; i < 3; i++)
+		{
+			CBlob@ blob = server_CreateBlob("mat_mithrilingot", -1, this.getPosition());
+			blob.server_SetQuantity(2 + XORRandom(3));
+			blob.setVelocity(Vec2f(4 - XORRandom(8), -4 - XORRandom(8)));
+		}
+		
+		for (int i = 0; i < 3; i++)
+		{
+			CBlob@ blob = server_CreateBlob("mat_steelingot", -1, this.getPosition());
+			blob.server_SetQuantity(2 + XORRandom(2));
+			blob.setVelocity(Vec2f(4 - XORRandom(8), -4 - XORRandom(8)));
+		}
+	}
+}
+
 CPlayer@ getOwner(CBlob@ this)
 {
 	return getPlayerByUsername(this.get_string("Owner"));
