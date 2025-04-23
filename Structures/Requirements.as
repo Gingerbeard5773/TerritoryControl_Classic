@@ -223,17 +223,17 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 			if (inv1 !is null)
 			{
 				CBlob@ blob = inv1.getBlob();
-				taken += Maths::Min(blob.getBlobCount(blobName), quantity - taken);
-				blob.TakeBlob(blobName, quantity);
-				//print(blobName+" "+quantity+" "+taken+" INV 1");
+				const u16 take = Maths::Min(blob.getBlobCount(blobName), quantity - taken);
+				blob.TakeBlob(blobName, take);
+				taken += take;
 			}
 			if (inv2 !is null && taken < quantity)
 			{
 				CBlob@ blob = inv2.getBlob();
 				const u16 remaining = quantity - taken;
-				taken += Maths::Min(blob.getBlobCount(blobName), remaining);
-				blob.TakeBlob(blobName, remaining);
-				//print(blobName+" "+remaining+" "+taken+" INV 2");
+				const u16 take = Maths::Min(blob.getBlobCount(blobName), remaining);
+				blob.TakeBlob(blobName, take);
+				taken += take;
 			}
 
 			for (int i = 0; i < remoteStorages.length; i++)
@@ -242,8 +242,9 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 
 				CBlob@ remoteStorage = remoteStorages[i];
 				const u16 remaining = quantity - taken;
-				taken += Maths::Min(remoteStorage.getBlobCount(blobName), remaining);
-				remoteStorage.TakeBlob(blobName, remaining);
+				const u16 take = Maths::Min(remoteStorage.getBlobCount(blobName), remaining);
+				remoteStorage.TakeBlob(blobName, take);
+				taken += take;
 			}
 		}
 		else if (req == "coin")
@@ -253,14 +254,16 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 			int taken = 0;
 			if (player1 !is null)
 			{
-				taken = Maths::Min(player1.getCoins(), quantity);
-				player1.server_setCoins(player1.getCoins() - taken);
+				const int take = Maths::Min(player1.getCoins(), quantity);
+				player1.server_setCoins(player1.getCoins() - take);
+				taken += take;
 			}
-			if (player2 !is null)
+			if (player2 !is null && taken < quantity)
 			{
-				taken = quantity - taken;
-				taken = Maths::Min(player2.getCoins(), quantity);
-				player2.server_setCoins(player2.getCoins() - taken);
+				const int remaining = quantity - taken;
+				const int take = Maths::Min(player2.getCoins(), remaining);
+				player2.server_setCoins(player2.getCoins() - take);
+				taken += take;
 			}
 		}
 	}
