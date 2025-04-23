@@ -31,7 +31,7 @@ u32 getNextMeteor()
 
 u32 getNextWreckage()
 {
-	return 60000 + XORRandom(80000);
+	return 150000 + XORRandom(80000);
 }
 
 u32 getNextAttack()
