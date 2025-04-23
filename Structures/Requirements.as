@@ -1,6 +1,6 @@
 #include "ResearchCommon.as"
 
-string getButtonRequirementsText(CBitStream& inout bs, bool missing)
+string getButtonRequirementsText(CBitStream@ bs, bool missing)
 {
 	string text, requiredType, name, friendlyName;
 	u16 quantity = 0;
@@ -9,16 +9,7 @@ string getButtonRequirementsText(CBitStream& inout bs, bool missing)
 	while (!bs.isBufferEnd())
 	{
 		ReadRequirement(bs, requiredType, name, friendlyName, quantity);
-		string quantityColor;
-
-		if (missing)
-		{
-			quantityColor = "$RED$";
-		}
-		else
-		{
-			quantityColor = "$GREEN$";
-		}
+		const string quantityColor = missing ? "$RED$" : "$GREEN$";
 
 		if (requiredType == "blob")
 		{
@@ -73,7 +64,6 @@ string getButtonRequirementsText(CBitStream& inout bs, bool missing)
 			text += "At least " + quantity + " " + friendlyName + " required. \n";
 			text += quantityColor;
 		}
-
 	}
 
 	return text;
@@ -84,7 +74,6 @@ void SetItemDescription(CGridButton@ button, CBlob@ caller, CBitStream &in reqs,
 	if (button !is null && caller !is null && caller.getInventory() !is null)
 	{
 		CBitStream missing;
-
 		if (hasRequirements(caller.getInventory(), anotherInventory, reqs, missing))
 		{
 			button.hoverText = description + "\n\n " + getButtonRequirementsText(reqs, false);
@@ -99,7 +88,7 @@ void SetItemDescription(CGridButton@ button, CBlob@ caller, CBitStream &in reqs,
 
 // read/write
 
-void AddRequirement(CBitStream &inout bs, const string &in req, const string &in blobName, const string &in friendlyName, u16 &in quantity = 1)
+void AddRequirement(CBitStream@ bs, const string &in req, const string &in blobName, const string &in friendlyName, const u16 &in quantity = 1)
 {
 	bs.write_string(req);
 	bs.write_string(blobName);
@@ -107,12 +96,12 @@ void AddRequirement(CBitStream &inout bs, const string &in req, const string &in
 	bs.write_u16(quantity);
 }
 
-void AddHurtRequirement(CBitStream &inout bs)
+void AddHurtRequirement(CBitStream@ bs)
 {
 	bs.write_string("hurt");
 }
 
-bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName, string &out friendlyName, u16 &out quantity)
+bool ReadRequirement(CBitStream@ bs, string &out req, string &out blobName, string &out friendlyName, u16 &out quantity)
 {
 	if (!bs.saferead_string(req)) return false;
 
@@ -127,7 +116,7 @@ bool ReadRequirement(CBitStream &inout bs, string &out req, string &out blobName
 	return true;
 }
 
-bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, CBitStream &inout missingBs, bool &in inventoryOnly = false)
+bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs, CBitStream@ missingBs, bool &in inventoryOnly = false)
 {
 	string req, blobName, friendlyName;
 	u16 quantity = 0;
@@ -178,7 +167,7 @@ bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, C
 				has = false;
 			}
 		}
-		else if ((req == "no more" || req == "no less") && inv1 !is null)
+		/*else if ((req == "no more" || req == "no less") && inv1 !is null)
 		{
 			int teamNum = inv1.getBlob().getTeamNum();
 			int count = 0;
@@ -200,7 +189,7 @@ bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, C
 				AddRequirement(missingBs, req, blobName, friendlyName, quantity);
 				has = false;
 			}
-		}
+		}*/
 	}
 
 	missingBs.ResetBitIndex();
@@ -208,12 +197,12 @@ bool hasRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs, C
 	return has;
 }
 
-bool hasRequirements(CInventory@ inv, CBitStream &inout bs, CBitStream &inout missingBs, bool &in inventoryOnly = false)
+bool hasRequirements(CInventory@ inv, CBitStream@ bs, CBitStream@ missingBs, bool &in inventoryOnly = false)
 {
 	return hasRequirements(inv, null, bs, missingBs, inventoryOnly);
 }
 
-void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &inout bs)
+void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream@ bs)
 {
 	if (!isServer()) return;
 
@@ -233,6 +222,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &ino
 			u16 taken = 0;
 			if (inv1 !is null)
 			{
+				print(quantity+"");
 				CBlob@ blob = inv1.getBlob();
 				taken += Maths::Min(blob.getBlobCount(blobName), quantity - taken);
 				blob.TakeBlob(blobName, quantity);
@@ -277,7 +267,7 @@ void server_TakeRequirements(CInventory@ inv1, CInventory@ inv2, CBitStream &ino
 	bs.ResetBitIndex();
 }
 
-void server_TakeRequirements(CInventory@ inv, CBitStream &inout bs)
+void server_TakeRequirements(CInventory@ inv, CBitStream@ bs)
 {
 	server_TakeRequirements(inv, null, bs);
 }
