@@ -5,7 +5,7 @@ void onInit(CRules@ this)
 	const SColor print_col(0xff66C6FF);
 	
 	const string original_version = "v58";
-	const string remaster_version = "v9";
+	const string remaster_version = "v10";
 	
 	sv_mapcycle_shuffle = true;
 	
@@ -42,16 +42,18 @@ void onInit(CRules@ this)
 	print("");
 }
 
-//Changelog v9 February 1st, 2025
+//Changelog v10 April 23rd, 2025
 //
-// Added tavern.
-// Added beer & vodka.
-// Added choker gem.
-// Added bubble gem.
-// Added the map saver.
-// Extractor now has optional filter functionality.
-// Automat is must more resistant to damage.
-// Peasants can place dirt blocks.
-// The pickup menu is improved drastically.
-// Nerfed tank cannon fire rate.
-// Peasants have resupply
+// Chickens have far superior AI, and can destroy factions via squads.
+// Lengthened time it takes for aliens to arrive.
+// Added storage button to the armory.
+// Fixed issue with nuke being activated by non-owner.
+// Fixed a bug where more materials than necessary were consumed when buying items.
+// Lamps can be placed over buildings' no build zone, just like ladders.
+// Fixed gasses going into hoppers.
+// Fixed strange mithril merging visuals.
+// Air raid sirens are not abrupt.
+// Improved shackle usage visuals.
+// Faction buildings are weaker against pickaxes and drills.
+// Most foods heal more.
+//
