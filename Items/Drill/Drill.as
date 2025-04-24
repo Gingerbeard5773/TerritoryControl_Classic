@@ -202,7 +202,7 @@ void onTick(CBlob@ this)
 	}
 	else
 	{
-		sprite.SetEmitSoundSpeed(0.95f);
+		sprite.SetEmitSoundSpeed(1.0f);
 	}
 
 	sprite.SetEmitSoundPaused(false);
