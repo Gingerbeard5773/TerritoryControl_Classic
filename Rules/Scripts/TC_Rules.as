@@ -7,7 +7,6 @@ const u8 faction_player_respawn_seconds = 4;
 
 void onInit(CRules@ this)
 {
-	sv_mapcycle_shuffle = false;
 	Reset(this);
 	
 	string[] playernames;
