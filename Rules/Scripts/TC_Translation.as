@@ -50,6 +50,7 @@ namespace Translate
 	Grinder        = Translate("Grinder\nA dangerous machine capable of destroying almost everything.", "Измельчитель\nОпасная машина, способная уничтожить практически все."),
 	Packer         = Translate("Packer\nA safe machine capable of packing almost everything.", "Упаковщик\nБезопасная машина, способная упаковывать практически все."),
 	Inserter       = Translate("Inserter\nTransfers items between inventories next to it.\nLarge funnel acts as input, small funnel as output.", "Вставщик\nПереносит предметы между соседними инвентарями.\nБольшая воронка служит входом, маленькая - выходом."),
+	Treecapitator  = Translate("Treecapitator\nMurders trees and stores their logs.", "Деревокапитатор\nУбивает деревья и хранит брёвна."),
 
 	WoodChest      = Translate("Wooden Chest\nA regular wooden chest used for storage.\nCan be accessed by anyone.", "Деревянный сундук\nОбычный деревянный сундук, используемый для хранения вещей.\nДоступ к нему может получить любой желающий."),
 	Locker         = Translate("Personal Locker\nA more secure way to store your items.\nCan be only accessed by the first person to claim it.", "Личный шкафчик\nБолее безопасный способ хранения ваших вещей.\nДоступ к нему может получить только тот, кто первым присвоит его."),

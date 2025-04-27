@@ -324,6 +324,12 @@ void addCommonBuilderBlocks(BuildBlock[][]@ blocks, int team_num = 0, const stri
 		b.size.Set(16, 16);
 		blocks[2].push_back(b);
 	}
+	{ //newer gen tc import
+		BuildBlock b(0, "treecapitator", "$icon_treecapitator$", Translate::Treecapitator);
+		AddRequirement(b.reqs, "blob", "mat_wood", "Wood", 150);
+		AddRequirement(b.reqs, "blob", "mat_stone", "Stone", 70);
+		blocks[2].push_back(b);
+	}
 
 	BuildBlock[] page_3;
 	blocks.push_back(page_3);
