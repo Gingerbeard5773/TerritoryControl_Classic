@@ -43,7 +43,7 @@ bool canPlaceOnNoBuild(CBlob@ blob)
 	if (blob is null) return false;
 
 	const string bname = blob.getName();
-	return bname == "ladder" || bname == "teamlamp" || bname == "industriallamp";
+	return bname == "ladder" || bname == "teamlamp" || bname == "industriallamp" || bname == "lantern";
 }
 
 bool canPlaceOnTile(CMap@ map, Vec2f p, CBlob@ blob, TileType buildTile, Tile backTile)
