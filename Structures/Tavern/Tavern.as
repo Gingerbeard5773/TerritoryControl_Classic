@@ -2,7 +2,7 @@
 
 #include "Requirements.as"
 #include "StoreCommon.as"
-#include "MaterialCommon.as"
+#include "Descriptions.as"
 #include "TC_Translation.as"
 
 void onInit(CBlob@ this)
@@ -26,7 +26,7 @@ void onInit(CBlob@ this)
 	addOnShopMadeItem(this, @onShopMadeItem);
 
 	Shop shop(this, Translate::FunTavern);
-	shop.menu_size = Vec2f(3, 2);
+	shop.menu_size = Vec2f(3, 5);
 	shop.button_offset = Vec2f(-15, 6);
 	shop.button_icon = 25;
 	
@@ -49,6 +49,36 @@ void onInit(CBlob@ this)
 	{
 		SaleItem s(shop.items, name(Translate::BanditMusic), "$musicdisc$", "musicdisc", desc(Translate::BanditMusic), ItemType::nothing);
 		AddRequirement(s.requirements, "coin", "", "Coins", 117);
+	}
+	
+	//builder shop
+	{
+		SaleItem s(shop.items, "Lantern", "$lantern$", "lantern", Descriptions::lantern);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 10);
+	}
+	{
+		SaleItem s(shop.items, "Bucket", "$bucket$", "bucket", Descriptions::bucket);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 10);
+	}
+	{
+		SaleItem s(shop.items, "Sponge", "$sponge$", "sponge", Descriptions::sponge);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 50);
+	}
+	{
+		SaleItem s(shop.items, "Trampoline", "$trampoline$", "trampoline", Descriptions::trampoline);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 150);
+	}
+	{
+		SaleItem s(shop.items, "Crate", "$crate$", "crate", Descriptions::crate);
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
+	}
+	{
+		SaleItem s(shop.items, name(Translate::Chair), "$chair$", "chair", desc(Translate::Chair));
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 40);
+	}
+	{
+		SaleItem s(shop.items, name(Translate::Table), "$table$", "table", desc(Translate::Table));
+		AddRequirement(s.requirements, "blob", "mat_wood", "Wood", 75);
 	}
 	
 	this.SetLight(true);
