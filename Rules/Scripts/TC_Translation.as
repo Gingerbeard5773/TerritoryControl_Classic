@@ -281,6 +281,10 @@ namespace Translate
 	MineCards      = Translate("Mine Cards", "Карты майнинга"),
 	NatureCards    = Translate("Nature Cards", "Карточки природы"),
 	ChaosCards     = Translate("Chaos Cards", "Карты Хаоса"),
+	
+	//ruins
+	ToggleSpawn0   = Translate("Enable spawn", "Включить спавн"),
+	ToggleSpawn1   = Translate("Disable spawn", "Отключить спавн"),
 
 	//other
 	ScrubChow      = Translate("Scrub Chow", "Жратва"),

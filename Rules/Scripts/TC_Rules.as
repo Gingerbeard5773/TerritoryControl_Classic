@@ -145,7 +145,22 @@ void onTick(CRules@ this)
 
 			CBlob@[] spawns;
 			getBlobsByName("ruins", @spawns);
-			//getBlobsByName("banditshack", @spawns); //exploitable :(
+			getBlobsByName("banditshack", @spawns);
+			
+			CBlob@[] active_spawns;
+			for (uint i = 0; i < spawns.length; i++)
+			{
+				CBlob@ spawn = spawns[i];
+				if (spawn.get_bool("isActive") || spawn.getName() != "ruins")
+				{
+					active_spawns.push_back(spawn);
+				}
+			}
+			
+			if (active_spawns.length > 0)
+			{
+				spawns = active_spawns;
+			}
 			
 			if (player.exists("tavern_netid"))
 			{
