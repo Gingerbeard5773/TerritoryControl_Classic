@@ -4,7 +4,7 @@ namespace Spanish
 {
 	const string
 
-	WoodTriangle   = /* "Wooden Triangle" */ "",
+	WoodTriangle   = /* "Wooden Triangle" */ "Triángulo de madera",
 	StoneTriangle  = /* "Stone Triangle" */ "",
 	HalfBlock      = /* "Stone Half Block" */ "",
 	IronDoor       = /* "Iron Door\nDoesn't have to be placed next to walls!" */ "",
