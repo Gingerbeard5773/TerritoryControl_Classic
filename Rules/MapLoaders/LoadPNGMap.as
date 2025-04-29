@@ -17,6 +17,7 @@ namespace TC_color
 		scoutchicken = 0xffb96437,
 		barbedwire = 0xff5f6473,
 		ivy = 0xff49ac00,
+		lamppost = 0xffffdd26,
 
 		iron = 0xff5f5f5f,
 		iron_back = 0xff454545,
@@ -50,8 +51,15 @@ class TCPNGLoader : PNGLoader
 			case TC_color::barbedwire:    spawnBlob(map, "barbedwire", offset, -1);    autotile(offset); break;
 			case TC_color::ivy:
 			{
-				CBlob@ ivy = spawnBlob(map, "ivy", offset, -1);
-				ivy.setPosition(ivy.getPosition() + Vec2f(0, 16));
+				CBlob@ blob = spawnBlob(map, "ivy", offset, -1);
+				blob.setPosition(blob.getPosition() + Vec2f(0, 16));
+				autotile(offset);
+				break;
+			}
+			case TC_color::lamppost:
+			{
+				CBlob@ blob = spawnBlob(map, "lamppost", offset, -1);
+				blob.setPosition(blob.getPosition() + Vec2f(0, -8));
 				autotile(offset);
 				break;
 			}
