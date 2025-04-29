@@ -9,7 +9,7 @@ void onInit(CBlob@ this)
 
 void GetButtonsFor(CBlob@ this, CBlob@ caller)
 {
-	caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server detonate"), "Detonate!");
+	caller.CreateGenericButton(11, Vec2f(0, 0), this, this.getCommandID("server detonate"), Translate::Detonate);
 }
 
 void onCommand(CBlob@ this, u8 cmd, CBitStream@ params)
